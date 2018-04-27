@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.spotify:hamcrest-pojo:1.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.spotify/hamcrest-pojo/1.1.1/3643cf7c36019967701143a46394184ffb495cc7/hamcrest-pojo-1.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.spotify/hamcrest-pojo/1.1.1/ba7e0d7e1d2bb57a8a8d2ac5865727c98e1e639f/hamcrest-pojo-1.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
