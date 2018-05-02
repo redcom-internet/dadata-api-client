@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -42,9 +43,17 @@ public enum FiasActuality {
 		return Arrays.binarySearch(values, value) >= 0;
 	}
 
+	/* TODO cleanup
+		@JsonCreator
+		@Nonnull
+		public static FiasActuality jsonCreator(final int s) {
+			return Arrays.stream(values()).filter(v -> v.contains(s)).findAny().orElse(UNKNOWN);
+		}
+	*/
+	@SuppressWarnings("unused")
 	@JsonCreator
-	@Nonnull
-	public static FiasActuality jsonCreator(final int s) {
-		return Arrays.stream(values()).filter(v -> v.contains(s)).findAny().orElse(UNKNOWN);
+	@Nullable
+	private static FiasActuality jsonCreator(final Integer s) {
+		return s == null ? null : Arrays.stream(values()).filter(v -> v.contains(s)).findAny().orElse(UNKNOWN);
 	}
 }

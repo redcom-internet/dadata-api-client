@@ -3,10 +3,9 @@
  * All rights reserved.
  */
 
-package ru.redcom.software.util.integration.api.client.dadata;
+package ru.redcom.software.util.integration.api.client.dadata.unitTests;
 
 import org.junit.Test;
-import ru.redcom.software.util.integration.api.client.dadata.types.FiasActuality;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcAddress;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcAddressComplete;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcHouse;
@@ -16,6 +15,7 @@ import static org.junit.Assert.assertThat;
 
 public class UT01Types {
 
+/* TODO cleanup
 	@Test
 	public void fiasActuality() {
 		assertThat(FiasActuality.jsonCreator(0), is(FiasActuality.ACTUAL));
@@ -26,6 +26,7 @@ public class UT01Types {
 
 		assertThat(FiasActuality.jsonCreator(100), is(FiasActuality.UNKNOWN));
 	}
+*/
 
 	@Test
 	public void qcAddress() {

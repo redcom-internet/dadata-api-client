@@ -41,14 +41,6 @@ public enum QcAddressComplete {
 	*/
 	@JsonProperty("0")
 	ADDRESS_COMPLETE(0, PostalSuitability.YES),
-	@JsonProperty("10")
-	HOUSE_NOT_IN_FIAS(10, PostalSuitability.MAYBE),
-	@JsonProperty("5")
-	NO_FLAT(5, PostalSuitability.MAYBE),
-	@JsonProperty("8")
-	POSTAL_BOX(8, PostalSuitability.MAYBE),
-	@JsonProperty("9")
-	VERIFY_PARSING(9, PostalSuitability.MAYBE),
 	@JsonProperty("1")
 	NO_REGION(1, PostalSuitability.NO),
 	@JsonProperty("2")
@@ -57,10 +49,18 @@ public enum QcAddressComplete {
 	NO_STREET(3, PostalSuitability.NO),
 	@JsonProperty("4")
 	NO_HOUSE(4, PostalSuitability.NO),
+	@JsonProperty("5")
+	NO_FLAT(5, PostalSuitability.MAYBE),
 	@JsonProperty("6")
 	ADDRESS_INCOMPLETE(6, PostalSuitability.NO),
 	@JsonProperty("7")
 	FOREIGN_ADDRESS(7, PostalSuitability.NO),
+	@JsonProperty("8")
+	POSTAL_BOX(8, PostalSuitability.MAYBE),
+	@JsonProperty("9")
+	VERIFY_PARSING(9, PostalSuitability.MAYBE),
+	@JsonProperty("10")
+	HOUSE_NOT_IN_FIAS(10, PostalSuitability.MAYBE),
 	@JsonEnumDefaultValue
 	UNKNOWN(null, PostalSuitability.NO);
 
@@ -76,12 +76,19 @@ public enum QcAddressComplete {
 		return value.equals(jsonValue);
 	}
 
+	/* TODO cleanup
+		@JsonCreator
+		@Nonnull
+		private static QcAddressComplete jsonCreator(final int s) {
+			return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
+		}
+	*/
+	@SuppressWarnings("unused")
 	@JsonCreator
-	@Nonnull
-	private static QcAddressComplete jsonCreator(final int s) {
-		return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
+	@Nullable
+	private static QcAddressComplete jsonCreator(final Integer s) {
+		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}
-
 
 	public PostalSuitability getPostalApplicability() {
 		return postalSuitability;

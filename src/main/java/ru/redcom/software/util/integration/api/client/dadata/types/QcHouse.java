@@ -55,10 +55,11 @@ public enum QcHouse {
 		return value.equals(jsonValue);
 	}
 
+	@SuppressWarnings("unused")
 	@JsonCreator
-	@Nonnull
-	private static QcHouse jsonCreator(final int s) {
-		return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
+	@Nullable
+	private static QcHouse jsonCreator(final Integer s) {
+		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}
 
 	@Nonnull

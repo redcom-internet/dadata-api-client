@@ -13,7 +13,7 @@ log/
 #.idea/tasks.xml
 #.idea/dataSources.xml
 #.idea/dataSources.local.xml
-#.idea/libraries/
+.idea/libraries/
 #.idea/httpRequests/
 #.idea/dataSources/
 .idea/artifacts/

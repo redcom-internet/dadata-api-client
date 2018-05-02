@@ -34,10 +34,10 @@ public enum QcAddress {
 	 */
 	@JsonProperty("0")
 	FULL(0),
-	@JsonProperty("2")
-	UNRECOGNIZED(2),
 	@JsonProperty("1")
 	PARTIAL(1),
+	@JsonProperty("2")
+	UNRECOGNIZED(2),
 	@JsonProperty("3")
 	INVARIANTS(3),
 	@JsonEnumDefaultValue
@@ -49,12 +49,12 @@ public enum QcAddress {
 		return value.equals(jsonValue);
 	}
 
+	@SuppressWarnings("unused")
 	@JsonCreator
-	@Nonnull
-	private static QcAddress jsonCreator(final int s) {
-		return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
+	@Nullable
+	private static QcAddress jsonCreator(final Integer s) {
+		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}
-
 
 	public boolean isManualVerificationRequired() {
 		return this == PARTIAL || this == INVARIANTS;

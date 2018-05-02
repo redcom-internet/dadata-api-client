@@ -3,25 +3,26 @@
  * All rights reserved.
  */
 
-package ru.redcom.software.util.integration.api.client.dadata;
+package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.live;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import ru.redcom.software.util.integration.api.client.dadata.DaData;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = CommonLive.class)
+@ActiveProfiles("live")
 public class UT10Availability {
-	// TODO переделать на mocked json server objects и убрать обращения к настоящему DaData API с моими реквизитами
-	private static final String apiKey = "d0ef3cc03e28295c6946d9f0b5240f844d0f91d0";
-	private static final String secretKey = "73254dc8501cb6f5840a2a7a4c4d13ce49061985";
 
+	@Autowired
 	private DaData dadata;
-
-	@Before
-	public void prepareApiBinding() {
-		dadata = new DaData(apiKey, secretKey);
-	}
 
 	@Test
 	public void availableSilent() {

@@ -55,9 +55,17 @@ public enum QcGeo {
 		return value.equals(jsonValue);
 	}
 
+	/* TODO cleanup
+		@JsonCreator
+		@Nonnull
+		private static QcGeo jsonCreator(final int s) {
+			return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
+		}
+	*/
+	@SuppressWarnings("unused")
 	@JsonCreator
-	@Nonnull
-	private static QcGeo jsonCreator(final int s) {
-		return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
+	@Nullable
+	private static QcGeo jsonCreator(final Integer s) {
+		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}
 }
