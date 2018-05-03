@@ -71,13 +71,6 @@ public enum FiasLevel {
 		return value.equals(jsonValue);
 	}
 
-	/* TODO cleanup
-		@JsonCreator
-		@Nonnull
-		private static FiasLevel jsonCreator(final int s) {
-			return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
-		}
-	*/
 	@SuppressWarnings("unused")
 	@JsonCreator
 	@Nullable

@@ -8,7 +8,8 @@ package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.l
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.redcom.software.util.integration.api.client.dadata.DaData;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
 
 @Configuration
 class CommonLive {
@@ -19,7 +20,7 @@ class CommonLive {
 
 
 	@Bean
-	DaData dadataBean() {
-		return new DaData(apiKey, secretKey);
+	DaDataClient dadataBean() {
+		return DaDataClientFactory.getInstance(apiKey, secretKey);
 	}
 }

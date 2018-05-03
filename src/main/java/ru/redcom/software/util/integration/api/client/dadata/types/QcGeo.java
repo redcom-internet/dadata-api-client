@@ -55,13 +55,6 @@ public enum QcGeo {
 		return value.equals(jsonValue);
 	}
 
-	/* TODO cleanup
-		@JsonCreator
-		@Nonnull
-		private static QcGeo jsonCreator(final int s) {
-			return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
-		}
-	*/
 	@SuppressWarnings("unused")
 	@JsonCreator
 	@Nullable

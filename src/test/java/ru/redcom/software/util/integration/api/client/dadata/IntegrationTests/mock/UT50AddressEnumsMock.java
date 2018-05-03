@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-import ru.redcom.software.util.integration.api.client.dadata.DaData;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
 import ru.redcom.software.util.integration.api.client.dadata.types.*;
@@ -23,17 +23,18 @@ import java.util.function.Function;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.doTest;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.successTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
-@RestClientTest(DaData.class)
+@RestClientTest
 public class UT50AddressEnumsMock {
 	private static final String URI = "/clean/address";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 
 	@Autowired
-	private DaData dadata;
+	private DaDataClient dadata;
 	@Autowired
 	private MockRestServiceServer server;
 
@@ -88,12 +89,12 @@ public class UT50AddressEnumsMock {
 		              UT50AddressEnumsMock::matcherUnknown);
 
 		private final String sourceAddress;
-		private final String json;
+		private final String responseBody;
 		private final Function<String, Matcher<Address>> matcher;
 
-		SampleAddress(final String sourceAddress, final String json, final Function<String, Matcher<Address>> matcher) {
+		SampleAddress(final String sourceAddress, final String responseBody, final Function<String, Matcher<Address>> matcher) {
 			this.sourceAddress = sourceAddress;
-			this.json = json;
+			this.responseBody = responseBody;
 			this.matcher = matcher;
 		}
 
@@ -101,8 +102,8 @@ public class UT50AddressEnumsMock {
 			return sourceAddress;
 		}
 
-		public String getJson() {
-			return json;
+		public String getResponseBody() {
+			return responseBody;
 		}
 
 		public Matcher<Address> getMatcher() {
@@ -377,6 +378,7 @@ public class UT50AddressEnumsMock {
 
 	// shared test body
 	private void test(final SampleAddress address) {
-		doTest(dadata, server, URI, METHOD, address.getSourceAddress(), address.getJson(), address.getMatcher());
+		setupTestServer(server, URI, METHOD, address.getResponseBody());
+		successTest(dadata, address.getSourceAddress(), address.getMatcher());
 	}
 }

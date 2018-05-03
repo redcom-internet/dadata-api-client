@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.redcom.software.util.integration.api.client.dadata.DaData;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
 import ru.redcom.software.util.integration.api.client.dadata.types.*;
@@ -165,7 +165,7 @@ public class UT20AddressCleanSuccess {
 	}
 
 	@Autowired
-	private DaData dadata;
+	private DaDataClient dadata;
 
 	@Test
 	public void cleanAddress1() throws DaDataException {

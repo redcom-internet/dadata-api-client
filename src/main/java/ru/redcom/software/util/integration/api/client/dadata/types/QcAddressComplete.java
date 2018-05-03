@@ -76,13 +76,6 @@ public enum QcAddressComplete {
 		return value.equals(jsonValue);
 	}
 
-	/* TODO cleanup
-		@JsonCreator
-		@Nonnull
-		private static QcAddressComplete jsonCreator(final int s) {
-			return Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
-		}
-	*/
 	@SuppressWarnings("unused")
 	@JsonCreator
 	@Nullable

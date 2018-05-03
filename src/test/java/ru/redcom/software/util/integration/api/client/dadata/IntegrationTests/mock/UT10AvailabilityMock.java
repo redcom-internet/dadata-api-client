@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-import ru.redcom.software.util.integration.api.client.dadata.DaData;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -22,13 +22,13 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
-@RestClientTest(DaData.class)
+@RestClientTest
 public class UT10AvailabilityMock {
 	private static final String URI = "/status/CLEAN";
 	private static final HttpMethod METHOD = HttpMethod.GET;
 
 	@Autowired
-	private DaData dadata;
+	private DaDataClient dadata;
 	@Autowired
 	private MockRestServiceServer server;
 

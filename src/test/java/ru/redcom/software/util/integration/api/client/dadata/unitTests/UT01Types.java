@@ -15,19 +15,6 @@ import static org.junit.Assert.assertThat;
 
 public class UT01Types {
 
-/* TODO cleanup
-	@Test
-	public void fiasActuality() {
-		assertThat(FiasActuality.jsonCreator(0), is(FiasActuality.ACTUAL));
-		assertThat(FiasActuality.jsonCreator(1), is(FiasActuality.RENAMED));
-		assertThat(FiasActuality.jsonCreator(50), is(FiasActuality.RENAMED));
-		assertThat(FiasActuality.jsonCreator(51), is(FiasActuality.RESUBORDINATED));
-		assertThat(FiasActuality.jsonCreator(99), is(FiasActuality.REMOVED));
-
-		assertThat(FiasActuality.jsonCreator(100), is(FiasActuality.UNKNOWN));
-	}
-*/
-
 	@Test
 	public void qcAddress() {
 		assertThat(QcAddress.FULL.isManualVerificationRequired(), is(false));

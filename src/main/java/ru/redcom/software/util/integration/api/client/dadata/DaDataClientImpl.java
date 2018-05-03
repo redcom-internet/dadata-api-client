@@ -38,7 +38,7 @@ import java.util.Optional;
  *     https://dadata.ru/api/v2/clean/address | json_pp
  * </pre>
  */
-public class DaData {
+class DaDataClientImpl implements DaDataClient {
 	private static final String DADATA_API_DEFAULT_BASE_URI = "https://dadata.ru/api/v2";
 	private static final String DADADA_API_ENDPOINT_PROFILE_BALANCE = "/profile/balance";
 	private static final String DADADA_API_ENDPOINT_STATUS_CLEAN = "/status/CLEAN";
@@ -58,50 +58,18 @@ public class DaData {
 	 * Если параметр <code>baseUri</code> null или пустой, будет использован адрес сервиса по умолчанию.
 	 * </p>
 	 * <p>
-	 *     Конструктор позволяет задать объект REST Template Builder, что может оказаться полезным в среде Spring Boot.
+	 * Конструктор позволяет задать объект REST Template Builder, что может оказаться полезным в среде Spring Boot.
 	 * </p>
 	 *
 	 * @param apiKey    Ключ API
 	 * @param secretKey Пароль API
 	 * @param baseUri   Строка базового URI
 	 */
-	@SuppressWarnings("WeakerAccess")
-	public DaData(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri, @NonNull RestTemplateBuilder restTemplateBuilder) {
-		Assert.notNull(restTemplateBuilder, "REST Template builder is null");
-		Assert.isTrue(StringUtils.hasText(apiKey), "API Key is not set");
-		Assert.isTrue(StringUtils.hasText(secretKey), "Secret Key is not set");
+	DaDataClientImpl(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri, @NonNull RestTemplateBuilder restTemplateBuilder) {
 		this.baseUri = StringUtils.hasText(baseUri) ? baseUri : DADATA_API_DEFAULT_BASE_URI;
 		this.apiKey = apiKey;
 		this.secretKey = secretKey;
 		this.restTemplate = createRestTemplate(restTemplateBuilder);
-	}
-
-	/**
-	 * Конструктор с возможностью задания базового URI сервиса DaData.
-	 * <p>Параметры <code>apiKey, secretKey</code> должны быть непустыми, иначе выдаётся исключение
-	 * {@link IllegalArgumentException}.
-	 * Если параметр <code>baseUri</code> null или пустой, будет использован адрес сервиса по умолчанию.
-	 * </p>
-	 *
-	 * @param apiKey    Ключ API
-	 * @param secretKey Пароль API
-	 * @param baseUri   Строка базового URI
-	 */
-	@SuppressWarnings("WeakerAccess")
-	public DaData(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri) {
-		this(apiKey, secretKey, baseUri, new RestTemplateBuilder());
-	}
-
-	/**
-	 * Конструктор с базовым URI сервиса DaData по умолчанию.
-	 * <p>Параметры <code>apiKey, secretKey</code> должны быть непустыми, иначе выдаётся исключение
-	 * {@link IllegalArgumentException}.</p>
-	 *
-	 * @param apiKey    Ключ API
-	 * @param secretKey Пароль API
-	 */
-	public DaData(@Nonnull final String apiKey, @Nonnull final String secretKey) {
-		this(apiKey, secretKey, null);
 	}
 
 
@@ -114,6 +82,7 @@ public class DaData {
 	 *
 	 * @throws DaDataException При ошибках проверки, если silent = false
 	 */
+	@Override
 	public boolean checkAvailability(final boolean silent) throws DaDataException {
 		try {
 			doRequest(DADADA_API_ENDPOINT_STATUS_CLEAN, HttpMethod.GET, null, Void.class);
@@ -126,6 +95,7 @@ public class DaData {
 		}
 	}
 
+	@Override
 	@Nonnull
 	public BigDecimal getProfileBalance() throws DaDataException {
 		return doRequest(DADADA_API_ENDPOINT_PROFILE_BALANCE, HttpMethod.GET, null, Balance.class)
@@ -133,6 +103,7 @@ public class DaData {
 				.getBalance();
 	}
 
+	@Override
 	@Nonnull
 	public Address cleanAddress(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Address string is empty");
@@ -143,6 +114,7 @@ public class DaData {
 			throw new DaDataException("Empty response from DaData API");
 	}
 
+	@Override
 	@Nonnull
 	public Address[] cleanAddresses(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Address sources is null");

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.redcom.software.util.integration.api.client.dadata.DaData;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 public class UT10Availability {
 
 	@Autowired
-	private DaData dadata;
+	private DaDataClient dadata;
 
 	@Test
 	public void availableSilent() {

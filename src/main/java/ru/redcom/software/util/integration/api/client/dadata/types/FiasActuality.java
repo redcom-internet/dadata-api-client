@@ -43,13 +43,6 @@ public enum FiasActuality {
 		return Arrays.binarySearch(values, value) >= 0;
 	}
 
-	/* TODO cleanup
-		@JsonCreator
-		@Nonnull
-		public static FiasActuality jsonCreator(final int s) {
-			return Arrays.stream(values()).filter(v -> v.contains(s)).findAny().orElse(UNKNOWN);
-		}
-	*/
 	@SuppressWarnings("unused")
 	@JsonCreator
 	@Nullable

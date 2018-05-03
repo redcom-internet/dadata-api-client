@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-import ru.redcom.software.util.integration.api.client.dadata.DaData;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 
 import java.math.BigDecimal;
@@ -25,14 +25,14 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
-@RestClientTest(DaData.class)
+@RestClientTest
 public class UT16BalanceMock {
 	private static final String URI = "/profile/balance";
 	private static final HttpMethod METHOD = HttpMethod.GET;
 	private static final BigDecimal balanceValue = new BigDecimal("123456.78");
 
 	@Autowired
-	private DaData dadata;
+	private DaDataClient dadata;
 	@Autowired
 	private MockRestServiceServer server;
 
