@@ -5,8 +5,9 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock;
 
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClientException;
+import ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesError;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -33,38 +36,37 @@ public class UT10AvailabilityMock {
 	private MockRestServiceServer server;
 
 
-	@Before
-	public void setup() {
-		setupTestServer(server, URI, METHOD);
-	}
-
 	@Test
 	public void availableSilent() {
+		setupTestServer(server, URI, METHOD);
 		final boolean available = dadata.checkAvailability(true);
 		assertThat(available, is(true));
 		server.verify();
 	}
 
-	// TODO not available silent
-	// TODO not available exception
-
-/*
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
 	@Test
-	public void notAvailable() throws DaDataException {
-		exception.expect(DaDataException.class);
-		exception.expectMessage("Address cleaning service is not available");
-		exception.expect(allOf(hasProperty("httpStatusCode", is(400)),
-		                       hasProperty("httpStatusText", is("BAD REQUEST")),
-		                       hasProperty("apiErrorCode", is(BAD_REQUEST_FORMAT)),
-		                       hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		                       hasProperty("apiErrorMessage", hasProperty("detail", is("Bad request. Use non empty list."))),
-		                       hasProperty("fatal", is(true))));
-		// empty array
-		dadata.cleanAddresses();
+	public void notAvailableSilent() {
+		test(true);
 	}
-*/
 
+	@Test
+	public void notAvailableException() {
+		test(false);
+	}
+
+	private void test(final boolean silent) {
+		final TestCasesError.SampleErrorAddresses sample = TestCasesError.SampleErrorAddresses.CREDENTIALS_MISSING;
+		setupTestServer(server, URI, METHOD, null, sample.getResponseStatus(), sample.getResponseBody());
+		if (!silent) {
+			exception.expect(DaDataClientException.class);
+			exception.expectMessage(sample.getMessage());
+			exception.expect(sample.getMatcher());
+		}
+		final boolean available = dadata.checkAvailability(silent);
+		assertThat(available, is(false));
+		server.verify();
+	}
 }

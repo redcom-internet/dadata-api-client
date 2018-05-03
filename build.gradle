@@ -82,10 +82,6 @@ publishing {
     repositories {
         maven {
 	    name = 'devel.ws.redcom.ru'
-	    // Requires support of the PUT method on web server
-            // url "http://devel.ws.redcom.ru/maven2"
-	    // Requires FTP server
-            // url "ftp://devel.ws.redcom.ru/var/spool/users/maven2"
 	    // SFTP publishing. Credentials are taken from the Maven settings
             url publishRepositoryURL
         }
@@ -104,12 +100,6 @@ repositories {
         }
 }
 
-/*
-configurations {
-	implementation.exclude module: 'spring-boot-starter'
-}
-*/
-
 dependencies {
     // This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
     //api group: 'xxx', name: 'yyy', version: 'zzz'
@@ -123,6 +113,7 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.+'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "$springBootVersion"
+    testImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.+'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.+'
     testImplementation group: 'com.spotify', name: 'hamcrest-pojo', version: '1.+'
 }

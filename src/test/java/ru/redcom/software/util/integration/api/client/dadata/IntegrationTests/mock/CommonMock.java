@@ -52,7 +52,6 @@ class CommonMock {
 		return DaDataClientFactory.getInstance(API_KEY, SECRET_KEY, null, restTemplateBuilder);
 	}
 
-	// TODO expect requestbody ignore whitespace
 	private static ResponseActions setupBaseTestServer(final MockRestServiceServer server,
 	                                                   final String expectedUri,
 	                                                   final HttpMethod requestMethod) {

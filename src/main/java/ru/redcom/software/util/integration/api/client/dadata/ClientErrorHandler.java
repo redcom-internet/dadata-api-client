@@ -35,9 +35,9 @@ class ClientErrorHandler extends DefaultResponseErrorHandler {
 		APIErrorMessage errorDetails = null;
 		Exception resourceException = null;
 		try {
+			// System.out.println("response body: " + new BufferedReader(new InputStreamReader(response.getBody())).lines().collect(Collectors.joining("\n")));
 			final HttpMessageConverterExtractor<? extends APIErrorMessage> extractor =
 					new HttpMessageConverterExtractor<>(APIErrorMessage.class, this.messageConverters);
-			// log.debug("response body: {}", new BufferedReader(new InputStreamReader(response.getBody())).lines().collect(Collectors.joining("\n")));
 			errorDetails = extractor.extractData(response);
 		} catch (Exception e) {
 			resourceException = e;

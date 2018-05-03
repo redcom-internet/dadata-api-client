@@ -130,6 +130,4 @@ public class UT20AddressCleanSuccessMock {
 		successTest(dadata, address.getSourceAddress(), address.getMatcher());
 		server.verify();
 	}
-
-	// TODO сделать один общий класс теста, и выбор реализации этого меотда в зависимости от профиля live/не-live?
 }

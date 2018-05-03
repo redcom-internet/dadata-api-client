@@ -12,6 +12,7 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage
 
 import java.util.Arrays;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static ru.redcom.software.util.integration.api.client.dadata.APIErrorCode.*;
@@ -33,6 +34,14 @@ public class TestCasesError {
 		                    "Incorrect request format or data type",
 		                    HttpStatus.BAD_REQUEST, "{\"details\":[\"Request does not contain data for standartization\"]}",
 		                    TestCasesError::matcherEmptyArrayElement),
+		NULL_ARRAY_ELEMENT(new String[] {null},
+		                   "Incorrect request format or data type",
+		                   HttpStatus.BAD_REQUEST, "{\"details\":[\"Request does not contain data for standartization\"]}",
+		                   TestCasesError::matcherEmptyArrayElement),
+		CREDENTIALS_BAD_FORMAT(new String[] {"qwe"},
+		                       "API key or Secret key are missing",
+		                       HttpStatus.UNAUTHORIZED, "{\"detail\":\"Format of the given token seems invalid. Please, verify it in the profile page.\"}",
+		                       TestCasesError::matcherCredentialsBadFormat),
 		CREDENTIALS_MISSING(new String[] {"qwe"},
 		                    "API key or Secret key are missing",
 		                    HttpStatus.UNAUTHORIZED, "{\"detail\":\"Учетные данные не были предоставлены.\"}",
@@ -49,11 +58,17 @@ public class TestCasesError {
 		                   "Unsupported request method",
 		                   HttpStatus.NOT_ACCEPTABLE, "{\"detail\":\"Метод \\\"GET\\\" не разрешен.\"}",
 		                   TestCasesError::matcherUnsuportedMethod),
-		TOO_MANY_ITEMS(new String[] {"123", "456", "789", "qwe", "rty", "uio", "asd", "fgh", "jkl", "zxc", "vbn", "mp"},
+		TOO_MANY_ITEMS(Stream.generate(() -> "test address").limit(100).toArray(String[]::new),
 		               "Too many items requested",
 		               HttpStatus.PAYLOAD_TOO_LARGE, "{\"detail\":\"Too many items in request\"}",
 		               TestCasesError::matcherTooManyItems),
-		TOO_MANY_REQUESTS(new String[] {"qwe"},
+		/*
+				TOO_MANY_ITEMS1(Stream.generate(() -> "test address").limit(100).toArray(String[]::new),
+								"Incorrect request format or data type",
+								HttpStatus.PAYLOAD_TOO_LARGE, "{\"details\":\"Processing failed. Document should not contain more than 50 records.\"}",
+								TestCasesError::matcherTooManyItems1),
+		*/
+		TOO_MANY_REQUESTS(new String[] {"Россия, Санкт-Петербург, ул.Восстания, д.1"},
 		                  "Too many requests per second",
 		                  HttpStatus.TOO_MANY_REQUESTS, "{\"detail\":\"Too many requests\"}",
 		                  TestCasesError::matcherTooManyRequests);
@@ -75,12 +90,12 @@ public class TestCasesError {
 			this.matcher = matcher;
 		}
 
-		public Object getArgument() {
+		public String[] getArgument() {
 			return argument;
 		}
 
 		public String getRequestBody() {
-			return Arrays.toString(Arrays.stream(argument).map((s) -> "\"" + s.replace("\"", "\\\"") + "\"").toArray());
+			return Arrays.toString(Arrays.stream(argument).map((s) -> s == null ? null : "\"" + s.replace("\"", "\\\"") + "\"").toArray());
 		}
 
 		public String getMessage() {
@@ -134,13 +149,24 @@ public class TestCasesError {
 		             hasProperty("fatal", is(true)));
 	}
 
+	// credentials is of wrong format
+	private static Matcher<DaDataClientException> matcherCredentialsBadFormat() {
+		return allOf(hasProperty("httpStatusCode", is(401)),
+		             hasProperty("httpStatusText", is(equalToIgnoringCase("UNAUTHORIZED"))),
+		             hasProperty("apiErrorCode", is(CREDENTIALS_MISSING)),
+		             hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
+		             hasProperty("apiErrorMessage", hasProperty("detail", is("Format of the given token seems invalid. Please, verify it in the profile page."))),
+		             hasProperty("fatal", is(true)));
+	}
+
 	// credentials missing
 	private static Matcher<DaDataClientException> matcherCredentialsMissing() {
 		return allOf(hasProperty("httpStatusCode", is(401)),
 		             hasProperty("httpStatusText", is(equalToIgnoringCase("UNAUTHORIZED"))),
 		             hasProperty("apiErrorCode", is(CREDENTIALS_MISSING)),
 		             hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		             hasProperty("apiErrorMessage", hasProperty("detail", is("Учетные данные не были предоставлены."))),
+		             hasProperty("apiErrorMessage", hasProperty("detail", anyOf(is("Учетные данные не были предоставлены."),
+		                                                                        is("Недопустимый токен.")))),
 		             hasProperty("fatal", is(true)));
 	}
 
@@ -180,9 +206,21 @@ public class TestCasesError {
 		             hasProperty("httpStatusText", is(equalToIgnoringCase("PAYLOAD TOO LARGE"))),
 		             hasProperty("apiErrorCode", is(TOO_MANY_ITEMS)),
 		             hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		             hasProperty("apiErrorMessage", hasProperty("detail", is("Too many items in request"))),
+		             hasProperty("apiErrorMessage", anyOf(hasProperty("detail", is("Too many items in request")),
+		                                                  hasProperty("details", is(arrayContaining("Processing failed. Document should not contain more than 50 records."))))),
 		             hasProperty("fatal", is(false)));
 	}
+/*
+	private static Matcher<DaDataClientException> matcherTooManyItems1() {
+		return allOf(hasProperty("httpStatusCode", is(400)),
+		             hasProperty("httpStatusText", is(equalToIgnoringCase("BAD REQUEST"))),
+		             hasProperty("apiErrorCode", is(BAD_REQUEST_FORMAT)),
+		             hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
+		             hasProperty("apiErrorMessage", anyOf(hasProperty("detail", is("Too many items in request")),
+		                                                  hasProperty("details", is(arrayContaining("Processing failed. Document should not contain more than 50 records."))))),
+		             hasProperty("fatal", is(true)));
+	}
+*/
 
 	// too many requests
 	private static Matcher<DaDataClientException> matcherTooManyRequests() {

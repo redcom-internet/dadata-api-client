@@ -73,6 +73,11 @@ public class UT21AddressCleanErrorsMock {
 	}
 
 	@Test
+	public void nullAddressArrayElement() throws DaDataException {
+		test(SampleErrorAddresses.NULL_ARRAY_ELEMENT);
+	}
+
+	@Test
 	public void credentialsMissing() throws DaDataException {
 		test(SampleErrorAddresses.CREDENTIALS_MISSING);
 	}

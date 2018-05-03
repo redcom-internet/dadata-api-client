@@ -56,7 +56,6 @@ public class DaDataClientFactory {
 	 *
 	 * @return Экземпляр клиента DaData API
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public static DaDataClient getInstance(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri) {
 		return getInstance(apiKey, secretKey, baseUri, new RestTemplateBuilder());
 	}

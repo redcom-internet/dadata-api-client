@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 import ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess;
 
@@ -116,11 +117,18 @@ public class UT20AddressCleanSuccess {
 		test(TestCasesSuccess.SampleAddresses.UNPARSEABLE_1);
 	}
 
+	// Try alternative base uri (without ssl)
+	@Test
+	public void cleanUnparseable2() throws DaDataException {
+		final TestCasesSuccess.SampleAddresses address = TestCasesSuccess.SampleAddresses.UNPARSEABLE_1;
+		final DaDataClient dadata = DaDataClientFactory.getInstance(CommonLive.API_KEY, CommonLive.SECRET_KEY, "http://dadata.ru/api/v2");
+		successTest(dadata, address.getSourceAddress(), address.getMatcher());
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
 
 	// shared test body
 	private void test(final TestCasesSuccess.SampleAddresses address) {
 		successTest(dadata, address.getSourceAddress(), address.getMatcher());
 	}
-
-	// TODO доделать остальные тесты
 }

@@ -5,13 +5,18 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.live;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClientException;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
+import ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesError;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -30,26 +35,23 @@ public class UT10Availability {
 		assertThat(available, is(true));
 	}
 
-	// TODO not available silent
-	// TODO not available exception
+	@Test
+	public void notAvailableSilent() {
+		final DaDataClient dadata = DaDataClientFactory.getInstance("0000000000000000000000000000000000000000", "0000000000000000000000000000000000000000");
+		final boolean available = dadata.checkAvailability(true);
+		assertThat(available, is(false));
+	}
 
-/*
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
 	@Test
-	public void notAvailable() throws DaDataException {
-		exception.expect(DaDataException.class);
-		exception.expectMessage("Address cleaning service is not available");
-		exception.expect(allOf(hasProperty("httpStatusCode", is(400)),
-		                       hasProperty("httpStatusText", is("BAD REQUEST")),
-		                       hasProperty("apiErrorCode", is(BAD_REQUEST_FORMAT)),
-		                       hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		                       hasProperty("apiErrorMessage", hasProperty("detail", is("Bad request. Use non empty list."))),
-		                       hasProperty("fatal", is(true))));
-		// empty array
-		dadata.cleanAddresses();
+	public void notAvailableException() {
+		final TestCasesError.SampleErrorAddresses sample = TestCasesError.SampleErrorAddresses.CREDENTIALS_MISSING;
+		exception.expect(DaDataClientException.class);
+		exception.expectMessage(sample.getMessage());
+		exception.expect(sample.getMatcher());
+		final DaDataClient dadata = DaDataClientFactory.getInstance("0000000000000000000000000000000000000000", "0000000000000000000000000000000000000000");
+		dadata.checkAvailability(false);
 	}
-*/
-
 }

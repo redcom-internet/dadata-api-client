@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 class CommonLive {
 	@Value("${dadata.api-key}")
@@ -18,6 +20,14 @@ class CommonLive {
 	@Value("${dadata.secret-key}")
 	private String secretKey;
 
+	static String API_KEY;
+	static String SECRET_KEY;
+
+	@PostConstruct
+	void init() {
+		API_KEY = apiKey;
+		SECRET_KEY = secretKey;
+	}
 
 	@Bean
 	DaDataClient dadataBean() {
