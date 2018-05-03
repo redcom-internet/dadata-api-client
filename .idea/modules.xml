@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/dadata-api-client.iml" filepath="$PROJECT_DIR$/.idea/dadata-api-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/dadata-api-client.iml" filepath="$PROJECT_DIR$/dadata-api-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dadata-api-client.iml" filepath="$PROJECT_DIR$/.idea/dadata-api-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dadata-api-client_main.iml" filepath="$PROJECT_DIR$/.idea/modules/dadata-api-client_main.iml" group="dadata-api-client" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dadata-api-client_main.iml" filepath="$PROJECT_DIR$/.idea/modules/dadata-api-client_main.iml" group="dadata-api-client" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dadata-api-client_test.iml" filepath="$PROJECT_DIR$/.idea/modules/dadata-api-client_test.iml" group="dadata-api-client" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dadata-api-client_test.iml" filepath="$PROJECT_DIR$/.idea/modules/dadata-api-client_test.iml" group="dadata-api-client" />
     </modules>
   </component>

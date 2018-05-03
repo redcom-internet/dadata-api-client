@@ -42,6 +42,7 @@ public class UT10AvailabilityMock {
 	public void availableSilent() {
 		final boolean available = dadata.checkAvailability(true);
 		assertThat(available, is(true));
+		server.verify();
 	}
 
 	// TODO not available silent

@@ -23,8 +23,8 @@ import java.util.function.Function;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess.successTest;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.successTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
@@ -380,5 +380,6 @@ public class UT50AddressEnumsMock {
 	private void test(final SampleAddress address) {
 		setupTestServer(server, URI, METHOD, address.getResponseBody());
 		successTest(dadata, address.getSourceAddress(), address.getMatcher());
+		server.verify();
 	}
 }

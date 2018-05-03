@@ -6,6 +6,7 @@
 package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests;
 
 import org.hamcrest.Matcher;
+import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
 import ru.redcom.software.util.integration.api.client.dadata.types.*;
 
@@ -15,9 +16,11 @@ import java.util.function.Function;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 import static ru.redcom.software.util.integration.api.client.dadata.types.BeltwayHit.*;
 
 public class TestCasesSuccess {
+
 	public enum SampleAddresses {
 		KHABAROVSK_1("Хабаровский край, гор. Хабаровск, ул. Промышленная, д.20",
 		             "[{\"source\":\"Хабаровский край, гор. Хабаровск, ул. Промышленная, д.20\",\"result\":\"г Хабаровск, ул Промышленная, д 20\",\"postal_code\":\"680009\",\"country\":\"Россия\",\"region_fias_id\":\"7d468b39-1afa-41ec-8c4f-97a8603cb3d4\",\"region_kladr_id\":\"2700000000000\",\"region_with_type\":\"Хабаровский край\",\"region_type\":\"край\",\"region_type_full\":\"край\",\"region\":\"Хабаровский\",\"area_fias_id\":null,\"area_kladr_id\":null,\"area_with_type\":null,\"area_type\":null,\"area_type_full\":null,\"area\":null,\"city_fias_id\":\"a4859da8-9977-4b62-8436-4e1b98c5d13f\",\"city_kladr_id\":\"2700000100000\",\"city_with_type\":\"г Хабаровск\",\"city_type\":\"г\",\"city_type_full\":\"город\",\"city\":\"Хабаровск\",\"city_area\":null,\"city_district_fias_id\":null,\"city_district_kladr_id\":null,\"city_district_with_type\":\"р-н Железнодорожный\",\"city_district_type\":\"р-н\",\"city_district_type_full\":\"район\",\"city_district\":\"Железнодорожный\",\"settlement_fias_id\":null,\"settlement_kladr_id\":null,\"settlement_with_type\":null,\"settlement_type\":null,\"settlement_type_full\":null,\"settlement\":null,\"street_fias_id\":\"7e8aa3f7-390d-4539-9f8d-6c510d6cd1d0\",\"street_kladr_id\":\"27000001000072100\",\"street_with_type\":\"ул Промышленная\",\"street_type\":\"ул\",\"street_type_full\":\"улица\",\"street\":\"Промышленная\",\"house_fias_id\":\"7ccbf45a-211d-4c77-8887-d2cb8914c4f7\",\"house_kladr_id\":\"2700000100007210011\",\"house_type\":\"д\",\"house_type_full\":\"дом\",\"house\":\"20\",\"block_type\":null,\"block_type_full\":null,\"block\":null,\"flat_type\":null,\"flat_type_full\":null,\"flat\":null,\"flat_area\":\"499.02\",\"square_meter_price\":null,\"flat_price\":null,\"postal_box\":null,\"fias_id\":\"7ccbf45a-211d-4c77-8887-d2cb8914c4f7\",\"fias_code\":\"27000001000000007210011\",\"fias_level\":\"8\",\"fias_actuality_state\":\"0\",\"kladr_id\":\"2700000100007210011\",\"capital_marker\":\"2\",\"okato\":\"08401363000\",\"oktmo\":\"08701000\",\"tax_office\":\"2724\",\"tax_office_legal\":\"2724\",\"timezone\":\"UTC+10\",\"geo_lat\":\"48.4959975\",\"geo_lon\":\"135.1058715\",\"beltway_hit\":null,\"beltway_distance\":null,\"qc_geo\":0,\"qc_complete\":5,\"qc_house\":2,\"qc\":0,\"unparsed_parts\":null,\"metro\":null}]",
@@ -1642,4 +1645,11 @@ public class TestCasesSuccess {
 	}
 
 	// =================================================================================================================
+
+	public static void successTest(final DaDataClient dadata, final String sourceAddress, final Matcher<Address> matcher) {
+		System.out.println("source address: " + sourceAddress);
+		final Address a = dadata.cleanAddress(sourceAddress);
+		System.out.println("cleaned address: " + a);
+		assertThat(a, is(matcher));
+	}
 }

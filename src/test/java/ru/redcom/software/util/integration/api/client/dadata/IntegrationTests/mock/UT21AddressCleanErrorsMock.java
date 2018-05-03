@@ -19,10 +19,7 @@ import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClientException;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 import ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesError.SampleErrorAddresses;
-import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage;
 
-import static org.hamcrest.Matchers.*;
-import static ru.redcom.software.util.integration.api.client.dadata.APIErrorCode.BAD_REQUEST_FORMAT;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
 
 @RunWith(SpringRunner.class)
@@ -58,64 +55,53 @@ public class UT21AddressCleanErrorsMock {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
+	/*
+		@Test
+		public void emptyRequestBody() throws DaDataException {
+			test(SampleErrorAddresses.EMPTY_REQUEST_BODY);
+		}
+	*/
+
 	@Test
 	public void emptyAddressArray() throws DaDataException {
 		test(SampleErrorAddresses.EMPTY_ARRAY);
 	}
 
-	// TODO implement other cases
-
-	@Test
-	public void nullAddressArrayElement() throws DaDataException {
-		exception.expect(DaDataClientException.class);
-		exception.expectMessage("Incorrect request format or data type");
-		exception.expect(allOf(hasProperty("httpStatusCode", is(400)),
-		                       hasProperty("httpStatusText", is("BAD REQUEST")),
-		                       hasProperty("apiErrorCode", is(BAD_REQUEST_FORMAT)),
-		                       hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		                       hasProperty("apiErrorMessage", hasProperty("details", arrayContaining("Request does not contain data for standartization"))),
-		                       hasProperty("fatal", is(true))));
-//		try {
-		// null string
-		dadata.cleanAddresses((String) null);
-//		} catch (DaDataClientException e) {
-//			System.out.println("DaData client exception: " + e);
-//			System.out.println("HTTP status: " + e.getHttpStatusCode());
-//			System.out.println("HTTP status text: " + e.getHttpStatusText());
-//			System.out.println("API error code: " + e.getApiErrorCode());
-//			System.out.println("API error message: " + e.getApiErrorMessage());
-//			if (e.getApiErrorMessage() != null) {
-//				System.out.println("API error data: " + Arrays.toString(e.getApiErrorMessage().getData()));
-//				System.out.println("API error details: " + Arrays.toString(e.getApiErrorMessage().getDetails()));
-//				System.out.println("API error detail: " + e.getApiErrorMessage().getDetail());
-//				System.out.println("API error contents: " + e.getApiErrorMessage().getContents());
-//			}
-//		}
-		/*
-		HTTP status: 400
-		HTTP status text: BAD REQUEST
-		API error code: BAD_REQUEST_FORMAT
-		API error message: APIErrorMessage(contents={details=[Request does not contain data for standartization]})
-		API error data: null
-		API error details: [Request does not contain data for standartization]
-		API error detail: null
-		API error contents: {details=[Request does not contain data for standartization]}
-		*/
-	}
-
 	@Test
 	public void emptyAddressArrayElement() throws DaDataException {
-		exception.expect(DaDataClientException.class);
-		exception.expectMessage("Incorrect request format or data type");
-		exception.expect(allOf(hasProperty("httpStatusCode", is(400)),
-		                       hasProperty("httpStatusText", is("BAD REQUEST")),
-		                       hasProperty("apiErrorCode", is(BAD_REQUEST_FORMAT)),
-		                       hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		                       hasProperty("apiErrorMessage", hasProperty("details", arrayContaining("Request does not contain data for standartization"))),
-		                       hasProperty("fatal", is(true))));
-		// empty string
-		dadata.cleanAddresses("");
+		test(SampleErrorAddresses.EMPTY_ARRAY_ELEMENT);
 	}
+
+	@Test
+	public void credentialsMissing() throws DaDataException {
+		test(SampleErrorAddresses.CREDENTIALS_MISSING);
+	}
+
+	@Test
+	public void balanceExhaused() throws DaDataException {
+		test(SampleErrorAddresses.BALANCE_EXHAUSTED);
+	}
+
+	@Test
+	public void credentialsInvalid() throws DaDataException {
+		test(SampleErrorAddresses.CREDENTIALS_INVALID);
+	}
+
+	@Test
+	public void unsupportedMethod() throws DaDataException {
+		test(SampleErrorAddresses.UNSUPPORTED_METHOD);
+	}
+
+	@Test
+	public void tooManyItems() throws DaDataException {
+		test(SampleErrorAddresses.TOO_MANY_ITEMS);
+	}
+
+	@Test
+	public void tooManyRequests() throws DaDataException {
+		test(SampleErrorAddresses.TOO_MANY_REQUESTS);
+	}
+
 
 	/*
 		try {
@@ -154,7 +140,6 @@ public class UT21AddressCleanErrorsMock {
 		exception.expect(sample.getMatcher());
 		setupTestServer(server, URI, METHOD, sample.getRequestBody(), sample.getResponseStatus(), sample.getResponseBody());
 		dadata.cleanAddresses((String[]) sample.getArgument());
+		server.verify();
 	}
-
-	// TODO тестирование ошибок формата на искусственном сервере
 }

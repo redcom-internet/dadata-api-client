@@ -18,8 +18,8 @@ import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess.SampleAddresses;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess.successTest;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.successTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
@@ -128,6 +128,7 @@ public class UT20AddressCleanSuccessMock {
 	private void test(final SampleAddresses address) {
 		setupTestServer(server, URI, METHOD, address.getRequestBody(), HttpStatus.OK, address.getResponseBody());
 		successTest(dadata, address.getSourceAddress(), address.getMatcher());
+		server.verify();
 	}
 
 	// TODO сделать один общий класс теста, и выбор реализации этого меотда в зависимости от профиля live/не-live?

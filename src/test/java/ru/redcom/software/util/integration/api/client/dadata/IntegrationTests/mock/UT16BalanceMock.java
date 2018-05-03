@@ -48,5 +48,6 @@ public class UT16BalanceMock {
 		final BigDecimal balance = dadata.getProfileBalance();
 		System.out.println("Balance = " + balance);
 		assertThat(balance, equalTo(balanceValue));
+		server.verify();
 	}
 }

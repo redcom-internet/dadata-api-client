@@ -5,7 +5,6 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock;
 
-import org.hamcrest.Matcher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -21,14 +20,13 @@ import org.springframework.test.web.client.ResponseActions;
 import org.springframework.test.web.client.response.DefaultResponseCreator;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
@@ -88,10 +86,4 @@ class CommonMock {
 		setupTestServer(server, expectedUri, requestMethod, null, HttpStatus.OK, null);
 	}
 
-	static void successTest(final DaDataClient dadata, final String sourceAddress, final Matcher<Address> matcher) {
-		System.out.println("source address: " + sourceAddress);
-		final Address a = dadata.cleanAddress(sourceAddress);
-		System.out.println("cleaned address: " + a);
-		assertThat(a, is(matcher));
-	}
 }

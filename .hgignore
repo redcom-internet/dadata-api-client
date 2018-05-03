@@ -14,6 +14,7 @@ log/
 #.idea/dataSources.xml
 #.idea/dataSources.local.xml
 .idea/libraries/
+.idea/modules/
 #.idea/httpRequests/
 #.idea/dataSources/
 .idea/artifacts/
