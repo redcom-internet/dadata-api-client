@@ -23,7 +23,6 @@ import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -33,20 +32,16 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @Configuration
 @ContextConfiguration(classes = RestTemplateAutoConfiguration.class)
 class CommonMock {
-	@Value("${dadata.api-key}")
-	private String apiKey;
-	@Value("${dadata.secret-key}")
-	private String secretKey;
 	private static String API_KEY;
 	private static String SECRET_KEY;
 
-
-	@PostConstruct
-	void init() {
+	CommonMock(@Value("${dadata.api-key}") final String apiKey,
+	           @Value("${dadata.secret-key}") final String secretKey) {
 		API_KEY = apiKey;
 		SECRET_KEY = secretKey;
 	}
 
+	// resttemplatebuilder bean is provided by @RestClientTest
 	@Bean
 	DaDataClient dadata(final RestTemplateBuilder restTemplateBuilder) {
 		return DaDataClientFactory.getInstance(API_KEY, SECRET_KEY, null, restTemplateBuilder);
@@ -55,6 +50,7 @@ class CommonMock {
 	private static ResponseActions setupBaseTestServer(final MockRestServiceServer server,
 	                                                   final String expectedUri,
 	                                                   final HttpMethod requestMethod) {
+		server.reset();
 		return server.expect(requestTo(expectedUri))
 		             .andExpect(method(requestMethod))
 		             .andExpect(header(HttpHeaders.ACCEPT, containsString(MediaType.APPLICATION_JSON_VALUE)))
@@ -67,11 +63,11 @@ class CommonMock {
 	                            @Nonnull final HttpStatus status, @Nullable final String responseBody) {
 		ResponseActions responseActions = setupBaseTestServer(server, expectedUri, requestMethod);
 		if (requestBody != null)
-			responseActions = responseActions.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+			responseActions = responseActions.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 			                                 .andExpect(content().json(requestBody));
 		DefaultResponseCreator responseCreator = withStatus(status);
 		if (responseBody != null)
-			responseCreator = responseCreator.body(responseBody).contentType(MediaType.APPLICATION_JSON);
+			responseCreator = responseCreator.contentType(MediaType.APPLICATION_JSON).body(responseBody);
 		responseActions.andRespond(responseCreator);
 	}
 

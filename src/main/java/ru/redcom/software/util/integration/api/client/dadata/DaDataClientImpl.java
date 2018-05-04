@@ -18,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Balance;
+import ru.redcom.software.util.integration.api.client.dadata.dto.Phone;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +44,7 @@ class DaDataClientImpl implements DaDataClient {
 	private static final String DADADA_API_ENDPOINT_PROFILE_BALANCE = "/profile/balance";
 	private static final String DADADA_API_ENDPOINT_STATUS_CLEAN = "/status/CLEAN";
 	private static final String DADADA_API_ENDPOINT_CLEAN_ADDRESS = "/clean/address";
+	private static final String DADADA_API_ENDPOINT_CLEAN_PHONE = "/clean/phone";
 
 	@Nonnull private final String baseUri;
 	@Nonnull private final String apiKey;
@@ -103,15 +105,13 @@ class DaDataClientImpl implements DaDataClient {
 				.getBalance();
 	}
 
+	// ------- Address -------------------------------------------------------------------------------------------------
+
 	@Override
 	@Nonnull
 	public Address cleanAddress(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Address string is empty");
-		final Address[] addresses = cleanAddresses(source);
-		if (addresses.length > 0)
-			return addresses[0];
-		else
-			throw new DaDataException("Empty response from DaData API");
+		return getFirstEntry(cleanAddresses(source));
 	}
 
 	@Override
@@ -121,9 +121,35 @@ class DaDataClientImpl implements DaDataClient {
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_ADDRESS, HttpMethod.POST, sources, Address[].class).orElse(new Address[0]);
 	}
 
+	// ------- Phone number --------------------------------------------------------------------------------------------
+
+	@Override
+	@Nonnull
+	public Phone cleanPhone(@Nonnull final String source) throws DaDataException {
+		Assert.isTrue(StringUtils.hasText(source), "Phone number string is empty");
+		return getFirstEntry(cleanPhones(source));
+	}
+
+	@Override
+	@Nonnull
+	public Phone[] cleanPhones(@Nonnull final String... sources) throws DaDataException {
+		Assert.notNull(sources, "Phone number sources is null");
+		return doRequest(DADADA_API_ENDPOINT_CLEAN_PHONE, HttpMethod.POST, sources, Phone[].class).orElse(new Phone[0]);
+	}
+
 	// TODO implement other API bindings
 
 	// ------------------ Internal -------------------------------------------------------------------------------------
+
+	// Get first entry from array or throw an exception if none
+	@Nonnull
+	private <T> T getFirstEntry(final T[] entries) {
+		if (entries.length > 0)
+			return entries[0];
+		else
+			throw new DaDataException("Empty response from DaData API");
+	}
+
 
 	// Generic method for request a resource and verify response
 	// Optional is only to deal with Void response

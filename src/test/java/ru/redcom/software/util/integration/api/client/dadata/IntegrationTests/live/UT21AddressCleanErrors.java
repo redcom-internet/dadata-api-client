@@ -129,20 +129,15 @@ public class UT21AddressCleanErrors {
 			dadata.cleanAddresses(sample.getArgument());
 		// ни при параллельном
 		final int parallelism = 10;
-		ForkJoinPool forkJoinPool = null;
-		try {
-			forkJoinPool = new ForkJoinPool(parallelism);
+		final ForkJoinPool forkJoinPool = new ForkJoinPool(parallelism);
+		try(Closeable ignored = forkJoinPool::shutdown) {
 			forkJoinPool.submit(
 					() -> IntStream.rangeClosed(0, 99)
-			                       .parallel()
-			                       .forEach((i) -> dadata.cleanAddresses(sample.getArgument()))
+					               .parallel()
+					               .forEach((i) -> dadata.cleanAddresses(sample.getArgument()))
 			                   ).get();
-		} catch (InterruptedException | ExecutionException e) {
+		} catch (IOException | InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-		} finally {
-			if (forkJoinPool != null) {
-				forkJoinPool.shutdown(); //always remember to shutdown the pool
-			}
 		}
 	}
 */

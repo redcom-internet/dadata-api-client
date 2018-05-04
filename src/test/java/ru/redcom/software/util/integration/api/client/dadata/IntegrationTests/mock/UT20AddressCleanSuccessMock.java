@@ -17,8 +17,8 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess.SampleAddresses;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess.successTest;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessAddress.SampleAddresses;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessAddress.successTest;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
 
 @RunWith(SpringRunner.class)
@@ -125,9 +125,9 @@ public class UT20AddressCleanSuccessMock {
 	}
 
 	// shared test body
-	private void test(final SampleAddresses address) {
-		setupTestServer(server, URI, METHOD, address.getRequestBody(), HttpStatus.OK, address.getResponseBody());
-		successTest(dadata, address.getSourceAddress(), address.getMatcher());
+	private void test(final SampleAddresses sample) {
+		setupTestServer(server, URI, METHOD, sample.getRequestBody(), HttpStatus.OK, sample.getResponseBody());
+		successTest(dadata, sample.getSourcePattern(), sample.getMatcher());
 		server.verify();
 	}
 }

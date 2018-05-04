@@ -13,7 +13,7 @@ import ru.redcom.software.util.integration.api.client.dadata.types.QcHouse;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class UT01Types {
+public class UT01TypesAddress {
 
 	@Test
 	public void qcAddress() {

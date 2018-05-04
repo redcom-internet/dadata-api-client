@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccess.successTest;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessAddress.successTest;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
 
 @RunWith(SpringRunner.class)
@@ -88,18 +88,18 @@ public class UT50AddressEnumsMock {
 		              "[{\"source\":\"enums unknown\",\"fias_level\":\"999\",\"fias_actuality_state\":\"999\",\"capital_marker\":\"999\",\"beltway_hit\":\"OTHER\",\"qc_geo\":999,\"qc_complete\":999,\"qc_house\":999,\"qc\":999}]",
 		              UT50AddressEnumsMock::matcherUnknown);
 
-		private final String sourceAddress;
+		private final String sourcePattern;
 		private final String responseBody;
 		private final Function<String, Matcher<Address>> matcher;
 
-		SampleAddress(final String sourceAddress, final String responseBody, final Function<String, Matcher<Address>> matcher) {
-			this.sourceAddress = sourceAddress;
+		SampleAddress(final String sourcePattern, final String responseBody, final Function<String, Matcher<Address>> matcher) {
+			this.sourcePattern = sourcePattern;
 			this.responseBody = responseBody;
 			this.matcher = matcher;
 		}
 
-		public String getSourceAddress() {
-			return sourceAddress;
+		public String getSourcePattern() {
+			return sourcePattern;
 		}
 
 		public String getResponseBody() {
@@ -107,7 +107,7 @@ public class UT50AddressEnumsMock {
 		}
 
 		public Matcher<Address> getMatcher() {
-			return matcher != null ? matcher.apply(sourceAddress) : nullValue(Address.class);
+			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Address.class);
 		}
 	}
 
@@ -376,10 +376,12 @@ public class UT50AddressEnumsMock {
 		test(SampleAddress.ENUMS_SET12);
 	}
 
+	// -----------------------------------------------------------------------------------------------------------------
+
 	// shared test body
-	private void test(final SampleAddress address) {
-		setupTestServer(server, URI, METHOD, address.getResponseBody());
-		successTest(dadata, address.getSourceAddress(), address.getMatcher());
+	private void test(final SampleAddress sample) {
+		setupTestServer(server, URI, METHOD, sample.getResponseBody());
+		successTest(dadata, sample.getSourcePattern(), sample.getMatcher());
 		server.verify();
 	}
 }

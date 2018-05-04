@@ -82,7 +82,7 @@ public class TestCasesError {
 			                    DaDataClientException.class,
 								TestCasesError::matcherTooManyItems1),
 		*/
-		TOO_MANY_REQUESTS(new String[] {"Россия, Санкт-Петербург, ул.Восстания, д.1"},
+		TOO_MANY_REQUESTS(Stream.generate(() -> "test address").limit(10).toArray(String[]::new),
 		                  "Too many requests per second",
 		                  HttpStatus.TOO_MANY_REQUESTS, "{\"detail\":\"Too many requests\"}",
 		                  DaDataClientException.class,
