@@ -16,7 +16,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClientException;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 import ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesError.SampleErrorAddresses;
 
@@ -107,10 +106,57 @@ public class UT21AddressCleanErrorsMock {
 		test(SampleErrorAddresses.TOO_MANY_REQUESTS);
 	}
 
+	@Test
+	public void emptyResponse1() throws DaDataException {
+		test(SampleErrorAddresses.EMPTY_RESPONSE1, true);
+	}
+
+	@Test
+	public void emptyResponse2() throws DaDataException {
+		test(SampleErrorAddresses.EMPTY_RESPONSE2, true);
+	}
+
+	@Test
+	public void emptyResponse3() throws DaDataException {
+		test(SampleErrorAddresses.EMPTY_RESPONSE3, true);
+	}
+
+	@Test
+	public void emptyResponse4() throws DaDataException {
+		test(SampleErrorAddresses.EMPTY_RESPONSE4, true);
+	}
+
+	@Test
+	public void emptyResponse5() throws DaDataException {
+		test(SampleErrorAddresses.EMPTY_RESPONSE5, true);
+	}
+
+	@Test
+	public void wrongResponse1() throws DaDataException {
+		test(SampleErrorAddresses.WRONG_RESPONSE1, true);
+	}
+
+	@Test
+	public void wrongResponse2() throws DaDataException {
+		test(SampleErrorAddresses.WRONG_RESPONSE2, true);
+	}
+
+	@Test
+	public void internalServerError() throws DaDataException {
+		test(SampleErrorAddresses.INTERNAL_SERVER_ERROR_RESPONSE);
+	}
+
+	@Test
+	public void wrongErrorResponse() throws DaDataException {
+		test(SampleErrorAddresses.WRONG_ERROR_RESPONSE);
+	}
+
 
 	/*
+		final SampleErrorAddresses sample = SampleErrorAddresses.WRONG_ERROR_RESPONSE;
+		setupTestServer(server, URI, METHOD, sample.getRequestBody(), sample.getResponseStatus(), sample.getResponseBody());
 		try {
-			dadata.cleanAddresses((String) null);
+			dadata.cleanAddresses((String[]) sample.getArgument());
 		} catch (DaDataClientException e) {
 			System.out.println("DaData client exception: " + e);
 			System.out.println("HTTP status: " + e.getHttpStatusCode());
@@ -123,7 +169,9 @@ public class UT21AddressCleanErrorsMock {
 				System.out.println("API error detail: " + e.getApiErrorMessage().getDetail());
 				System.out.println("API error contents: " + e.getApiErrorMessage().getContents());
 			}
+			System.out.println("Suppressed exceptions: " + Arrays.toString(e.getSuppressed()));
 		}
+		server.verify();
 	*/
 	/*
 		HTTP status: 400
@@ -140,11 +188,18 @@ public class UT21AddressCleanErrorsMock {
 
 	// shared test body
 	private void test(final SampleErrorAddresses sample) {
-		exception.expect(DaDataClientException.class);
+		test(sample, false);
+	}
+
+	private void test(final SampleErrorAddresses sample, final boolean single) {
+		exception.expect(sample.getExceptionClass());
 		exception.expectMessage(sample.getMessage());
 		exception.expect(sample.getMatcher());
 		setupTestServer(server, URI, METHOD, sample.getRequestBody(), sample.getResponseStatus(), sample.getResponseBody());
-		dadata.cleanAddresses((String[]) sample.getArgument());
+		if (single)
+			dadata.cleanAddress(sample.getArgument()[0]);
+		else
+			dadata.cleanAddresses((String[]) sample.getArgument());
 		server.verify();
 	}
 }
