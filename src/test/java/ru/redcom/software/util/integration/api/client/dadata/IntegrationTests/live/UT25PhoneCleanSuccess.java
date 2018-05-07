@@ -20,7 +20,7 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonLive.class)
 @ActiveProfiles("live")
-public class UT20PhoneCleanSuccess {
+public class UT25PhoneCleanSuccess {
 
 	@Autowired
 	private DaDataClient dadata;

@@ -24,7 +24,7 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
 @RestClientTest
-public class UT20PhoneCleanSuccessMock {
+public class UT25PhoneCleanSuccessMock {
 	private static final String URI = "/clean/phone";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 

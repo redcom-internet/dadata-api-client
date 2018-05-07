@@ -45,7 +45,6 @@ qc	5	Код проверки
     "qc_conflict": 0,
     "qc": 1
 }
-]
 */
 // Property annotation with "required" does not currently enforce mandatoriness on fields,
 // see https://github.com/FasterXML/jackson-databind/issues/230

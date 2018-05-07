@@ -11,7 +11,7 @@ import ru.redcom.software.util.integration.api.client.dadata.types.QcPhone;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class UT01TypesPhone {
+public class UT02TypesPhone {
 
 	@Test
 	public void qcPhone() {

@@ -6,6 +6,7 @@
 package ru.redcom.software.util.integration.api.client.dadata;
 
 import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
+import ru.redcom.software.util.integration.api.client.dadata.dto.Passport;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Phone;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,12 @@ public interface DaDataClient {
 
 	@Nonnull
 	Phone[] cleanPhones(@Nonnull String... sources) throws DaDataException;
+
+	@Nonnull
+	Passport cleanPassport(@Nonnull String source) throws DaDataException;
+
+	@Nonnull
+	Passport[] cleanPassports(@Nonnull String... sources) throws DaDataException;
 
 	// TODO implement other API bindings
 }

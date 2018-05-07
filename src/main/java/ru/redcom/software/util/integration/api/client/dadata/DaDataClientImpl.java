@@ -18,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Balance;
+import ru.redcom.software.util.integration.api.client.dadata.dto.Passport;
 import ru.redcom.software.util.integration.api.client.dadata.dto.Phone;
 
 import javax.annotation.Nonnull;
@@ -45,6 +46,7 @@ class DaDataClientImpl implements DaDataClient {
 	private static final String DADADA_API_ENDPOINT_STATUS_CLEAN = "/status/CLEAN";
 	private static final String DADADA_API_ENDPOINT_CLEAN_ADDRESS = "/clean/address";
 	private static final String DADADA_API_ENDPOINT_CLEAN_PHONE = "/clean/phone";
+	private static final String DADADA_API_ENDPOINT_CLEAN_PASSPORT = "/clean/passport";
 
 	@Nonnull private final String baseUri;
 	@Nonnull private final String apiKey;
@@ -135,6 +137,22 @@ class DaDataClientImpl implements DaDataClient {
 	public Phone[] cleanPhones(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Phone number sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_PHONE, HttpMethod.POST, sources, Phone[].class).orElse(new Phone[0]);
+	}
+
+	// ------- Passport ------------------------------------------------------------------------------------------------
+
+	@Override
+	@Nonnull
+	public Passport cleanPassport(@Nonnull final String source) throws DaDataException {
+		Assert.isTrue(StringUtils.hasText(source), "Passport number string is empty");
+		return getFirstEntry(cleanPassports(source));
+	}
+
+	@Override
+	@Nonnull
+	public Passport[] cleanPassports(@Nonnull final String... sources) throws DaDataException {
+		Assert.notNull(sources, "Passport number sources is null");
+		return doRequest(DADADA_API_ENDPOINT_CLEAN_PASSPORT, HttpMethod.POST, sources, Passport[].class).orElse(new Passport[0]);
 	}
 
 	// TODO implement other API bindings
