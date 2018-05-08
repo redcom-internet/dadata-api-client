@@ -30,7 +30,7 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
 @RestClientTest
-public class UT50PhoneEnumsMock {
+public class UT51PhoneEnumsMock {
 	private static final String URI = "/clean/phone";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 
@@ -42,28 +42,28 @@ public class UT50PhoneEnumsMock {
 	enum SamplePhone {
 		ENUMS_OMITTED("enums omitted",
 		              "[{\"source\":\"enums omitted\"}]",
-		              UT50PhoneEnumsMock::matcherOmitted),
+		              UT51PhoneEnumsMock::matcherOmitted),
 		ENUMS_NULL("enums null",
 		           "[{\"source\":\"enums null\",\"qc_conflict\":null,\"qc\":null}]",
-		           UT50PhoneEnumsMock::matcherNull),
+		           UT51PhoneEnumsMock::matcherNull),
 		ENUMS_EMPTY("enums empty",
 		            "[{\"source\":\"enums empty\",\"qc_conflict\":\"\",\"qc\":\"\"}]",
-		            UT50PhoneEnumsMock::matcherEmpty),
+		            UT51PhoneEnumsMock::matcherEmpty),
 		ENUMS_SET1("enums set 1",
 		           "[{\"source\":\"enums set 1\",\"qc_conflict\":0,\"qc\":0}]",
-		           UT50PhoneEnumsMock::matcherSet1),
+		           UT51PhoneEnumsMock::matcherSet1),
 		ENUMS_SET2("enums set 2",
 		           "[{\"source\":\"enums set 2\",\"qc_conflict\":2,\"qc\":1}]",
-		           UT50PhoneEnumsMock::matcherSet2),
+		           UT51PhoneEnumsMock::matcherSet2),
 		ENUMS_SET3("enums set 3",
 		           "[{\"source\":\"enums set 3\",\"qc_conflict\":3,\"qc\":2}]",
-		           UT50PhoneEnumsMock::matcherSet3),
+		           UT51PhoneEnumsMock::matcherSet3),
 		ENUMS_SET4("enums set 4",
 		           "[{\"source\":\"enums set 4\",\"qc\":3}]",
-		           UT50PhoneEnumsMock::matcherSet4),
+		           UT51PhoneEnumsMock::matcherSet4),
 		ENUMS_UNKNOWN("enums unknown",
 		              "[{\"source\":\"enums unknown\",\"qc_conflict\":999,\"qc\":999}]",
-		              UT50PhoneEnumsMock::matcherUnknown);
+		              UT51PhoneEnumsMock::matcherUnknown);
 
 		private final String sourcePattern;
 		private final String responseBody;

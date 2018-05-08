@@ -16,21 +16,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Passport;
-import ru.redcom.software.util.integration.api.client.dadata.types.QcPassport;
+import ru.redcom.software.util.integration.api.client.dadata.dto.Email;
+import ru.redcom.software.util.integration.api.client.dadata.types.QcEmail;
 
 import java.util.function.Function;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessPassport.successTest;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessEmail.successTest;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
 @RestClientTest
-public class UT50PassportEnumsMock {
-	private static final String URI = "/clean/passport";
+public class UT54EmailEnumsMock {
+	private static final String URI = "/clean/email";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 
 	@Autowired
@@ -38,37 +38,40 @@ public class UT50PassportEnumsMock {
 	@Autowired
 	private MockRestServiceServer server;
 
-	enum SamplePassport {
+	enum SampleEmail {
 		ENUMS_OMITTED("enums omitted",
 		              "[{\"source\":\"enums omitted\"}]",
-		              UT50PassportEnumsMock::matcherOmitted),
+		              UT54EmailEnumsMock::matcherOmitted),
 		ENUMS_NULL("enums null",
 		           "[{\"source\":\"enums null\",\"qc\":null}]",
-		           UT50PassportEnumsMock::matcherNull),
+		           UT54EmailEnumsMock::matcherNull),
 		ENUMS_EMPTY("enums empty",
 		            "[{\"source\":\"enums empty\",\"qc\":\"\"}]",
-		            UT50PassportEnumsMock::matcherEmpty),
+		            UT54EmailEnumsMock::matcherEmpty),
 		ENUMS_SET1("enums set 1",
 		           "[{\"source\":\"enums set 1\",\"qc\":0}]",
-		           UT50PassportEnumsMock::matcherSet1),
+		           UT54EmailEnumsMock::matcherSet1),
 		ENUMS_SET2("enums set 2",
 		           "[{\"source\":\"enums set 2\",\"qc\":1}]",
-		           UT50PassportEnumsMock::matcherSet2),
+		           UT54EmailEnumsMock::matcherSet2),
 		ENUMS_SET3("enums set 3",
 		           "[{\"source\":\"enums set 3\",\"qc\":2}]",
-		           UT50PassportEnumsMock::matcherSet3),
+		           UT54EmailEnumsMock::matcherSet3),
 		ENUMS_SET4("enums set 4",
-		           "[{\"source\":\"enums set 4\",\"qc\":10}]",
-		           UT50PassportEnumsMock::matcherSet4),
+		           "[{\"source\":\"enums set 4\",\"qc\":3}]",
+		           UT54EmailEnumsMock::matcherSet4),
+		ENUMS_SET5("enums set 5",
+		           "[{\"source\":\"enums set 5\",\"qc\":4}]",
+		           UT54EmailEnumsMock::matcherSet5),
 		ENUMS_UNKNOWN("enums unknown",
 		              "[{\"source\":\"enums unknown\",\"qc\":999}]",
-		              UT50PassportEnumsMock::matcherUnknown);
+		              UT54EmailEnumsMock::matcherUnknown);
 
 		private final String sourcePattern;
 		private final String responseBody;
-		private final Function<String, Matcher<Passport>> matcher;
+		private final Function<String, Matcher<Email>> matcher;
 
-		SamplePassport(final String sourcePattern, final String responseBody, final Function<String, Matcher<Passport>> matcher) {
+		SampleEmail(final String sourcePattern, final String responseBody, final Function<String, Matcher<Email>> matcher) {
 			this.sourcePattern = sourcePattern;
 			this.responseBody = responseBody;
 			this.matcher = matcher;
@@ -82,116 +85,128 @@ public class UT50PassportEnumsMock {
 			return responseBody;
 		}
 
-		public Matcher<Passport> getMatcher() {
-			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Passport.class);
+		public Matcher<Email> getMatcher() {
+			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Email.class);
 		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// enum fields omitted
-	private static Matcher<Passport> matcherOmitted(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherOmitted(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(nullValue(QcPassport.class)));
+				.withProperty("qc", is(nullValue(QcEmail.class)));
 	}
 
 	// enum fields null
-	private static Matcher<Passport> matcherNull(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherNull(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(nullValue(QcPassport.class)));
+				.withProperty("qc", is(nullValue(QcEmail.class)));
 	}
 
 	// enum fields empty
-	private static Matcher<Passport> matcherEmpty(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherEmpty(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(nullValue(QcPassport.class)));
+				.withProperty("qc", is(nullValue(Email.class)));
 	}
 
 
 	// enum unknown values
-	private static Matcher<Passport> matcherUnknown(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherUnknown(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(QcPassport.UNKNOWN));
+				.withProperty("qc", is(QcEmail.UNKNOWN));
 	}
 
 	// enum set 1
-	private static Matcher<Passport> matcherSet1(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherSet1(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(QcPassport.VALID));
+				.withProperty("qc", is(QcEmail.VALID));
 	}
 
 	// enum set 2
-	private static Matcher<Passport> matcherSet2(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherSet2(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(QcPassport.BAD_FORMAT));
+				.withProperty("qc", is(QcEmail.INVALID));
 	}
 
 	// enum set 3
-	private static Matcher<Passport> matcherSet3(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherSet3(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(QcPassport.EMPTY));
+				.withProperty("qc", is(QcEmail.UNRECOGNIZED));
 	}
 
 	// enum set 4
-	private static Matcher<Passport> matcherSet4(final String s) {
-		return pojo(Passport.class)
+	private static Matcher<Email> matcherSet4(final String s) {
+		return pojo(Email.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("qc", is(QcPassport.VOID));
+				.withProperty("qc", is(QcEmail.INSTANT));
+	}
+
+	// enum set 5
+	private static Matcher<Email> matcherSet5(final String s) {
+		return pojo(Email.class)
+				.withProperty("source", is(equalTo(s)))
+				.withProperty("qc", is(QcEmail.CORRECTED));
 	}
 
 	// =================================================================================================================
 
 	@Test
 	public void enumsOmitted() throws DaDataException {
-		test(SamplePassport.ENUMS_OMITTED);
+		test(SampleEmail.ENUMS_OMITTED);
 	}
 
 	@Test
 	public void enumsNull() throws DaDataException {
-		test(SamplePassport.ENUMS_NULL);
+		test(SampleEmail.ENUMS_NULL);
 	}
 
 	@Test
 	public void enumsEmpty() throws DaDataException {
-		test(SamplePassport.ENUMS_EMPTY);
+		test(SampleEmail.ENUMS_EMPTY);
 	}
 
 	@Test
 	public void enumsUnknown() throws DaDataException {
-		test(SamplePassport.ENUMS_UNKNOWN);
+		test(SampleEmail.ENUMS_UNKNOWN);
 	}
 
 	@Test
 	public void set1() throws DaDataException {
-		test(SamplePassport.ENUMS_SET1);
+		test(SampleEmail.ENUMS_SET1);
 	}
 
 	@Test
 	public void set2() throws DaDataException {
-		test(SamplePassport.ENUMS_SET2);
+		test(SampleEmail.ENUMS_SET2);
 	}
 
 	@Test
 	public void set3() throws DaDataException {
-		test(SamplePassport.ENUMS_SET3);
+		test(SampleEmail.ENUMS_SET3);
 	}
 
 	@Test
 	public void set4() throws DaDataException {
-		test(SamplePassport.ENUMS_SET4);
+		test(SampleEmail.ENUMS_SET4);
+	}
+
+	@Test
+	public void set5() throws DaDataException {
+		test(SampleEmail.ENUMS_SET5);
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// shared test body
-	private void test(final SamplePassport sample) {
+	private void test(final SampleEmail sample) {
 		setupTestServer(server, URI, METHOD, sample.getResponseBody());
 		successTest(dadata, sample.getSourcePattern(), sample.getMatcher());
 		server.verify();

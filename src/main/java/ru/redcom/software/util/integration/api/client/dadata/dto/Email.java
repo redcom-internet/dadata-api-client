@@ -10,23 +10,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import ru.redcom.software.util.integration.api.client.dadata.types.QcPassport;
+import ru.redcom.software.util.integration.api.client.dadata.types.QcEmail;
 
 import java.io.Serializable;
 
 /*
 Название	Длина	Описание
-source	100	Исходная серия и номер одной строкой
-series	20	Серия
-number	20	Номер
+source	100	Исходный email
+email	100	Стандартизованный email
 qc	5	Код проверки
 
 [
   {
-    "source": "4509 235857",
-    "series": "45 09",
-    "number": "235857",
-    "qc": 0
+    "source": "serega@yandex/ru",
+    "email": "serega@yandex.ru",
+    "qc": 4
   }
 ]
 */
@@ -37,13 +35,12 @@ qc	5	Код проверки
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Passport implements Serializable {
+public class Email implements Serializable {
 	@JsonProperty(required = true)
 	private String source;
 
-	private String series;
-	private String number;
+	private String email;
 
 	@JsonProperty(required = true)
-	private QcPassport qc;
+	private QcEmail qc;
 }

@@ -100,9 +100,9 @@ public class TestCasesSuccessPassport {
 	// =================================================================================================================
 
 	public static void successTest(final DaDataClient dadata, final String sourcePattern, final Matcher<Passport> matcher) {
-		System.out.println("source phone: " + sourcePattern);
+		System.out.println("source passport: " + sourcePattern);
 		final Passport a = dadata.cleanPassport(sourcePattern);
-		System.out.println("cleaned phone: " + a);
+		System.out.println("cleaned passport: " + a);
 		assertThat(a, is(matcher));
 	}
 }

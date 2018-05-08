@@ -16,10 +16,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Balance;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Passport;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Phone;
+import ru.redcom.software.util.integration.api.client.dadata.dto.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,6 +44,8 @@ class DaDataClientImpl implements DaDataClient {
 	private static final String DADADA_API_ENDPOINT_CLEAN_ADDRESS = "/clean/address";
 	private static final String DADADA_API_ENDPOINT_CLEAN_PHONE = "/clean/phone";
 	private static final String DADADA_API_ENDPOINT_CLEAN_PASSPORT = "/clean/passport";
+	private static final String DADADA_API_ENDPOINT_CLEAN_NAME = "/clean/name";
+	private static final String DADADA_API_ENDPOINT_CLEAN_EMAIL = "/clean/email";
 
 	@Nonnull private final String baseUri;
 	@Nonnull private final String apiKey;
@@ -153,6 +152,38 @@ class DaDataClientImpl implements DaDataClient {
 	public Passport[] cleanPassports(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Passport number sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_PASSPORT, HttpMethod.POST, sources, Passport[].class).orElse(new Passport[0]);
+	}
+
+	// ------- Name (FIO) ----------------------------------------------------------------------------------------------
+
+	@Override
+	@Nonnull
+	public Name cleanName(@Nonnull final String source) throws DaDataException {
+		Assert.isTrue(StringUtils.hasText(source), "Name string is empty");
+		return getFirstEntry(cleanNames(source));
+	}
+
+	@Override
+	@Nonnull
+	public Name[] cleanNames(@Nonnull final String... sources) throws DaDataException {
+		Assert.notNull(sources, "Name sources is null");
+		return doRequest(DADADA_API_ENDPOINT_CLEAN_NAME, HttpMethod.POST, sources, Name[].class).orElse(new Name[0]);
+	}
+
+	// ------- Email ---------------------------------------------------------------------------------------------------
+
+	@Override
+	@Nonnull
+	public Email cleanEmail(@Nonnull final String source) throws DaDataException {
+		Assert.isTrue(StringUtils.hasText(source), "Name string is empty");
+		return getFirstEntry(cleanEmails(source));
+	}
+
+	@Override
+	@Nonnull
+	public Email[] cleanEmails(@Nonnull final String... sources) throws DaDataException {
+		Assert.notNull(sources, "Name sources is null");
+		return doRequest(DADADA_API_ENDPOINT_CLEAN_EMAIL, HttpMethod.POST, sources, Email[].class).orElse(new Email[0]);
 	}
 
 	// TODO implement other API bindings

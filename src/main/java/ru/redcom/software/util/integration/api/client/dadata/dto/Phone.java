@@ -31,7 +31,7 @@ qc_conflict	5	Признак конфликта телефона с адресо
 qc	5	Код проверки
 
 [
-    {
+  {
     "source": "тел 7165219 доб139",
     "type": "Стационарный",
     "phone": "+7 495 716-52-19 доб. 139",
@@ -44,7 +44,8 @@ qc	5	Код проверки
     "timezone": "UTC+3",
     "qc_conflict": 0,
     "qc": 1
-}
+  }
+]
 */
 // Property annotation with "required" does not currently enforce mandatoriness on fields,
 // see https://github.com/FasterXML/jackson-databind/issues/230
