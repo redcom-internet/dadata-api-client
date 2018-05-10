@@ -49,5 +49,17 @@ public interface DaDataClient {
 	@Nonnull
 	Email[] cleanEmails(@Nonnull String... sources) throws DaDataException;
 
+	@Nonnull
+	BirthDate cleanBirthDate(@Nonnull String source) throws DaDataException;
+
+	@Nonnull
+	BirthDate[] cleanBirthDates(@Nonnull String... sources) throws DaDataException;
+
+	@Nonnull
+	Vehicle cleanVehicle(@Nonnull String source) throws DaDataException;
+
+	@Nonnull
+	Vehicle[] cleanVehicles(@Nonnull String... sources) throws DaDataException;
+
 	// TODO implement other API bindings
 }

@@ -29,7 +29,7 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
 @RestClientTest
-public class UT52PassportEnumsMock {
+public class UT82PassportEnumsMock {
 	private static final String URI = "/clean/passport";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 
@@ -41,28 +41,28 @@ public class UT52PassportEnumsMock {
 	enum SamplePassport {
 		ENUMS_OMITTED("enums omitted",
 		              "[{\"source\":\"enums omitted\"}]",
-		              UT52PassportEnumsMock::matcherOmitted),
+		              UT82PassportEnumsMock::matcherOmitted),
 		ENUMS_NULL("enums null",
 		           "[{\"source\":\"enums null\",\"qc\":null}]",
-		           UT52PassportEnumsMock::matcherNull),
+		           UT82PassportEnumsMock::matcherNull),
 		ENUMS_EMPTY("enums empty",
 		            "[{\"source\":\"enums empty\",\"qc\":\"\"}]",
-		            UT52PassportEnumsMock::matcherEmpty),
+		            UT82PassportEnumsMock::matcherEmpty),
 		ENUMS_SET1("enums set 1",
 		           "[{\"source\":\"enums set 1\",\"qc\":0}]",
-		           UT52PassportEnumsMock::matcherSet1),
+		           UT82PassportEnumsMock::matcherSet1),
 		ENUMS_SET2("enums set 2",
 		           "[{\"source\":\"enums set 2\",\"qc\":1}]",
-		           UT52PassportEnumsMock::matcherSet2),
+		           UT82PassportEnumsMock::matcherSet2),
 		ENUMS_SET3("enums set 3",
 		           "[{\"source\":\"enums set 3\",\"qc\":2}]",
-		           UT52PassportEnumsMock::matcherSet3),
+		           UT82PassportEnumsMock::matcherSet3),
 		ENUMS_SET4("enums set 4",
 		           "[{\"source\":\"enums set 4\",\"qc\":10}]",
-		           UT52PassportEnumsMock::matcherSet4),
+		           UT82PassportEnumsMock::matcherSet4),
 		ENUMS_UNKNOWN("enums unknown",
 		              "[{\"source\":\"enums unknown\",\"qc\":999}]",
-		              UT52PassportEnumsMock::matcherUnknown);
+		              UT82PassportEnumsMock::matcherUnknown);
 
 		private final String sourcePattern;
 		private final String responseBody;

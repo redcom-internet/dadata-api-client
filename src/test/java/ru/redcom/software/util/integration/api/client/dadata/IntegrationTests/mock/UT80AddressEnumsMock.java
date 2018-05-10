@@ -29,7 +29,7 @@ import static ru.redcom.software.util.integration.api.client.dadata.IntegrationT
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
 @RestClientTest
-public class UT50AddressEnumsMock {
+public class UT80AddressEnumsMock {
 	private static final String URI = "/clean/address";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 
@@ -41,52 +41,52 @@ public class UT50AddressEnumsMock {
 	enum SampleAddress {
 		ENUMS_OMITTED("enums omitted",
 		              "[{\"source\":\"enums omitted\"}]",
-		              UT50AddressEnumsMock::matcherOmitted),
+		              UT80AddressEnumsMock::matcherOmitted),
 		ENUMS_NULL("enums null",
 		           "[{\"source\":\"enums null\",\"fias_level\":null,\"fias_actuality_state\":null,\"capital_marker\":null,\"beltway_hit\":null,\"qc_geo\":null,\"qc_complete\":null,\"qc_house\":null,\"qc\":null}]",
-		           UT50AddressEnumsMock::matcherNull),
+		           UT80AddressEnumsMock::matcherNull),
 		ENUMS_EMPTY("enums empty",
 		            "[{\"source\":\"enums empty\",\"fias_level\":\"\",\"fias_actuality_state\":\"\",\"capital_marker\":\"\",\"beltway_hit\":\"\",\"qc_geo\":\"\",\"qc_complete\":\"\",\"qc_house\":\"\",\"qc\":\"\"}]",
-		            UT50AddressEnumsMock::matcherEmpty),
+		            UT80AddressEnumsMock::matcherEmpty),
 		ENUMS_SET1("enums set 1",
 		           "[{\"source\":\"enums set 1\",\"fias_level\":\"0\",\"fias_actuality_state\":\"0\",\"capital_marker\":\"1\",\"beltway_hit\":\"IN_MKAD\",\"qc_geo\":0,\"qc_complete\":0,\"qc_house\":2,\"qc\":0}]",
-		           UT50AddressEnumsMock::matcherSet1),
+		           UT80AddressEnumsMock::matcherSet1),
 		ENUMS_SET2("enums set 2",
 		           "[{\"source\":\"enums set 2\",\"fias_level\":\"1\",\"fias_actuality_state\":\"1\",\"capital_marker\":\"2\",\"beltway_hit\":\"OUT_MKAD\",\"qc_geo\":1,\"qc_complete\":1,\"qc_house\":3,\"qc\":1}]",
-		           UT50AddressEnumsMock::matcherSet2),
+		           UT80AddressEnumsMock::matcherSet2),
 		ENUMS_SET3("enums set 3",
 		           "[{\"source\":\"enums set 3\",\"fias_level\":\"3\",\"fias_actuality_state\":\"50\",\"capital_marker\":\"3\",\"beltway_hit\":\"IN_KAD\",\"qc_geo\":2,\"qc_complete\":2,\"qc_house\":4,\"qc\":2}]",
-		           UT50AddressEnumsMock::matcherSet3),
+		           UT80AddressEnumsMock::matcherSet3),
 		ENUMS_SET4("enums set 4",
 		           "[{\"source\":\"enums set 4\",\"fias_level\":\"4\",\"fias_actuality_state\":\"51\",\"capital_marker\":\"4\",\"beltway_hit\":\"OUT_KAD\",\"qc_geo\":3,\"qc_complete\":3,\"qc_house\":10,\"qc\":3}]",
-		           UT50AddressEnumsMock::matcherSet4),
+		           UT80AddressEnumsMock::matcherSet4),
 		ENUMS_SET5("enums set 5",
 		           "[{\"source\":\"enums set 5\",\"fias_level\":\"5\",\"fias_actuality_state\":\"99\",\"capital_marker\":\"0\",\"beltway_hit\":\"\",\"qc_geo\":4,\"qc_complete\":4}]",
-		           UT50AddressEnumsMock::matcherSet5),
+		           UT80AddressEnumsMock::matcherSet5),
 		ENUMS_SET6("enums set 6",
 		           "[{\"source\":\"enums set 6\",\"fias_level\":\"6\",\"qc_geo\":5,\"qc_complete\":5}]",
-		           UT50AddressEnumsMock::matcherSet6),
+		           UT80AddressEnumsMock::matcherSet6),
 		ENUMS_SET7("enums set 7",
 		           "[{\"source\":\"enums set 7\",\"fias_level\":\"7\",\"qc_complete\":6}]",
-		           UT50AddressEnumsMock::matcherSet7),
+		           UT80AddressEnumsMock::matcherSet7),
 		ENUMS_SET8("enums set 8",
 		           "[{\"source\":\"enums set 8\",\"fias_level\":\"8\",\"qc_complete\":7}]",
-		           UT50AddressEnumsMock::matcherSet8),
+		           UT80AddressEnumsMock::matcherSet8),
 		ENUMS_SET9("enums set 9",
 		           "[{\"source\":\"enums set 9\",\"fias_level\":\"65\",\"qc_complete\":8}]",
-		           UT50AddressEnumsMock::matcherSet9),
+		           UT80AddressEnumsMock::matcherSet9),
 		ENUMS_SET10("enums set 10",
 		            "[{\"source\":\"enums set 10\",\"fias_level\":\"90\",\"qc_complete\":9}]",
-		            UT50AddressEnumsMock::matcherSet10),
+		            UT80AddressEnumsMock::matcherSet10),
 		ENUMS_SET11("enums set 11",
 		            "[{\"source\":\"enums set 11\",\"fias_level\":\"91\",\"qc_complete\":10}]",
-		            UT50AddressEnumsMock::matcherSet11),
+		            UT80AddressEnumsMock::matcherSet11),
 		ENUMS_SET12("enums set 12",
 		            "[{\"source\":\"enums set 12\",\"fias_level\":\"-1\"}]",
-		            UT50AddressEnumsMock::matcherSet12),
+		            UT80AddressEnumsMock::matcherSet12),
 		ENUMS_UNKNOWN("enums unknown",
 		              "[{\"source\":\"enums unknown\",\"fias_level\":\"999\",\"fias_actuality_state\":\"999\",\"capital_marker\":\"999\",\"beltway_hit\":\"OTHER\",\"qc_geo\":999,\"qc_complete\":999,\"qc_house\":999,\"qc\":999}]",
-		              UT50AddressEnumsMock::matcherUnknown);
+		              UT80AddressEnumsMock::matcherUnknown);
 
 		private final String sourcePattern;
 		private final String responseBody;

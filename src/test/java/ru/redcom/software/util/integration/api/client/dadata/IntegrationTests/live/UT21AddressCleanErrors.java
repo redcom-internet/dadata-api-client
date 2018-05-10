@@ -60,18 +60,6 @@ public class UT21AddressCleanErrors {
 	@Test
 	public void emptyAddressArrayElement() throws DaDataException {
 		test(SampleErrorAddresses.EMPTY_ARRAY_ELEMENT);
-/*
-		exception.expect(DaDataClientException.class);
-		exception.expectMessage("Incorrect request format or data type");
-		exception.expect(allOf(hasProperty("httpStatusCode", is(400)),
-		                       hasProperty("httpStatusText", is("BAD REQUEST")),
-		                       hasProperty("apiErrorCode", is(BAD_REQUEST_FORMAT)),
-		                       hasProperty("apiErrorMessage", notNullValue(APIErrorMessage.class)),
-		                       hasProperty("apiErrorMessage", hasProperty("details", arrayContaining("Request does not contain data for standartization"))),
-		                       hasProperty("fatal", is(true))));
-		// empty string
-		dadata.cleanAddresses("");
-*/
 	}
 
 	// CREDENTIALS MISSING
@@ -96,7 +84,7 @@ public class UT21AddressCleanErrors {
 
 /*
 	// BALANCE EXHAUSED
-	// TODO сложно создать условия, разве что сделать для теста специальный профиль с вечно пустым балансом
+	// TODO проходит, но сложно создать условия, разве что сделать для теста специальный профиль с вечно пустым балансом
 	@Test
 	public void balanceExhausted() throws DaDataException {
 		test(dadata, SampleErrorAddresses.BALANCE_EXHAUSTED);

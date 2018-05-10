@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 public class UT05TypesEmail {
 
 	@Test
-	public void qcName() {
+	public void qcEmail() {
 		assertThat(QcEmail.VALID.isManualVerificationRequired(), is(false));
 		assertThat(QcEmail.INVALID.isManualVerificationRequired(), is(true));
 		assertThat(QcEmail.UNRECOGNIZED.isManualVerificationRequired(), is(false));

@@ -16,22 +16,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Name;
-import ru.redcom.software.util.integration.api.client.dadata.types.Gender;
-import ru.redcom.software.util.integration.api.client.dadata.types.QcName;
+import ru.redcom.software.util.integration.api.client.dadata.dto.Vehicle;
+import ru.redcom.software.util.integration.api.client.dadata.types.QcVehicle;
 
 import java.util.function.Function;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessName.successTest;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessVehicle.successTest;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock.setupTestServer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonMock.class)
 @RestClientTest
-public class UT53NameEnumsMock {
-	private static final String URI = "/clean/name";
+public class UT86VehicleEnumsMock {
+	private static final String URI = "/clean/vehicle";
 	private static final HttpMethod METHOD = HttpMethod.POST;
 
 	@Autowired
@@ -39,34 +38,34 @@ public class UT53NameEnumsMock {
 	@Autowired
 	private MockRestServiceServer server;
 
-	enum SampleName {
+	enum SampleVehicle {
 		ENUMS_OMITTED("enums omitted",
 		              "[{\"source\":\"enums omitted\"}]",
-		              UT53NameEnumsMock::matcherOmitted),
+		              UT86VehicleEnumsMock::matcherOmitted),
 		ENUMS_NULL("enums null",
-		           "[{\"source\":\"enums null\",\"gender\":null,\"qc\":null}]",
-		           UT53NameEnumsMock::matcherNull),
+		           "[{\"source\":\"enums null\",\"qc\":null}]",
+		           UT86VehicleEnumsMock::matcherNull),
 		ENUMS_EMPTY("enums empty",
-		            "[{\"source\":\"enums empty\",\"gender\":\"\",\"qc\":\"\"}]",
-		            UT53NameEnumsMock::matcherEmpty),
+		            "[{\"source\":\"enums empty\",\"qc\":\"\"}]",
+		            UT86VehicleEnumsMock::matcherEmpty),
 		ENUMS_SET1("enums set 1",
-		           "[{\"source\":\"enums set 1\",\"gender\":\"М\",\"qc\":0}]",
-		           UT53NameEnumsMock::matcherSet1),
+		           "[{\"source\":\"enums set 1\",\"qc\":0}]",
+		           UT86VehicleEnumsMock::matcherSet1),
 		ENUMS_SET2("enums set 2",
-		           "[{\"source\":\"enums set 2\",\"gender\":\"Ж\",\"qc\":1}]",
-		           UT53NameEnumsMock::matcherSet2),
+		           "[{\"source\":\"enums set 2\",\"qc\":1}]",
+		           UT86VehicleEnumsMock::matcherSet2),
 		ENUMS_SET3("enums set 3",
-		           "[{\"source\":\"enums set 3\",\"gender\":\"НД\",\"qc\":2}]",
-		           UT53NameEnumsMock::matcherSet3),
+		           "[{\"source\":\"enums set 3\",\"qc\":2}]",
+		           UT86VehicleEnumsMock::matcherSet3),
 		ENUMS_UNKNOWN("enums unknown",
-		              "[{\"source\":\"enums unknown\",\"gender\":\"-\",\"qc\":999}]",
-		              UT53NameEnumsMock::matcherUnknown);
+		              "[{\"source\":\"enums unknown\",\"qc\":999}]",
+		              UT86VehicleEnumsMock::matcherUnknown);
 
 		private final String sourcePattern;
 		private final String responseBody;
-		private final Function<String, Matcher<Name>> matcher;
+		private final Function<String, Matcher<Vehicle>> matcher;
 
-		SampleName(final String sourcePattern, final String responseBody, final Function<String, Matcher<Name>> matcher) {
+		SampleVehicle(final String sourcePattern, final String responseBody, final Function<String, Matcher<Vehicle>> matcher) {
 			this.sourcePattern = sourcePattern;
 			this.responseBody = responseBody;
 			this.matcher = matcher;
@@ -80,111 +79,104 @@ public class UT53NameEnumsMock {
 			return responseBody;
 		}
 
-		public Matcher<Name> getMatcher() {
-			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Name.class);
+		public Matcher<Vehicle> getMatcher() {
+			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Vehicle.class);
 		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// enum fields omitted
-	private static Matcher<Name> matcherOmitted(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherOmitted(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(nullValue(Gender.class)))
-				.withProperty("qc", is(nullValue(QcName.class)));
+				.withProperty("qc", is(nullValue(QcVehicle.class)));
 	}
 
 	// enum fields null
-	private static Matcher<Name> matcherNull(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherNull(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(nullValue(Gender.class)))
-				.withProperty("qc", is(nullValue(QcName.class)));
+				.withProperty("qc", is(nullValue(QcVehicle.class)));
 	}
 
 	// enum fields empty
-	private static Matcher<Name> matcherEmpty(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherEmpty(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(Gender.UNKNOWN))
-				.withProperty("qc", is(nullValue(QcName.class)));
+				.withProperty("qc", is(nullValue(QcVehicle.class)));
 	}
 
 
 	// enum unknown values
-	private static Matcher<Name> matcherUnknown(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherUnknown(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(Gender.UNKNOWN))
-				.withProperty("qc", is(QcName.UNKNOWN));
+				.withProperty("qc", is(QcVehicle.UNKNOWN));
 	}
 
 	// enum set 1
-	private static Matcher<Name> matcherSet1(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherSet1(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(Gender.MALE))
-				.withProperty("qc", is(QcName.FULL));
+				.withProperty("qc", is(QcVehicle.FULL));
 	}
 
 	// enum set 2
-	private static Matcher<Name> matcherSet2(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherSet2(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(Gender.FEMALE))
-				.withProperty("qc", is(QcName.PARTIAL));
+				.withProperty("qc", is(QcVehicle.PARTIAL));
 	}
 
 	// enum set 3
-	private static Matcher<Name> matcherSet3(final String s) {
-		return pojo(Name.class)
+	private static Matcher<Vehicle> matcherSet3(final String s) {
+		return pojo(Vehicle.class)
 				.withProperty("source", is(equalTo(s)))
-				.withProperty("gender", is(Gender.UNKNOWN))
-				.withProperty("qc", is(QcName.UNRECOGNIZED));
+				.withProperty("qc", is(QcVehicle.UNRECOGNIZED));
 	}
 
 	// =================================================================================================================
 
 	@Test
 	public void enumsOmitted() throws DaDataException {
-		test(SampleName.ENUMS_OMITTED);
+		test(SampleVehicle.ENUMS_OMITTED);
 	}
 
 	@Test
 	public void enumsNull() throws DaDataException {
-		test(SampleName.ENUMS_NULL);
+		test(SampleVehicle.ENUMS_NULL);
 	}
 
 	@Test
 	public void enumsEmpty() throws DaDataException {
-		test(SampleName.ENUMS_EMPTY);
+		test(SampleVehicle.ENUMS_EMPTY);
 	}
 
 	@Test
 	public void enumsUnknown() throws DaDataException {
-		test(SampleName.ENUMS_UNKNOWN);
+		test(SampleVehicle.ENUMS_UNKNOWN);
 	}
 
 	@Test
 	public void set1() throws DaDataException {
-		test(SampleName.ENUMS_SET1);
+		test(SampleVehicle.ENUMS_SET1);
 	}
 
 	@Test
 	public void set2() throws DaDataException {
-		test(SampleName.ENUMS_SET2);
+		test(SampleVehicle.ENUMS_SET2);
 	}
 
 	@Test
 	public void set3() throws DaDataException {
-		test(SampleName.ENUMS_SET3);
+		test(SampleVehicle.ENUMS_SET3);
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// shared test body
-	private void test(final SampleName sample) {
+	private void test(final SampleVehicle sample) {
 		setupTestServer(server, URI, METHOD, sample.getResponseBody());
 		successTest(dadata, sample.getSourcePattern(), sample.getMatcher());
 		server.verify();

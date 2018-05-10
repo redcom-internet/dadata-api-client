@@ -14,52 +14,47 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessEmail.SampleEmails;
-import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessEmail.successTest;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessBirthDate.SampleBirthDates;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessBirthDate.successTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonLive.class)
 @ActiveProfiles("live")
-public class UT40EmailCleanSuccessMock {
+public class UT45BirthDateCleanSuccess {
 
 	@Autowired
 	private DaDataClient dadata;
 
 
 	@Test
-	public void cleanValid() throws DaDataException {
-		test(SampleEmails.VALID);
+	public void cleanValid1() throws DaDataException {
+		test(SampleBirthDates.VALID_1);
 	}
 
 	@Test
-	public void cleanInvalid() throws DaDataException {
-		test(SampleEmails.INVALID);
+	public void cleanValid2() throws DaDataException {
+		test(SampleBirthDates.VALID_2);
 	}
 
 	@Test
-	public void cleanInstant() throws DaDataException {
-		test(SampleEmails.INSTANT);
+	public void cleanValid3() throws DaDataException {
+		test(SampleBirthDates.VALID_3);
 	}
 
 	@Test
-	public void cleanCorrected() throws DaDataException {
-		test(SampleEmails.CORRECTED);
-	}
-
-	@Test
-	public void cleanUnrecognized() throws DaDataException {
-		test(SampleEmails.UNRECOGNIZED);
+	public void cleanPartial() throws DaDataException {
+		test(SampleBirthDates.PARTIAL);
 	}
 
 	@Test
 	public void cleanEmpty() throws DaDataException {
-		test(SampleEmails.EMPTY);
+		test(SampleBirthDates.EMPTY);
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// shared test body
-	private void test(final SampleEmails sample) {
+	private void test(final SampleBirthDates sample) {
 		successTest(dadata, sample.getSourcePattern(), sample.getMatcher());
 	}
 }
