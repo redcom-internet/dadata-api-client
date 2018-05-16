@@ -25,18 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-/*
- * Sample query:
- * <pre>
- * 	curl -s -X POST \
- *     -H "Content-Type: application/json" \
- *     -H "Accept: application/json" \
- *     -H "Authorization: Token d0ef3cc03e28295c6946d9f0b5240f844d0f91d0" \
- *     -H "X-Secret: 73254dc8501cb6f5840a2a7a4c4d13ce49061985" \
- *     -d '[ "Хабаровский край, гор. Хабаровск, п. Берёзовка р-н, ул. Заводская, д.123, кв.111" ]' \
- *     https://dadata.ru/api/v2/clean/address | json_pp
- * </pre>
- */
 class DaDataClientImpl implements DaDataClient {
 	private static final String DADATA_API_DEFAULT_BASE_URI = "https://dadata.ru/api/v2";
 	private static final String DADADA_API_ENDPOINT_PROFILE_BALANCE = "/profile/balance";
@@ -70,7 +58,8 @@ class DaDataClientImpl implements DaDataClient {
 	 * @param secretKey Пароль API
 	 * @param baseUri   Строка базового URI
 	 */
-	DaDataClientImpl(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri, @NonNull RestTemplateBuilder restTemplateBuilder) {
+	DaDataClientImpl(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri,
+	                 @NonNull RestTemplateBuilder restTemplateBuilder) {
 		this.baseUri = StringUtils.hasText(baseUri) ? baseUri : DADATA_API_DEFAULT_BASE_URI;
 		this.apiKey = apiKey;
 		this.secretKey = secretKey;

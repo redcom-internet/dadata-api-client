@@ -54,6 +54,8 @@ qc	5	Код проверки
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Name implements Serializable {
+	private final static String STRUCTURE_LITERAL = "NAME";
+
 	@JsonProperty(required = true)
 	private String source;
 	private String result;

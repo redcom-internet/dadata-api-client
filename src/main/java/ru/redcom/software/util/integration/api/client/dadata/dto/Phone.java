@@ -55,6 +55,8 @@ qc	5	Код проверки
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Phone implements Serializable {
+	private final static String STRUCTURE_LITERAL = "PHONE";
+
 	@JsonProperty(required = true)
 	private String source;
 

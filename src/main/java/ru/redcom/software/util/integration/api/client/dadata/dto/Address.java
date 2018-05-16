@@ -237,6 +237,8 @@ Address clean service response object example:
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Address implements Serializable {
+	private final static String STRUCTURE_LITERAL = "ADDRESS";
+
 	@JsonProperty(required = true)
 	private String source;
 	private String result;

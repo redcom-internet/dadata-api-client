@@ -18,6 +18,18 @@ import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessAddress.SampleAddresses;
 import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessAddress.successTest;
 
+/*
+ * Sample query:
+ * <pre>
+ * 	curl -s -X POST \
+ *     -H "Content-Type: application/json" \
+ *     -H "Accept: application/json" \
+ *     -H "Authorization: Token xxxxxxxxxxxxxxxxxxxxxxxx" \
+ *     -H "X-Secret: xxxxxxxxxxxxxxxxxxx" \
+ *     -d '[ "Хабаровский край, гор. Хабаровск, п. Берёзовка р-н, ул. Заводская, д.123, кв.111" ]' \
+ *     https://dadata.ru/api/v2/clean/address | json_pp
+ * </pre>
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonLive.class)
 @ActiveProfiles("live")

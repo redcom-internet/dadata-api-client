@@ -36,6 +36,8 @@ qc	5	Код проверки
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Email implements Serializable {
+	private final static String STRUCTURE_LITERAL = "EMAIL";
+
 	@JsonProperty(required = true)
 	private String source;
 

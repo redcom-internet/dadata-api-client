@@ -117,4 +117,5 @@ dependencies {
     testImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.+'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.+'
     testImplementation group: 'com.spotify', name: 'hamcrest-pojo', version: '1.+'
+    testImplementation group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.+'
 }
