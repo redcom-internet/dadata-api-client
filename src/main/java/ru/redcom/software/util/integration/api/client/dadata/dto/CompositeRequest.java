@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
   ]
 }
 */
-@ToString
+@ToString(of = {"structure", "data"})
 public class CompositeRequest {
 
 	public enum ElementType {
@@ -53,33 +53,50 @@ public class CompositeRequest {
 
 	// These collections are iterated in consistent ascending order of their key type ordinal
 	// Structure of request (element types)
-	@JsonProperty("structure")
+	@JsonProperty
 	@Nonnull
-	private final EnumSet<ElementType> elementTypes;
-	// forms data
-	@JsonProperty("data")
+	private final EnumSet<ElementType> structure;
 	@Nonnull
-	private List<Element> contents = new LinkedList<>();
+	private final Set<ElementType> unmodifiableStructure;
+	// Contents of request
+	@JsonProperty
+	@Nonnull
+	private final List<Element> data = new LinkedList<>();
 
 
-	// Instance sholud be only constructed by builder
-	private CompositeRequest(@Nonnull final EnumSet<ElementType> elementTypes) {
-		this.elementTypes = elementTypes;
+	// Instance should be only constructed by builder
+	private CompositeRequest(@Nonnull final EnumSet<ElementType> structure) {
+		this.structure = structure;
+		this.unmodifiableStructure = Collections.unmodifiableSet(this.structure);
 	}
 
-	private void stripEmptyElements() {
-		contents = contents.stream().filter(Element::nonEmpty).collect(Collectors.toList());
+	// Add elements from array to contents
+	private void addElements(@Nonnull final Element[] elements) {
+		// strip empty elements out (can come from array-style building)
+		data.addAll(Arrays.stream(elements).filter(Element::nonEmpty).collect(Collectors.toList()));
 	}
 
-	// Compose request with specified structue
+	// Check that elements conforms to the request structure
+	@Nonnull
+	private String checkConformance(@Nonnull final Element[] elements) {
+		return Arrays.stream(elements)
+		             .filter(elem -> !elem.conformsWithStructure(unmodifiableStructure))
+		             .map(Element::toStringBrief)
+		             .collect(Collectors.joining(", "));
+	}
+
+	// Align elements with request structure to fill gaps with nulls
+	private void alignStructure() {
+		data.forEach(element -> element.alignStructure(unmodifiableStructure));
+	}
+
+	// Compose request with specified structure
 	public static CompositeRequestBuilder compose(@Nonnull final ElementType first, @Nonnull final ElementType... others) {
 		Assert.notNull(first, "Element type(s) must be specified");
 		return new CompositeRequestBuilder(EnumSet.of(first, others));
 	}
 
-	// TODO non-present elements should serialize as empty arrays?  check behavious with DaData API.
-
-	// Element value container. Can hold both single instances and arrays
+	// Element value container. Can hold both single instances and arrays, as well as null reference to indicate element absence
 	private static final class ElementValue<T> {
 		@Getter(value = AccessLevel.PACKAGE, onMethod = @__({@JsonValue}))
 		private final T value;
@@ -88,11 +105,13 @@ public class CompositeRequest {
 			this.value = value;
 		}
 
+		@Nonnull
 		static ElementValue of(final String... sources) {
 			return sources.length == 1 ? new ElementValue<>(sources[0]) : new ElementValue<>(sources);
 		}
 
 		// for pretty-printing
+		@Nonnull
 		@Override
 		public String toString() {
 			return value instanceof Object[] ? Arrays.toString((Object[]) value) : value.toString();
@@ -104,34 +123,42 @@ public class CompositeRequest {
 	public static class Element {
 		private final Map<ElementType, ElementValue> elementContents = new EnumMap<>(ElementType.class);
 
+		@Nonnull
 		public Element asIs(@Nonnull String... sources) {
 			return addElementContents(ElementType.AS_IS, sources);
 		}
 
+		@Nonnull
 		public Element address(@Nonnull String... sources) {
 			return addElementContents(ElementType.ADDRESS, sources);
 		}
 
+		@Nonnull
 		public Element birthDate(@Nonnull String... sources) {
 			return addElementContents(ElementType.BIRTHDATE, sources);
 		}
 
+		@Nonnull
 		public Element email(@Nonnull String... sources) {
 			return addElementContents(ElementType.EMAIL, sources);
 		}
 
+		@Nonnull
 		public Element name(@Nonnull String... sources) {
 			return addElementContents(ElementType.NAME, sources);
 		}
 
+		@Nonnull
 		public Element passport(@Nonnull String... sources) {
 			return addElementContents(ElementType.PASSPORT, sources);
 		}
 
+		@Nonnull
 		public Element phone(@Nonnull String... sources) {
 			return addElementContents(ElementType.PHONE, sources);
 		}
 
+		@Nonnull
 		public Element vehicle(@Nonnull String... sources) {
 			return addElementContents(ElementType.VEHICLE, sources);
 		}
@@ -140,15 +167,21 @@ public class CompositeRequest {
 			throw new UnsupportedOperationException("This method should be used only with builder-style composition");
 		}
 
-		@Nonnull
-		Map<ElementType, ElementValue> getElementContents() {
-			return Collections.unmodifiableMap(elementContents);
-		}
-
 		boolean nonEmpty() {
 			return !elementContents.isEmpty();
 		}
 
+		// Check if element contents conforms with the request structure
+		boolean conformsWithStructure(@Nonnull final Set<ElementType> structure) {
+			return structure.containsAll(elementContents.keySet());
+		}
+
+		// Align element contents to the request structure by filling gaps with null values
+		void alignStructure(@Nonnull final Set<ElementType> structure) {
+			structure.forEach(e -> elementContents.putIfAbsent(e, null));
+		}
+
+		@Nonnull
 		private Element addElementContents(@Nonnull final ElementType elementType, final String... sources) {
 			Assert.isTrue(sources != null && sources.length > 0, "Sources must be specified");
 			elementContents.put(elementType, ElementValue.of(sources));
@@ -157,9 +190,16 @@ public class CompositeRequest {
 
 		// Should serialize without keys
 		@SuppressWarnings("unused")
+		@Nonnull
 		@JsonValue
 		private Collection<ElementValue> serialize() {
 			return elementContents.values();
+		}
+
+		// for non-conformant elements exception message
+		@Nonnull
+		private String toStringBrief() {
+			return elementContents.toString();
 		}
 	}
 
@@ -169,37 +209,38 @@ public class CompositeRequest {
 
 
 		// Construct builder for specified element types
-		private CompositeRequestBuilder(@Nonnull final EnumSet<ElementType> elementTypes) {
-			composite = new CompositeRequest(elementTypes);
+		private CompositeRequestBuilder(@Nonnull final EnumSet<ElementType> structure) {
+			composite = new CompositeRequest(structure);
 		}
 
 		// Construct element builder
+		@Nonnull
 		public ElementSpec element() {
 			return new ElementSpec();
 		}
 
 		// Add elements to the request
+		@Nonnull
 		public CompositeRequestBuilder elements(@Nonnull final Element... elements) {
-			// Check that elements conforms to the structure
-			final String nonConforming = Arrays.stream(elements)
-			                                   .map(Element::getElementContents)
-			                                   .filter(elems -> !composite.elementTypes.containsAll(elems.keySet()))
-			                                   .map(Object::toString)
-			                                   .collect(Collectors.joining(", "));
+			Assert.notNull(elements, "Elements cannot be null");
+			// Check that elements conforms with the request structure
+			final String nonConforming = composite.checkConformance(elements);
 			Assert.state(nonConforming.isEmpty(), "Elements not in the structure: " + nonConforming);
-			composite.contents.addAll(Arrays.asList(elements));
+			composite.addElements(elements);
 			return this;
 		}
 
 		// Build the request
+		@Nonnull
 		public CompositeRequest build() {
-			composite.stripEmptyElements();
+			composite.alignStructure();
 			return composite;
 		}
 
 		// Element builder to be used in request builder
 		public final class ElementSpec extends Element {
 
+			@Nonnull
 			@Override
 			public CompositeRequestBuilder and() {
 				Assert.state(nonEmpty(), "Element is empty");
