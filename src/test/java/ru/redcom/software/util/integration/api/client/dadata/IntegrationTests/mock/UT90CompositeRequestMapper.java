@@ -18,13 +18,13 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.CompositeReques
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static ru.redcom.software.util.integration.api.client.dadata.dto.CompositeRequest.ElementType.*;
+import static ru.redcom.software.util.integration.api.client.dadata.dto.CompositeElementType.*;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EnableAutoConfiguration
-public class UT99CompositeRequestMapper {
+public class UT90CompositeRequestMapper {
 
 	// Spring Boot Test requires at least one configuration class
 	@Configuration

@@ -19,7 +19,7 @@ def artifactName = name
 def artifactDescription = description
 
 ext {
-    springBootVersion = '2.0.1.RELEASE'
+    springBootVersion = '2.0.2.RELEASE'
     encoding = 'UTF-8'
     // Common manifest attributes
     sharedManifest = manifest {
@@ -108,7 +108,6 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: "$springBootVersion"
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "$springBootVersion"
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: "$springBootVersion"
-//-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.9.+'
 
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.16.+'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.+'

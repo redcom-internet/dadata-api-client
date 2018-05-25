@@ -37,9 +37,8 @@ qc	5	Код проверки
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Passport implements Serializable {
-	private final static String STRUCTURE_LITERAL = "PASSPORT";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class Passport implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
 
@@ -48,4 +47,10 @@ public class Passport implements Serializable {
 
 	@JsonProperty(required = true)
 	private QcPassport qc;
+
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.PASSPORT;
+	}
 }

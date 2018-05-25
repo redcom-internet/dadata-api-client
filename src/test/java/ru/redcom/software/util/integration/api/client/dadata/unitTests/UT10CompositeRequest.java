@@ -13,7 +13,7 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.CompositeReques
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static ru.redcom.software.util.integration.api.client.dadata.dto.CompositeRequest.ElementType.*;
+import static ru.redcom.software.util.integration.api.client.dadata.dto.CompositeElementType.*;
 
 public class UT10CompositeRequest {
 

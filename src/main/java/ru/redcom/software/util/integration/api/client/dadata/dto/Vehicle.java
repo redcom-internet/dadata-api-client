@@ -39,9 +39,8 @@ qc	5	Код проверки
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Vehicle implements Serializable {
-	private final static String STRUCTURE_LITERAL = "VEHICLE";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class Vehicle implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
 	private String result;
@@ -51,4 +50,10 @@ public class Vehicle implements Serializable {
 
 	@JsonProperty(required = true)
 	private QcVehicle qc;
+
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.VEHICLE;
+	}
 }

@@ -13,6 +13,7 @@ public enum Gender {
 	MALE,
 	@JsonProperty("Ж")
 	FEMALE,
+	@JsonProperty("НД")
 	@JsonEnumDefaultValue
 	UNKNOWN
 }

@@ -236,9 +236,8 @@ Address clean service response object example:
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Address implements Serializable {
-	private final static String STRUCTURE_LITERAL = "ADDRESS";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class Address implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
 	private String result;
@@ -413,5 +412,10 @@ public class Address implements Serializable {
 			this.line = line;
 			this.name = name;
 		}
+	}
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.ADDRESS;
 	}
 }

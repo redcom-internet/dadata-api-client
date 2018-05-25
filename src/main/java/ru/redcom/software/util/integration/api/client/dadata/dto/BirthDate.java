@@ -37,9 +37,8 @@ qc	5	Код проверки
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BirthDate implements Serializable {
-	private final static String STRUCTURE_LITERAL = "BIRTHDATE";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class BirthDate implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
 
@@ -48,4 +47,10 @@ public class BirthDate implements Serializable {
 
 	@JsonProperty(required = true)
 	private QcBirthDate qc;
+
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.BIRTHDATE;
+	}
 }

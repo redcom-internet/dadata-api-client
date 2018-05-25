@@ -29,9 +29,14 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AsIs implements Serializable {
-	private final static String STRUCTURE_LITERAL = "AS_IS";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class AsIs implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
+
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.AS_IS;
+	}
 }

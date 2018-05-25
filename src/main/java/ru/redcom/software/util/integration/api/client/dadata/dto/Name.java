@@ -53,9 +53,8 @@ qc	5	Код проверки
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Name implements Serializable {
-	private final static String STRUCTURE_LITERAL = "NAME";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class Name implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
 	private String result;
@@ -75,4 +74,10 @@ public class Name implements Serializable {
 
 	@JsonProperty(required = true)
 	private QcName qc;
+
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.NAME;
+	}
 }

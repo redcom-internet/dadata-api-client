@@ -6,6 +6,7 @@
 package ru.redcom.software.util.integration.api.client.dadata.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,19 +46,16 @@ import java.util.stream.Collectors;
 }
 */
 @ToString(of = {"structure", "data"})
+@JsonPropertyOrder({"structure", "data"})
 public class CompositeRequest {
-
-	public enum ElementType {
-		AS_IS, NAME, ADDRESS, BIRTHDATE, PASSPORT, PHONE, EMAIL, VEHICLE
-	}
 
 	// These collections are iterated in consistent ascending order of their key type ordinal
 	// Structure of request (element types)
 	@JsonProperty
 	@Nonnull
-	private final EnumSet<ElementType> structure;
+	private final EnumSet<CompositeElementType> structure;
 	@Nonnull
-	private final Set<ElementType> unmodifiableStructure;
+	private final Set<CompositeElementType> unmodifiableStructure;
 	// Contents of request
 	@JsonProperty
 	@Nonnull
@@ -65,7 +63,7 @@ public class CompositeRequest {
 
 
 	// Instance should be only constructed by builder
-	private CompositeRequest(@Nonnull final EnumSet<ElementType> structure) {
+	private CompositeRequest(@Nonnull final EnumSet<CompositeElementType> structure) {
 		this.structure = structure;
 		this.unmodifiableStructure = Collections.unmodifiableSet(this.structure);
 	}
@@ -91,7 +89,7 @@ public class CompositeRequest {
 	}
 
 	// Compose request with specified structure
-	public static CompositeRequestBuilder compose(@Nonnull final ElementType first, @Nonnull final ElementType... others) {
+	public static CompositeRequestBuilder compose(@Nonnull final CompositeElementType first, @Nonnull final CompositeElementType... others) {
 		Assert.notNull(first, "Element type(s) must be specified");
 		return new CompositeRequestBuilder(EnumSet.of(first, others));
 	}
@@ -121,46 +119,46 @@ public class CompositeRequest {
 	// Element builder
 	@ToString
 	public static class Element {
-		private final Map<ElementType, ElementValue> elementContents = new EnumMap<>(ElementType.class);
+		private final Map<CompositeElementType, ElementValue> elementContents = new EnumMap<>(CompositeElementType.class);
 
 		@Nonnull
 		public Element asIs(@Nonnull String... sources) {
-			return addElementContents(ElementType.AS_IS, sources);
+			return addElementContents(CompositeElementType.AS_IS, sources);
 		}
 
 		@Nonnull
 		public Element address(@Nonnull String... sources) {
-			return addElementContents(ElementType.ADDRESS, sources);
+			return addElementContents(CompositeElementType.ADDRESS, sources);
 		}
 
 		@Nonnull
 		public Element birthDate(@Nonnull String... sources) {
-			return addElementContents(ElementType.BIRTHDATE, sources);
+			return addElementContents(CompositeElementType.BIRTHDATE, sources);
 		}
 
 		@Nonnull
 		public Element email(@Nonnull String... sources) {
-			return addElementContents(ElementType.EMAIL, sources);
+			return addElementContents(CompositeElementType.EMAIL, sources);
 		}
 
 		@Nonnull
 		public Element name(@Nonnull String... sources) {
-			return addElementContents(ElementType.NAME, sources);
+			return addElementContents(CompositeElementType.NAME, sources);
 		}
 
 		@Nonnull
 		public Element passport(@Nonnull String... sources) {
-			return addElementContents(ElementType.PASSPORT, sources);
+			return addElementContents(CompositeElementType.PASSPORT, sources);
 		}
 
 		@Nonnull
 		public Element phone(@Nonnull String... sources) {
-			return addElementContents(ElementType.PHONE, sources);
+			return addElementContents(CompositeElementType.PHONE, sources);
 		}
 
 		@Nonnull
 		public Element vehicle(@Nonnull String... sources) {
-			return addElementContents(ElementType.VEHICLE, sources);
+			return addElementContents(CompositeElementType.VEHICLE, sources);
 		}
 
 		public CompositeRequestBuilder and() {
@@ -172,17 +170,17 @@ public class CompositeRequest {
 		}
 
 		// Check if element contents conforms with the request structure
-		boolean conformsWithStructure(@Nonnull final Set<ElementType> structure) {
+		boolean conformsWithStructure(@Nonnull final Set<CompositeElementType> structure) {
 			return structure.containsAll(elementContents.keySet());
 		}
 
 		// Align element contents to the request structure by filling gaps with null values
-		void alignStructure(@Nonnull final Set<ElementType> structure) {
+		void alignStructure(@Nonnull final Set<CompositeElementType> structure) {
 			structure.forEach(e -> elementContents.putIfAbsent(e, null));
 		}
 
 		@Nonnull
-		private Element addElementContents(@Nonnull final ElementType elementType, final String... sources) {
+		private Element addElementContents(@Nonnull final CompositeElementType elementType, final String... sources) {
 			Assert.isTrue(sources != null && sources.length > 0, "Sources must be specified");
 			elementContents.put(elementType, ElementValue.of(sources));
 			return this;
@@ -209,7 +207,7 @@ public class CompositeRequest {
 
 
 		// Construct builder for specified element types
-		private CompositeRequestBuilder(@Nonnull final EnumSet<ElementType> structure) {
+		private CompositeRequestBuilder(@Nonnull final EnumSet<CompositeElementType> structure) {
 			composite = new CompositeRequest(structure);
 		}
 

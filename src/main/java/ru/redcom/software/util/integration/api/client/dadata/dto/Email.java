@@ -35,9 +35,8 @@ qc	5	Код проверки
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Email implements Serializable {
-	private final static String STRUCTURE_LITERAL = "EMAIL";
-
+//@JsonDeserialize(using = JsonDeserializer.None.class)
+public class Email implements Serializable, CompositeElement {
 	@JsonProperty(required = true)
 	private String source;
 
@@ -45,4 +44,10 @@ public class Email implements Serializable {
 
 	@JsonProperty(required = true)
 	private QcEmail qc;
+
+
+	@Override
+	public CompositeElementType getCompositeElementType() {
+		return CompositeElementType.EMAIL;
+	}
 }
