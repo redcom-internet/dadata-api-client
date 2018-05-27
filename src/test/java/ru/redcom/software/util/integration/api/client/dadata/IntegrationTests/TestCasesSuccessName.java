@@ -34,7 +34,10 @@ public class TestCasesSuccessName {
 		           TestCasesSuccessName::matcherSuspicious),
 		EMPTY("-",
 		      "[{\"source\":\"-\",\"result\":null,\"result_genitive\":null,\"result_dative\":null,\"result_ablative\":null,\"surname\":null,\"name\":null,\"patronymic\":null,\"gender\":\"НД\",\"qc\":1}]",
-		      TestCasesSuccessName::matcherEmpty);
+		      TestCasesSuccessName::matcherEmpty),
+		NULL(null,
+		     "{\"source\":null,\"result\":null,\"result_genitive\":null,\"result_dative\":null,\"result_ablative\":null,\"surname\":null,\"name\":null,\"patronymic\":null,\"gender\":\"НД\",\"qc\":2}",
+		     s -> matcherNull());
 
 		private final String sourcePattern;
 		private final String responseBody;
@@ -138,6 +141,21 @@ public class TestCasesSuccessName {
 				.withProperty("patronymic", is(nullValue(String.class)))
 				.withProperty("gender", is(Gender.UNKNOWN))
 				.withProperty("qc", is(QcName.PARTIAL));
+	}
+
+	// null
+	private static Matcher<Name> matcherNull() {
+		return pojo(Name.class)
+				.withProperty("source", is(nullValue(String.class)))
+				.withProperty("result", is(nullValue(String.class)))
+				.withProperty("resultGenitive", is(nullValue(String.class)))
+				.withProperty("resultDative", is(nullValue(String.class)))
+				.withProperty("resultAblative", is(nullValue(String.class)))
+				.withProperty("surname", is(nullValue(String.class)))
+				.withProperty("name", is(nullValue(String.class)))
+				.withProperty("patronymic", is(nullValue(String.class)))
+				.withProperty("gender", is(Gender.UNKNOWN))
+				.withProperty("qc", is(QcName.UNRECOGNIZED));
 	}
 
 	// =================================================================================================================

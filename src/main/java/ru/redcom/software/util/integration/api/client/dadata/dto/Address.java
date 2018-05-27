@@ -15,7 +15,6 @@ import lombok.Value;
 import ru.redcom.software.util.integration.api.client.dadata.types.*;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -233,13 +232,10 @@ Address clean service response object example:
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class Address implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
+public class Address extends ResponseItem {
 	private String result;
 
 	@JsonProperty("postal_code")
@@ -412,10 +408,5 @@ public class Address implements Serializable, CompositeElement {
 			this.line = line;
 			this.name = name;
 		}
-	}
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.ADDRESS;
 	}
 }

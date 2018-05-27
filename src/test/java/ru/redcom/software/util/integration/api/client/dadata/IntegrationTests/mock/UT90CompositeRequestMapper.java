@@ -18,6 +18,7 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.CompositeReques
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessComposite.SampleComposite;
 import static ru.redcom.software.util.integration.api.client.dadata.dto.CompositeElementType.*;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
@@ -177,6 +178,18 @@ public class UT90CompositeRequestMapper {
 		// @formatter:on
 		testCompositeRequest(request, "{\"structure\":[\"AS_IS\",\"ADDRESS\",\"EMAIL\"],\"data\":[[\"1\",\"г.Хабаровск, ул.Ленина, д.73\",\"vasya@test.com\"],[\"2\",\"г.Новосибирск, Красный проспект, 1\",null],[\"3\",null,\"petya@mail.ru\"],[\"4\",null,null],[null,null,\"john@usa.net\"]]}");
 	}
+
+	@Test
+	public void compositeRequestFullOfSamples() throws JsonProcessingException {
+		testCompositeRequest(SampleComposite.SAMPLES_FULL.getRequest(), SampleComposite.SAMPLES_FULL.getRequestBody());
+	}
+
+	@Test
+	public void compositeRequestGapsOfSamples() throws JsonProcessingException {
+		testCompositeRequest(SampleComposite.SAMPLES_GAPS.getRequest(), SampleComposite.SAMPLES_GAPS.getRequestBody());
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
 
 	private void testCompositeRequest(final CompositeRequest request, final String pattern) throws JsonProcessingException {
 		final String s = objectMapper.writeValueAsString(request);

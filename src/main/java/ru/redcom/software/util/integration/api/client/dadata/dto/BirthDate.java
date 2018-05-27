@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.ToString;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcBirthDate;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 /*
@@ -34,23 +33,13 @@ qc	5	Код проверки
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class BirthDate implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
-
+public class BirthDate extends ResponseItem {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private LocalDate birthdate;
 
 	@JsonProperty(required = true)
 	private QcBirthDate qc;
-
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.BIRTHDATE;
-	}
 }

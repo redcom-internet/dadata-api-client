@@ -39,7 +39,7 @@ public class TestCasesSuccessPhone {
 		             "[{\"source\":\"4212721234\",\"type\":\"Стационарный\",\"phone\":\"+7 4212 72-12-34\",\"country_code\":\"7\",\"city_code\":\"4212\",\"number\":\"721234\",\"extension\":null,\"provider\":\"ООО \\\"Телефонная компания Востоктелеком\\\"\",\"region\":\"Хабаровский\",\"timezone\":\"UTC+10\",\"qc_conflict\":0,\"qc\":0}]",
 		             TestCasesSuccessPhone::matcherKhabarovsk6),
 		KHABAROVSK_7("4212262000",
-		             "[{\"source\":\"4212262000\",\"type\":\"Стационарный\",\"phone\":\"+7 4212 26-20-00\",\"country_code\":\"7\",\"city_code\":\"4212\",\"number\":\"262000\",\"extension\":null,\"provider\":\"ОАО \\\"ХАБАРОВСКИЙ АЭРОПОРТ\\\"\",\"region\":\"Хабаровский\",\"timezone\":\"UTC+10\",\"qc_conflict\":0,\"qc\":0}]",
+		             "[{\"source\":\"4212262000\",\"type\":\"Стационарный\",\"phone\":\"+7 4212 26-20-00\",\"country_code\":\"7\",\"city_code\":\"4212\",\"number\":\"262000\",\"extension\":null,\"provider\":\"АО \\\"ХАБАРОВСКИЙ АЭРОПОРТ\\\"\",\"region\":\"Хабаровский\",\"timezone\":\"UTC+10\",\"qc_conflict\":0,\"qc\":0}]",
 		             TestCasesSuccessPhone::matcherKhabarovsk7),
 		KHABAR_MOBILE_1("+79141523271",
 		                "[{\"source\":\"+79141523271\",\"type\":\"Мобильный\",\"phone\":\"+7 914 152-32-71\",\"country_code\":\"7\",\"city_code\":\"914\",\"number\":\"1523271\",\"extension\":null,\"provider\":\"ПАО \\\"Мобильные ТелеСистемы\\\"\",\"region\":\"Хабаровский край\",\"timezone\":\"UTC+10\",\"qc_conflict\":0,\"qc\":0}]",
@@ -208,7 +208,7 @@ public class TestCasesSuccessPhone {
 				.withProperty("cityCode", is("4212"))
 				.withProperty("number", is("262000"))
 				.withProperty("extension", is(nullValue(String.class)))
-				.withProperty("provider", is("ОАО \"ХАБАРОВСКИЙ АЭРОПОРТ\""))
+				.withProperty("provider", is("АО \"ХАБАРОВСКИЙ АЭРОПОРТ\""))
 				.withProperty("region", is("Хабаровский"))
 				.withProperty("timezone", is("UTC+10"))
 				.withProperty("qcConflict", is(QcConflict.EXACT))

@@ -5,6 +5,7 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,8 +14,8 @@ import javax.annotation.Nonnull;
 /**
  * Element types of composite request
  */
-@Getter
-@RequiredArgsConstructor
+@Getter(AccessLevel.PACKAGE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum CompositeElementType {
 	AS_IS(AsIs.class),
 	NAME(Name.class),
@@ -25,5 +26,5 @@ public enum CompositeElementType {
 	EMAIL(Email.class),
 	VEHICLE(Vehicle.class);
 
-	@Nonnull private final Class<? extends CompositeElement> type;
+	@Nonnull private final Class<? extends ResponseItem> type;
 }

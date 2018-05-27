@@ -12,8 +12,6 @@ import lombok.Getter;
 import lombok.ToString;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcPassport;
 
-import java.io.Serializable;
-
 /*
 Название	Длина	Описание
 source	100	Исходная серия и номер одной строкой
@@ -34,23 +32,13 @@ qc	5	Код проверки
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class Passport implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
-
+public class Passport extends ResponseItem {
 	private String series;
 	private String number;
 
 	@JsonProperty(required = true)
 	private QcPassport qc;
-
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.PASSPORT;
-	}
 }

@@ -12,8 +12,6 @@ import lombok.Getter;
 import lombok.ToString;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcEmail;
 
-import java.io.Serializable;
-
 /*
 Название	Длина	Описание
 source	100	Исходный email
@@ -32,22 +30,12 @@ qc	5	Код проверки
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class Email implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
-
+public class Email extends ResponseItem {
 	private String email;
 
 	@JsonProperty(required = true)
 	private QcEmail qc;
-
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.EMAIL;
-	}
 }

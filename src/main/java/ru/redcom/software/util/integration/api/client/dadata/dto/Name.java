@@ -13,8 +13,6 @@ import lombok.ToString;
 import ru.redcom.software.util.integration.api.client.dadata.types.Gender;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcName;
 
-import java.io.Serializable;
-
 /*
 Название	Длина	Описание
 source	100	Исходное ФИО одной строкой
@@ -50,13 +48,10 @@ qc	5	Код проверки
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class Name implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
+public class Name extends ResponseItem {
 	private String result;
 
 	@JsonProperty("result_genitive")
@@ -74,10 +69,4 @@ public class Name implements Serializable, CompositeElement {
 
 	@JsonProperty(required = true)
 	private QcName qc;
-
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.NAME;
-	}
 }

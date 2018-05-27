@@ -5,22 +5,39 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.val;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.redcom.software.util.integration.api.client.dadata.dto.CompositeResponse;
+import ru.redcom.software.util.integration.api.client.dadata.dto.*;
 
 import java.io.IOException;
+import java.util.stream.StreamSupport;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessAddress.SampleAddresses;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessBirthDate.SampleBirthDates;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessComposite.*;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessEmail.SampleEmails;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessName.SampleNames;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessPassport.SamplePassports;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessPhone.SamplePhones;
+import static ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.TestCasesSuccessVehicle.SampleVehicles;
+import static ru.redcom.software.util.integration.api.client.dadata.dto.CompositeElementType.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,120 +52,272 @@ public class UT91CompositeResponseMapper {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-
-	/*
-	{
-	  "structure": [
-		"AS_IS",
-		"NAME",
-		"ADDRESS",
-		"PHONE" ],
-	  "data": [
-		[ "1",
-		  "Федотов Алексей",
-		  "Москва, Сухонская улица, 11 кв 89",
-		  "8 916 823 3454"
-		],
-		[ ["2"],
-		  ["Иванов", "Сергей Владимирович"],
-		  ["мск", "улица свободы", "65", "12"],
-		  ["495 663-12-53"]
-		],
-		[ "3",
-		  ["Ольга Павловна", "Ященко"],
-		  ["", "Спб, ул Петрозаводская 8", "", ""],
-		  "457 07 25"
-		]
-	  ]
+	@Before
+	public void configureObjectMapper() {
+		objectMapper.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE,
+		                    DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS);
 	}
-	*/
-//	@Test
-//	public void compositeRequestSample() throws JsonProcessingException {
-//		// @formatter:off
-//		final CompositeRequest request = CompositeRequest
-//				.compose(AS_IS, NAME, ADDRESS, PHONE)
-//					.element()
-//						.asIs("1")
-//						.name("Федотов Алексей")
-//						.address("Москва, Сухонская улица, 11 кв 89")
-//						.phone("8 916 823 3454")
-//				.and()
-//					.element()
-//						.asIs("2")
-//						.name("Иванов", "Сергей Владимирович")
-//						.address("мск", "улица свободы", "65", "12")
-//						.phone("495 663-12-53")
-//				.and()
-//					.element()
-//						.asIs("3")
-//						.name("Ольга Павловна", "Ященко")
-//						.address("", "Спб, ул Петрозаводская 8", "", "")
-//						.phone("457 07 25")
-//				.and()
-//					.build();
-//		// @formatter:on
-//		testCompositeRequest(request, "{\n" +
-//		                              "\t  \"structure\": [\n" +
-//		                              "\t\t\"AS_IS\",\n" +
-//		                              "\t\t\"NAME\",\n" +
-//		                              "\t\t\"ADDRESS\",\n" +
-//		                              "\t\t\"PHONE\" ],\n" +
-//		                              "\t  \"data\": [\n" +
-//		                              "\t\t[ \"1\",\n" +
-//		                              "\t\t  \"Федотов Алексей\",\n" +
-//		                              "\t\t  \"Москва, Сухонская улица, 11 кв 89\",\n" +
-//		                              "\t\t  \"8 916 823 3454\"\n" +
-//		                              "\t\t],\n" +
-//		                              "\t\t[ \"2\",\n" +
-//		                              "\t\t  [\"Иванов\", \"Сергей Владимирович\"],\n" +
-//		                              "\t\t  [\"мск\", \"улица свободы\", \"65\", \"12\"],\n" +
-//		                              "\t\t  \"495 663-12-53\"\n" +
-//		                              "\t\t],\n" +
-//		                              "\t\t[ \"3\",\n" +
-//		                              "\t\t  [\"Ольга Павловна\", \"Ященко\"],\n" +
-//		                              "\t\t  [\"\", \"Спб, ул Петрозаводская 8\", \"\", \"\"],\n" +
-//		                              "\t\t  \"457 07 25\"\n" +
-//		                              "\t\t]\n" +
-//		                              "\t  ]\n" +
-//		                              "\t}");
-//	}
-
-//	@Test
-//	public void compositeRequestGaps() throws JsonProcessingException {
-//		// @formatter:off
-//		final CompositeRequest request = CompositeRequest
-//				.compose(AS_IS, ADDRESS, EMAIL)
-//					.element()
-//						.asIs("1")
-//						.address("г.Хабаровск, ул.Ленина, д.73")
-//						.email("vasya@test.com")
-//				.and()
-//					.element()
-//						.asIs("2")
-//						.address("г.Новосибирск, Красный проспект, 1")
-//				.and()
-//					.element()
-//						.asIs("3")
-//						.email("petya@mail.ru")
-//				.and()
-//					.element()
-//						.asIs("4")
-//				.and()
-//					.element()
-//						.email("john@usa.net")
-//				.and()
-//					.build();
-//		// @formatter:on
-//		testCompositeRequest(request, "{\"structure\":[\"AS_IS\",\"ADDRESS\",\"EMAIL\"],\"data\":[[\"1\",\"г.Хабаровск, ул.Ленина, д.73\",\"vasya@test.com\"],[\"2\",\"г.Новосибирск, Красный проспект, 1\",null],[\"3\",null,\"petya@mail.ru\"],[\"4\",null,null],[null,null,\"john@usa.net\"]]}");
-//	}
 
 
 	@Test
-	public void compositeResponseFull() throws IOException {
-		val response = testCompositeResponse("{\"structure\":[\"AS_IS\",\"NAME\",\"ADDRESS\",\"BIRTHDATE\",\"PASSPORT\",\"PHONE\",\"EMAIL\",\"VEHICLE\"],\"data\":[[{\"source\":\"as is 1\"},{\"source\":\"name 1\",\"result\":null,\"result_genitive\":null,\"result_dative\":null,\"result_ablative\":null,\"surname\":null,\"name\":null,\"patronymic\":null,\"gender\":\"НД\",\"qc\":1},{\"source\":\"address 1\",\"result\":null,\"postal_code\":null,\"country\":null,\"region_fias_id\":null,\"region_kladr_id\":null,\"region_with_type\":null,\"region_type\":null,\"region_type_full\":null,\"region\":null,\"area_fias_id\":null,\"area_kladr_id\":null,\"area_with_type\":null,\"area_type\":null,\"area_type_full\":null,\"area\":null,\"city_fias_id\":null,\"city_kladr_id\":null,\"city_with_type\":null,\"city_type\":null,\"city_type_full\":null,\"city\":null,\"city_area\":null,\"city_district_fias_id\":null,\"city_district_kladr_id\":null,\"city_district_with_type\":null,\"city_district_type\":null,\"city_district_type_full\":null,\"city_district\":null,\"settlement_fias_id\":null,\"settlement_kladr_id\":null,\"settlement_with_type\":null,\"settlement_type\":null,\"settlement_type_full\":null,\"settlement\":null,\"street_fias_id\":null,\"street_kladr_id\":null,\"street_with_type\":null,\"street_type\":null,\"street_type_full\":null,\"street\":null,\"house_fias_id\":null,\"house_kladr_id\":null,\"house_type\":null,\"house_type_full\":null,\"house\":null,\"block_type\":null,\"block_type_full\":null,\"block\":null,\"flat_type\":null,\"flat_type_full\":null,\"flat\":null,\"flat_area\":null,\"square_meter_price\":null,\"flat_price\":null,\"postal_box\":null,\"fias_id\":null,\"fias_code\":null,\"fias_level\":\"-1\",\"fias_actuality_state\":\"0\",\"kladr_id\":null,\"capital_marker\":\"0\",\"okato\":null,\"oktmo\":null,\"tax_office\":null,\"tax_office_legal\":null,\"timezone\":null,\"geo_lat\":null,\"geo_lon\":null,\"beltway_hit\":null,\"beltway_distance\":null,\"qc_geo\":5,\"qc_complete\":1,\"qc_house\":10,\"qc\":1,\"unparsed_parts\":\"АДДРЕСС, 1\",\"metro\":null},{\"source\":\"birthdate 1\",\"birthdate\":null,\"qc\":1},{\"source\":\"passport 1\",\"series\":null,\"number\":null,\"qc\":1},{\"source\":\"phone 1\",\"type\":\"Неизвестный\",\"phone\":null,\"country_code\":null,\"city_code\":null,\"number\":null,\"extension\":null,\"provider\":null,\"region\":null,\"timezone\":null,\"qc_conflict\":0,\"qc\":1},{\"source\":\"email 1\",\"email\":null,\"qc\":1},{\"source\":\"vehicle 1\",\"result\":\"TRABANT 1.1\",\"brand\":\"TRABANT\",\"model\":\"1.1\",\"qc\":0}],[{\"source\":\"asis 2a asis 2b\"},{\"source\":\"name 2a name 2b\",\"result\":\"Б\",\"result_genitive\":null,\"result_dative\":null,\"result_ablative\":null,\"surname\":null,\"name\":\"Б\",\"patronymic\":null,\"gender\":\"НД\",\"qc\":1},{\"source\":\"address 2a,address 2b\",\"result\":null,\"postal_code\":null,\"country\":null,\"region_fias_id\":null,\"region_kladr_id\":null,\"region_with_type\":null,\"region_type\":null,\"region_type_full\":null,\"region\":null,\"area_fias_id\":null,\"area_kladr_id\":null,\"area_with_type\":null,\"area_type\":null,\"area_type_full\":null,\"area\":null,\"city_fias_id\":null,\"city_kladr_id\":null,\"city_with_type\":null,\"city_type\":null,\"city_type_full\":null,\"city\":null,\"city_area\":null,\"city_district_fias_id\":null,\"city_district_kladr_id\":null,\"city_district_with_type\":null,\"city_district_type\":null,\"city_district_type_full\":null,\"city_district\":null,\"settlement_fias_id\":null,\"settlement_kladr_id\":null,\"settlement_with_type\":null,\"settlement_type\":null,\"settlement_type_full\":null,\"settlement\":null,\"street_fias_id\":null,\"street_kladr_id\":null,\"street_with_type\":null,\"street_type\":null,\"street_type_full\":null,\"street\":null,\"house_fias_id\":null,\"house_kladr_id\":null,\"house_type\":null,\"house_type_full\":null,\"house\":null,\"block_type\":null,\"block_type_full\":null,\"block\":null,\"flat_type\":null,\"flat_type_full\":null,\"flat\":null,\"flat_area\":null,\"square_meter_price\":null,\"flat_price\":null,\"postal_box\":null,\"fias_id\":null,\"fias_code\":null,\"fias_level\":\"-1\",\"fias_actuality_state\":\"0\",\"kladr_id\":null,\"capital_marker\":\"0\",\"okato\":null,\"oktmo\":null,\"tax_office\":null,\"tax_office_legal\":null,\"timezone\":null,\"geo_lat\":null,\"geo_lon\":null,\"beltway_hit\":null,\"beltway_distance\":null,\"qc_geo\":5,\"qc_complete\":1,\"qc_house\":10,\"qc\":1,\"unparsed_parts\":\"АДДРЕСС, 2, А, АДДРЕСС, 2, Б\",\"metro\":null},{\"source\":\"birthdate 2a birthdate 2b\",\"birthdate\":null,\"qc\":1},{\"source\":\"passport 2a passport 2b\",\"series\":null,\"number\":null,\"qc\":1},{\"source\":\"phone 2a phone 2b\",\"type\":\"Неизвестный\",\"phone\":null,\"country_code\":null,\"city_code\":null,\"number\":null,\"extension\":null,\"provider\":null,\"region\":null,\"timezone\":null,\"qc_conflict\":0,\"qc\":1},{\"source\":\"email 2a email 2b\",\"email\":null,\"qc\":1},{\"source\":\"vehicle 2a vehicle 2b\",\"result\":null,\"brand\":null,\"model\":null,\"qc\":1}],[{\"source\":\"asis 3\"},{\"source\":\"name 2a name 2b\",\"result\":\"Б\",\"result_genitive\":null,\"result_dative\":null,\"result_ablative\":null,\"surname\":null,\"name\":\"Б\",\"patronymic\":null,\"gender\":\"НД\",\"qc\":1},{\"source\":null,\"result\":null,\"postal_code\":null,\"country\":null,\"region_fias_id\":null,\"region_kladr_id\":null,\"region_with_type\":null,\"region_type\":null,\"region_type_full\":null,\"region\":null,\"area_fias_id\":null,\"area_kladr_id\":null,\"area_with_type\":null,\"area_type\":null,\"area_type_full\":null,\"area\":null,\"city_fias_id\":null,\"city_kladr_id\":null,\"city_with_type\":null,\"city_type\":null,\"city_type_full\":null,\"city\":null,\"city_area\":null,\"city_district_fias_id\":null,\"city_district_kladr_id\":null,\"city_district_with_type\":null,\"city_district_type\":null,\"city_district_type_full\":null,\"city_district\":null,\"settlement_fias_id\":null,\"settlement_kladr_id\":null,\"settlement_with_type\":null,\"settlement_type\":null,\"settlement_type_full\":null,\"settlement\":null,\"street_fias_id\":null,\"street_kladr_id\":null,\"street_with_type\":null,\"street_type\":null,\"street_type_full\":null,\"street\":null,\"house_fias_id\":null,\"house_kladr_id\":null,\"house_type\":null,\"house_type_full\":null,\"house\":null,\"block_type\":null,\"block_type_full\":null,\"block\":null,\"flat_type\":null,\"flat_type_full\":null,\"flat\":null,\"flat_area\":null,\"square_meter_price\":null,\"flat_price\":null,\"postal_box\":null,\"fias_id\":null,\"fias_code\":null,\"fias_level\":\"-1\",\"fias_actuality_state\":\"0\",\"kladr_id\":null,\"capital_marker\":\"0\",\"okato\":null,\"oktmo\":null,\"tax_office\":null,\"tax_office_legal\":null,\"timezone\":null,\"geo_lat\":null,\"geo_lon\":null,\"beltway_hit\":null,\"beltway_distance\":null,\"qc_geo\":5,\"qc_complete\":1,\"qc_house\":10,\"qc\":2,\"unparsed_parts\":null,\"metro\":null},{\"source\":null,\"birthdate\":null,\"qc\":2},{\"source\":null,\"series\":null,\"number\":null,\"qc\":2},{\"source\":null,\"type\":null,\"phone\":null,\"country_code\":null,\"city_code\":null,\"number\":null,\"extension\":null,\"provider\":null,\"region\":null,\"timezone\":null,\"qc_conflict\":0,\"qc\":2},{\"source\":null,\"email\":null,\"qc\":2},{\"source\":null,\"result\":null,\"brand\":null,\"model\":null,\"qc\":2}],[{\"source\":\"as-is 4a as-is 4b as-is 4c\"},{\"source\":null,\"result\":null,\"result_genitive\":null,\"result_dative\":null,\"result_ablative\":null,\"surname\":null,\"name\":null,\"patronymic\":null,\"gender\":\"НД\",\"qc\":2},{\"source\":null,\"result\":null,\"postal_code\":null,\"country\":null,\"region_fias_id\":null,\"region_kladr_id\":null,\"region_with_type\":null,\"region_type\":null,\"region_type_full\":null,\"region\":null,\"area_fias_id\":null,\"area_kladr_id\":null,\"area_with_type\":null,\"area_type\":null,\"area_type_full\":null,\"area\":null,\"city_fias_id\":null,\"city_kladr_id\":null,\"city_with_type\":null,\"city_type\":null,\"city_type_full\":null,\"city\":null,\"city_area\":null,\"city_district_fias_id\":null,\"city_district_kladr_id\":null,\"city_district_with_type\":null,\"city_district_type\":null,\"city_district_type_full\":null,\"city_district\":null,\"settlement_fias_id\":null,\"settlement_kladr_id\":null,\"settlement_with_type\":null,\"settlement_type\":null,\"settlement_type_full\":null,\"settlement\":null,\"street_fias_id\":null,\"street_kladr_id\":null,\"street_with_type\":null,\"street_type\":null,\"street_type_full\":null,\"street\":null,\"house_fias_id\":null,\"house_kladr_id\":null,\"house_type\":null,\"house_type_full\":null,\"house\":null,\"block_type\":null,\"block_type_full\":null,\"block\":null,\"flat_type\":null,\"flat_type_full\":null,\"flat\":null,\"flat_area\":null,\"square_meter_price\":null,\"flat_price\":null,\"postal_box\":null,\"fias_id\":null,\"fias_code\":null,\"fias_level\":\"-1\",\"fias_actuality_state\":\"0\",\"kladr_id\":null,\"capital_marker\":\"0\",\"okato\":null,\"oktmo\":null,\"tax_office\":null,\"tax_office_legal\":null,\"timezone\":null,\"geo_lat\":null,\"geo_lon\":null,\"beltway_hit\":null,\"beltway_distance\":null,\"qc_geo\":5,\"qc_complete\":1,\"qc_house\":10,\"qc\":2,\"unparsed_parts\":null,\"metro\":null},{\"source\":null,\"birthdate\":null,\"qc\":2},{\"source\":null,\"series\":null,\"number\":null,\"qc\":2},{\"source\":null,\"type\":null,\"phone\":null,\"country_code\":null,\"city_code\":null,\"number\":null,\"extension\":null,\"provider\":null,\"region\":null,\"timezone\":null,\"qc_conflict\":0,\"qc\":2},{\"source\":null,\"email\":null,\"qc\":2},{\"source\":null,\"result\":null,\"brand\":null,\"model\":null,\"qc\":2}]]}");
-		assertThat(response, is(notNullValue()));
-		// TODO продолжить
+	public void compositeResponseNull() throws IOException {
+		val response = testCompositeResponse("null");
+		assertThat(response, is(nullValue(CompositeResponse.class)));
 	}
+
+	@Test
+	public void compositeResponseSimple() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}]]}");
+		assertThat(response, hasProperty("structure", contains(AS_IS)));
+		assertThat(response, hasProperty("data",
+		                                 contains(pojo(CompositeResponse.Record.class)
+				                                          .withProperty("asIs", asisMatcher("as is 1")))));
+	}
+
+	@Test
+	public void compositeResponseFull() throws IOException {
+		// bombastic sample captured from live processing of composite request with unrecognized content
+		val response = testCompositeResponse(MOCK_RESPONSE_FULL_JSON);
+		assertThat(response, hasProperty("structure", contains(AS_IS, NAME, ADDRESS, BIRTHDATE, PASSPORT, PHONE, EMAIL, VEHICLE)));
+		// just a simple hash-style check, it's boring to compose matchers for all the payload
+		assertThat(response, hasToString(MOCK_RESPONSE_FULL_STRING));
+	}
+
+	@Test
+	public void dataIsNull() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":null}");
+		assertThat(response, hasProperty("structure", contains(AS_IS)));
+		assertThat(response, hasProperty("data", is(emptyCollectionOf(CompositeResponse.Record.class))));
+	}
+
+	@Test
+	public void dataIsEmpty() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[]}");
+		assertThat(response, hasProperty("structure", contains(AS_IS)));
+		assertThat(response, hasProperty("data", is(emptyCollectionOf(CompositeResponse.Record.class))));
+	}
+
+	@Test
+	public void iterableIsEmpty() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[]}");
+		assertThat(response, hasProperty("structure", contains(AS_IS)));
+		assertThat(response, is(emptyIterable()));
+	}
+
+	@Test
+	public void recordIsEmpty() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}],[]]}");
+		assertThat(response, hasProperty("structure", contains(AS_IS)));
+		//noinspection unchecked
+		assertThat(response, hasProperty("data",
+		                                 contains(pojo(CompositeResponse.Record.class).withProperty("asIs", asisMatcher("as is 1")),
+		                                          pojo(CompositeResponse.Record.class).where("isEmpty", is(true)))));
+	}
+
+	@Test
+	public void recordIsNull() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}],[null]]}");
+		assertThat(response, hasProperty("structure", contains(AS_IS)));
+		//noinspection unchecked
+		assertThat(response, hasProperty("data",
+		                                 contains(pojo(CompositeResponse.Record.class).withProperty("asIs", asisMatcher("as is 1")),
+		                                          pojo(CompositeResponse.Record.class).withProperty("asIs", is(nullValue(AsIs.class))))));
+	}
+
+	@Test
+	public void elementIsNull() throws IOException {
+		val response = testCompositeResponse("{\"structure\":[\"AS_IS\",\"PHONE\"],\"data\":[[{\"source\":\"as is 1\"},null]]}");
+		assertThat(response, hasProperty("structure", contains(AS_IS, PHONE)));
+		//noinspection unchecked
+		assertThat(response, hasProperty("data",
+		                                 contains(pojo(CompositeResponse.Record.class).withProperty("asIs", asisMatcher("as is 1"))
+		                                                                              .withProperty("phone", is(nullValue(Phone.class))))));
+	}
+
+	@Test
+	public void compositeResponseFullOfSamples() throws IOException {
+		val response = testCompositeResponse(SampleComposite.SAMPLES_FULL.getResponseBody());
+		assertThat(response, hasProperty("structure", hasItems(AS_IS, NAME, ADDRESS, BIRTHDATE, PASSPORT, PHONE, EMAIL, VEHICLE)));
+		//noinspection unchecked
+		assertThat(response, hasProperty("data",
+		                                 contains(pojo(CompositeResponse.Record.class)
+				                                          .withProperty("asIs", asisMatcher("as is sample 1"))
+				                                          .withProperty("address", SampleAddresses.KHABAROVSK_1.getMatcher())
+				                                          .withProperty("birthDate", SampleBirthDates.VALID_1.getMatcher())
+				                                          .withProperty("email", SampleEmails.VALID.getMatcher())
+				                                          .withProperty("name", SampleNames.MALE_1.getMatcher())
+				                                          .withProperty("passport", SamplePassports.VALID_1.getMatcher())
+				                                          .withProperty("phone", SamplePhones.KHABAROVSK_1.getMatcher())
+				                                          .withProperty("vehicle", SampleVehicles.VALID_1.getMatcher()),
+		                                          pojo(CompositeResponse.Record.class)
+				                                          .withProperty("asIs", asisMatcher("as is sample 2"))
+				                                          .withProperty("address", SampleAddresses.MOSCOW_1.getMatcher())
+				                                          .withProperty("birthDate", SampleBirthDates.VALID_2.getMatcher())
+				                                          .withProperty("email", SampleEmails.INSTANT.getMatcher())
+				                                          .withProperty("name", SampleNames.FEMALE_1.getMatcher())
+				                                          .withProperty("passport", SamplePassports.VOID_1.getMatcher())
+				                                          .withProperty("phone", SamplePhones.MOSCOW_1.getMatcher())
+				                                          .withProperty("vehicle", SampleVehicles.VALID_2.getMatcher()),
+		                                          pojo(CompositeResponse.Record.class)
+				                                          .withProperty("asIs", asisMatcher("as is sample 3"))
+				                                          .withProperty("address", SampleAddresses.NOVOSIB_1.getMatcher())
+				                                          .withProperty("birthDate", SampleBirthDates.VALID_3.getMatcher())
+				                                          .withProperty("email", SampleEmails.CORRECTED.getMatcher())
+				                                          .withProperty("name", SampleNames.CHINESE.getMatcher())
+				                                          .withProperty("passport", SamplePassports.BAD_FORMAT_1.getMatcher())
+				                                          .withProperty("phone", SamplePhones.NOVOSIB_MOBILE_1.getMatcher())
+				                                          .withProperty("vehicle", SampleVehicles.VALID_3.getMatcher())
+		                                         )));
+	}
+
+	@Test
+	public void compositeResponseFullOfSamplesIterable() throws IOException {
+		val response = testCompositeResponse(SampleComposite.SAMPLES_FULL.getResponseBody());
+		assertThat(response, SampleComposite.SAMPLES_FULL.getResponseMatcher());
+	}
+
+	@Test
+	public void compositeResponseFullOfSamplesGetters() throws IOException {
+		val response = testCompositeResponse(SampleComposite.SAMPLES_FULL.getResponseBody());
+		assertThat(response, is(notNullValue(CompositeResponse.class)));
+		val structure = response.getStructure();
+		assertThat(structure, hasItems(AS_IS, NAME, ADDRESS, BIRTHDATE, PASSPORT, PHONE, EMAIL, VEHICLE));
+		val records = response.getData();
+		assertThat(records, is(notNullValue()));
+		CompositeResponse.Record record = records.get(0);
+		assertThat(record, is(notNullValue(CompositeResponse.Record.class)));
+		assertThat(record.getAsIs(), is(asisMatcher("as is sample 1")));
+		assertThat(record.getAddress(), is(SampleAddresses.KHABAROVSK_1.getMatcher()));
+		assertThat(record.getBirthDate(), is(SampleBirthDates.VALID_1.getMatcher()));
+		assertThat(record.getEmail(), is(SampleEmails.VALID.getMatcher()));
+		assertThat(record.getName(), is(SampleNames.MALE_1.getMatcher()));
+		assertThat(record.getPassport(), is(SamplePassports.VALID_1.getMatcher()));
+		assertThat(record.getPhone(), is(SamplePhones.KHABAROVSK_1.getMatcher()));
+		assertThat(record.getVehicle(), is(SampleVehicles.VALID_1.getMatcher()));
+		record = records.get(1);
+		assertThat(record, is(notNullValue(CompositeResponse.Record.class)));
+		assertThat(record.getAsIs(), is(asisMatcher("as is sample 2")));
+		assertThat(record.getAddress(), is(SampleAddresses.MOSCOW_1.getMatcher()));
+		assertThat(record.getBirthDate(), is(SampleBirthDates.VALID_2.getMatcher()));
+		assertThat(record.getEmail(), is(SampleEmails.INSTANT.getMatcher()));
+		assertThat(record.getName(), is(SampleNames.FEMALE_1.getMatcher()));
+		assertThat(record.getPassport(), is(SamplePassports.VOID_1.getMatcher()));
+		assertThat(record.getPhone(), is(SamplePhones.MOSCOW_1.getMatcher()));
+		assertThat(record.getVehicle(), is(SampleVehicles.VALID_2.getMatcher()));
+		record = records.get(2);
+		assertThat(record, is(notNullValue(CompositeResponse.Record.class)));
+		Assertions.assertThat(record.get(AS_IS)).isInstanceOfSatisfying(AsIs.class, asis -> assertThat(asis, is(asisMatcher("as is sample 3"))));
+		Assertions.assertThat(record.get(ADDRESS)).isInstanceOfSatisfying(Address.class, address -> assertThat(address, is(SampleAddresses.NOVOSIB_1.getMatcher())));
+		Assertions.assertThat(record.get(BIRTHDATE)).isInstanceOfSatisfying(BirthDate.class, birthDate -> assertThat(birthDate, is(SampleBirthDates.VALID_3.getMatcher())));
+		Assertions.assertThat(record.get(EMAIL)).isInstanceOfSatisfying(Email.class, email -> assertThat(email, is(SampleEmails.CORRECTED.getMatcher())));
+		Assertions.assertThat(record.get(NAME)).isInstanceOfSatisfying(Name.class, name -> assertThat(name, is(SampleNames.CHINESE.getMatcher())));
+		Assertions.assertThat(record.get(PASSPORT)).isInstanceOfSatisfying(Passport.class, passport -> assertThat(passport, is(SamplePassports.BAD_FORMAT_1.getMatcher())));
+		Assertions.assertThat(record.get(PHONE)).isInstanceOfSatisfying(Phone.class, phone -> assertThat(phone, is(SamplePhones.NOVOSIB_MOBILE_1.getMatcher())));
+		Assertions.assertThat(record.get(VEHICLE)).isInstanceOfSatisfying(Vehicle.class, vehicle -> assertThat(vehicle, is(SampleVehicles.VALID_3.getMatcher())));
+	}
+
+	@Test
+	public void compositeResponseGapsOfSamples() throws IOException {
+		val response = testCompositeResponse(SampleComposite.SAMPLES_GAPS.getResponseBody());
+		assertThat(response, SampleComposite.SAMPLES_GAPS.getResponseMatcher());
+	}
+
+	@Test
+	public void compositeResponseSplIterator() throws IOException {
+		val response = testCompositeResponse(SampleComposite.SAMPLES_FULL.getResponseBody());
+		val spliterator = response.spliterator();
+		System.out.println("spliterator characteristics: " + spliterator.characteristics());
+		System.out.println("spliterator size: " + spliterator.getExactSizeIfKnown());
+		StreamSupport.stream(spliterator, true).forEach(r -> System.out.println("record: " + r));
+	}
+
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
+	@Test
+	public void structureIsMissing() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Structure descriptor element is missing, null or empty"));
+		testCompositeResponse("{\"notAstructure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}]]}");
+	}
+
+	@Test
+	public void structureIsNull() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Structure descriptor element is missing, null or empty"));
+		testCompositeResponse("{\"structure\":null,\"data\":[[{\"source\":\"as is 1\"}]]}");
+	}
+
+	@Test
+	public void structureIsEmpty() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Structure descriptor element is missing, null or empty"));
+		testCompositeResponse("{\"structure\":[],\"data\":[[{\"source\":\"as is 1\"}]]}");
+	}
+
+	@Test
+	public void structureIsNotArray() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Structure descriptor element value '\"wrong\"' is not an array"));
+		testCompositeResponse("{\"structure\":\"wrong\",\"data\":[[{\"source\":\"as is 1\"}]]}");
+	}
+
+	@Test
+	public void dataIsMissing() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Data element is missing"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"notAdata\":[[{\"source\":\"as is 1\"}]]}");
+	}
+
+	@Test
+	public void dataIsNotArray() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Data node value '\"wrong\"' is not an array"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":\"wrong\"}");
+	}
+
+	@Test
+	public void elementIsOutOfStructure() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Element node #1 of record #0 is out of structure"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"},{\"source\":\"something\"}]]}");
+	}
+
+	@Test
+	public void elementIsNotObject() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Cannot construct instance of `ru.redcom.software.util.integration.api.client.dadata.dto.Phone` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('wrong')"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\",\"PHONE\"],\"data\":[[{\"source\":\"as is 1\"},\"wrong\"]]}");
+	}
+
+	@Test
+	public void recordNodeIsNull() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Record #1 node is null"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}],null]}");
+	}
+
+	@Test
+	public void recordNodeIsNotArray() throws IOException {
+		exception.expect(MismatchedInputException.class);
+		exception.expectMessage(startsWith("Record #1 node value '\"wrong\"' is not an array"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}],\"wrong\"]}");
+	}
+
+	@Test
+	public void parseError1() throws IOException {
+		exception.expect(JsonParseException.class);
+		exception.expectMessage(startsWith("Unexpected character (']' (code 93)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{\"source\":\"as is 1\"}],]}");
+	}
+
+	@Test
+	public void parseError2() throws IOException {
+		exception.expect(JsonParseException.class);
+		exception.expectMessage(startsWith("Unexpected character ('z' (code 122)): was expecting double-quote to start field name"));
+		testCompositeResponse("{\"structure\":[\"AS_IS\"],\"data\":[[{z\"source\":\"as is 1\"}]]}");
+	}
+
 
 	private CompositeResponse testCompositeResponse(final String source) throws IOException {
 		val response = objectMapper.readValue(source, CompositeResponse.class);

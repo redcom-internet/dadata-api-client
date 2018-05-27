@@ -81,7 +81,6 @@ public class APIErrorMessage implements Serializable {
 		return getContentsKeyForArray("details");
 	}
 
-	@SuppressWarnings("unused")
 	@Nullable
 	public String[] getData() {
 		return getContentsKeyForArray("data");

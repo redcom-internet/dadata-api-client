@@ -13,8 +13,6 @@ import lombok.ToString;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcConflict;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcPhone;
 
-import java.io.Serializable;
-
 /*
 Название	Длина	Описание
 source	100	Исходный телефон одной строкой
@@ -51,14 +49,10 @@ qc	5	Код проверки
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class Phone implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
-
+public class Phone extends ResponseItem {
 	private String type;
 	private String phone;
 
@@ -78,10 +72,4 @@ public class Phone implements Serializable, CompositeElement {
 	private QcConflict qcConflict;
 	@JsonProperty(required = true)
 	private QcPhone qc;
-
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.PHONE;
-	}
 }

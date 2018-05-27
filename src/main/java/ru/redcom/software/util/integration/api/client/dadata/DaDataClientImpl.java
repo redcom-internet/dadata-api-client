@@ -36,6 +36,7 @@ class DaDataClientImpl implements DaDataClient {
 	private static final String DADADA_API_ENDPOINT_CLEAN_EMAIL = "/clean/email";
 	private static final String DADADA_API_ENDPOINT_CLEAN_BIRTHDATE = "/clean/birthdate";
 	private static final String DADADA_API_ENDPOINT_CLEAN_VEHICLE = "/clean/vehicle";
+	private static final String DADADA_API_ENDPOINT_CLEAN_COMPOSITE = "/clean";
 
 	@Nonnull private final String baseUri;
 	@Nonnull private final String apiKey;
@@ -89,8 +90,8 @@ class DaDataClientImpl implements DaDataClient {
 		}
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public BigDecimal getProfileBalance() throws DaDataException {
 		return doRequest(DADADA_API_ENDPOINT_PROFILE_BALANCE, HttpMethod.GET, null, Balance.class)
 				.orElseThrow(() -> new IllegalStateException("Empty result from Get Profile Balance request"))
@@ -99,15 +100,15 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Address -------------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public Address cleanAddress(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Address string is empty");
 		return getFirstEntry(cleanAddresses(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public Address[] cleanAddresses(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Address sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_ADDRESS, HttpMethod.POST, sources, Address[].class).orElse(new Address[0]);
@@ -115,15 +116,15 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Phone number --------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public Phone cleanPhone(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Phone number string is empty");
 		return getFirstEntry(cleanPhones(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public Phone[] cleanPhones(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Phone number sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_PHONE, HttpMethod.POST, sources, Phone[].class).orElse(new Phone[0]);
@@ -131,15 +132,15 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Passport ------------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public Passport cleanPassport(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Passport number string is empty");
 		return getFirstEntry(cleanPassports(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public Passport[] cleanPassports(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Passport number sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_PASSPORT, HttpMethod.POST, sources, Passport[].class).orElse(new Passport[0]);
@@ -147,15 +148,15 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Name (FIO) ----------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public Name cleanName(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Name string is empty");
 		return getFirstEntry(cleanNames(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public Name[] cleanNames(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Name sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_NAME, HttpMethod.POST, sources, Name[].class).orElse(new Name[0]);
@@ -163,15 +164,15 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Email ---------------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public Email cleanEmail(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Email string is empty");
 		return getFirstEntry(cleanEmails(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public Email[] cleanEmails(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Email sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_EMAIL, HttpMethod.POST, sources, Email[].class).orElse(new Email[0]);
@@ -179,15 +180,15 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Birthdate -----------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public BirthDate cleanBirthDate(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Birthdate string is empty");
 		return getFirstEntry(cleanBirthDates(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public BirthDate[] cleanBirthDates(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Birthdate sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_BIRTHDATE, HttpMethod.POST, sources, BirthDate[].class).orElse(new BirthDate[0]);
@@ -195,21 +196,28 @@ class DaDataClientImpl implements DaDataClient {
 
 	// ------- Vehicle -----------------------------------------------------------------------------------------------
 
-	@Override
 	@Nonnull
+	@Override
 	public Vehicle cleanVehicle(@Nonnull final String source) throws DaDataException {
 		Assert.isTrue(StringUtils.hasText(source), "Vehicle string is empty");
 		return getFirstEntry(cleanVehicles(source));
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	public Vehicle[] cleanVehicles(@Nonnull final String... sources) throws DaDataException {
 		Assert.notNull(sources, "Vehicle sources is null");
 		return doRequest(DADADA_API_ENDPOINT_CLEAN_VEHICLE, HttpMethod.POST, sources, Vehicle[].class).orElse(new Vehicle[0]);
 	}
 
-	// TODO implement other API bindings
+	// ------- Composite -----------------------------------------------------------------------------------------------
+
+	@Nonnull
+	@Override
+	public CompositeResponse cleanComposite(@Nonnull final CompositeRequest source) throws DaDataException {
+		Assert.notNull(source, "Composite request is null");
+		return doRequest(DADADA_API_ENDPOINT_CLEAN_COMPOSITE, HttpMethod.POST, source, CompositeResponse.class).orElse(CompositeResponse.EMPTY_RESPONSE);
+	}
 
 	// ------------------ Internal -------------------------------------------------------------------------------------
 

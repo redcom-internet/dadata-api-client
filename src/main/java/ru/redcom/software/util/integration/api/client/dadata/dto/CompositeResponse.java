@@ -8,16 +8,18 @@ package ru.redcom.software.util.integration.api.client.dadata.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import lombok.*;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import lombok.ToString;
+import lombok.val;
+import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /*
 Ответ на запрос составной записи.
@@ -92,98 +94,114 @@ import java.util.List;
     ]
 }
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
-@EqualsAndHashCode
-@ToString
+@ToString(of = {"structure", "data"})
 @JsonDeserialize(using = CompositeResponse.CompositeResponseDeserializer.class)
-public class CompositeResponse {
+public class CompositeResponse implements Iterable<CompositeResponse.Record> {
+	public static final CompositeResponse EMPTY_RESPONSE = new CompositeResponse();
+
 	// Structure
 	@JsonProperty(required = true)
 	@Nonnull
-	private final CompositeElementType[] structure;
+	private final Set<CompositeElementType> structure = EnumSet.noneOf(CompositeElementType.class);
 	// Contents
-	// 1st level: records
-	// 2nd level: elements within record according to structure
 	@JsonProperty
 	@Nonnull
-	private final CompositeElement[][] data;
+	private final List<Record> data = new LinkedList<>();
 
 
-/*
-	@RequiredArgsConstructor
-	static class CompositeElementConverter extends StdConverter<JsonNode, CompositeElement> {
+	private CompositeResponse() {
+	}
 
-		@Nonnull private final ObjectMapper objectMapper;
+	private CompositeResponse(@Nonnull final CompositeElementType[] structure) {
+		this.structure.addAll(Arrays.asList(structure));
+	}
 
-		@Override
-		public CompositeElement convert(final JsonNode value) {
-			System.out.println("node = " + value);
-			try {
-				System.out.println("node value = " + objectMapper.readValue(value.traverse(), AsIs.class));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
+	private void addRecord(@Nonnull final Record record) {
+		data.add(record);
+	}
+
+	public Set<CompositeElementType> getStructure() {
+		return Collections.unmodifiableSet(structure);
+	}
+
+	public List<Record> getData() {
+		return Collections.unmodifiableList(data);
+	}
+
+	@Nonnull
+	@Override
+	public Iterator<Record> iterator() {
+		return getData().iterator();
+	}
+
+	@Nonnull
+	@Override
+	public Spliterator<Record> spliterator() {
+		return getData().spliterator();
+	}
+
+
+	@ToString
+	public static class Record {
+		@Nonnull private final Map<CompositeElementType, ResponseItem> items = new EnumMap<>(CompositeElementType.class);
+
+		private void addItem(@Nonnull final CompositeElementType elementType, @Nullable final ResponseItem item) {
+			items.put(elementType, item);
+		}
+
+		public boolean isEmpty() {
+			return items.isEmpty();
+		}
+
+		@Nullable
+		public ResponseItem get(@Nonnull final CompositeElementType elementType) {
+			Assert.notNull(elementType, "Element type is null");
+			return items.get(elementType);
+		}
+
+		@Nullable
+		public AsIs getAsIs() {
+			return (AsIs) get(CompositeElementType.AS_IS);
+		}
+
+		@Nullable
+		public Address getAddress() {
+			return (Address) get(CompositeElementType.ADDRESS);
+		}
+
+		@Nullable
+		public BirthDate getBirthDate() {
+			return (BirthDate) get(CompositeElementType.BIRTHDATE);
+		}
+
+		@Nullable
+		public Email getEmail() {
+			return (Email) get(CompositeElementType.EMAIL);
+		}
+
+		@Nullable
+		public Name getName() {
+			return (Name) get(CompositeElementType.NAME);
+		}
+
+		@Nullable
+		public Passport getPassport() {
+			return (Passport) get(CompositeElementType.PASSPORT);
+		}
+
+		@Nullable
+		public Phone getPhone() {
+			return (Phone) get(CompositeElementType.PHONE);
+		}
+
+		@Nullable
+		public Vehicle getVehicle() {
+			return (Vehicle) get(CompositeElementType.VEHICLE);
 		}
 	}
-*/
 
-//	static class CompositeElementTypeIdResolver extends TypeIdResolverBase {
-//
-//		@Override
-//		public JsonTypeInfo.Id getMechanism() {
-//			return JsonTypeInfo.Id.CUSTOM;
-//		}
-//
-//		@Override
-//		public void init(final JavaType bt) {
-//			super.init(bt);
-//			System.out.println("init with " + bt);
-//		}
-//
-//		// Serialize?
-//		@Override
-//		public String idFromValue(final Object value) {
-//			return value.getClass().getName();
-//		}
-//
-//		// Serialize?
-//		@Override
-//		public String idFromValueAndType(final Object value, final Class<?> suggestedType) {
-//			return value.getClass().getName();
-//		}
-//
-//		// Deserialize ?
-//		@Override
-//		public JavaType typeFromId(final DatabindContext context, final String id) throws IOException {
-//			System.out.println("type from id '" + id + "'");
-//			return context.constructType(AsIs.class);
-//
-//		}
-//	}
 
-//	static class CompositeElementDeserializer extends StdDeserializer<CompositeElement> {
-//
-//		CompositeElementDeserializer() {
-//			super(CompositeElement.class);
-//		}
-//
-//		@Override
-//		public CompositeElement deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
-//			System.out.println("current name: " + p.currentName());
-//			System.out.println("current token: " + p.currentToken());
-//			System.out.println("current token id: " + p.currentTokenId());
-//			return null;
-//		}
-//	}
-//
-//	static class CompositeElementDeserializer extends PresentPropertyPolymorphicDeserializer<CompositeElement> {
-//		public CompositeElementDeserializer() {
-//		super(CompositeElement.class);
-//	}
-//	}
-
+	// Composite response custom deserializer
 	static class CompositeResponseDeserializer extends StdDeserializer<CompositeResponse> {
 
 		CompositeResponseDeserializer() {
@@ -192,69 +210,51 @@ public class CompositeResponse {
 
 		@Override
 		public CompositeResponse deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
-			val treeNode = p.getCodec().readTree(p);
-			System.out.println("tree node = " + treeNode);
+			val objectCodec = p.getCodec();
+			final JsonNode treeNode = objectCodec.readTree(p);
 
+			// parse the response structure
 			CompositeElementType[] structure = {};
-			val structureNode = treeNode.get("structure");
-			System.out.println("structure node = " + structureNode);
-			if (structureNode.isArray() && structureNode.size() > 0) {
-				val structureIter = structureNode.traverse(p.getCodec()).readValuesAs(CompositeElementType[].class);
-				if (structureIter.hasNext())
-					structure = structureIter.next();
+			final JsonNode structureNode = treeNode.path("structure");
+			if (!(structureNode.isMissingNode() || structureNode.isNull())) {
+				if (structureNode.isArray())
+					structure = structureNode.traverse(objectCodec).readValueAs(structure.getClass());
+				else
+					ctxt.handleUnexpectedToken(structure.getClass(), structureNode.asToken(), p, "Structure descriptor element value '%s' is not an array", structureNode.toString());
 			}
-			System.out.println("structure = " + Arrays.toString(structure));
-			// TODO fail if structure is empty
+			if (structure.length == 0)
+				throw MismatchedInputException.from(p, structure.getClass(), "Structure descriptor element is missing, null or empty");
 
-			// nested arrays with element types of 2nd level is determined by structure item with index equal to element position in array
-
-			final List<List<CompositeElement>> dataList = new ArrayList<>();
-			val dataNode = treeNode.get("data");
-			System.out.println("data node = " + dataNode);
+			// nested arrays with polymorphic element at the 2nd level
+			// element type is determined by structure item with index equal to element position in a record
+			val response = new CompositeResponse(structure);
+			final JsonNode dataNode = treeNode.path("data");
 			if (dataNode.isArray()) {
-				dataNode.traverse(p.getCodec()).readValuesAs(Collection.class).forEachRemaining(l1e -> {
-					System.out.println("L1 = " + l1e);
-				});
-				for (int i = 0; i < dataNode.size(); i++) {
-					val recordNode = dataNode.get(i);
+				int recordNumber = 0;
+				for (final JsonNode recordNode : dataNode) {
 					if (recordNode.isArray()) {
-						recordNode.traverse(p.getCodec()).readValuesAs(Collection.class).forEachRemaining(l2e -> {
-							System.out.println("L2 = " + l2e);
-						});
-
-						final List<CompositeElement> recordList = new ArrayList<>();
-						for (int j = 0; j < recordNode.size(); j++) {
-							val elemNode = recordNode.get(j);
-							System.out.println("elemNode = " + elemNode);
-							// TODO fail if j is out of structure array
-							//if (j >= structure.length)
-							//	throw new ... Element i/j is out of response structure
-							val elemTypeName = structure[j].name();
-							val elemType = structure[j].getType();
-							System.out.println("elem " + elemTypeName + " type " + elemType);
-							if (elemNode.isObject()) {
-								System.out.println("element is object");
-								val elemIter = elemNode.traverse(p.getCodec()).readValuesAs(elemType);
-								if (elemIter.hasNext()) {
-									val elem = elemIter.next();
-									System.out.println("elem = " + elem);
-									recordList.add(elem);
-								} // todo else fail
-							}  // todo else fail
+						val record = new Record();
+						int elementNumber = 0;
+						for (final JsonNode elemNode : recordNode) {
+							if (elementNumber >= structure.length)
+								throw MismatchedInputException.from(p, ResponseItem[].class, "Element node #" + elementNumber + " of record #" + recordNumber + " is out of structure");
+							val elementType = structure[elementNumber];
+							record.addItem(elementType, elemNode.isNull() ? null : elemNode.traverse(objectCodec).readValueAs(elementType.getType()));
+							elementNumber++;
 						}
-						dataList.add(recordList);
-					} // todo else fail
+						response.addRecord(record);
+					} else if (recordNode.isNull())
+						ctxt.handleUnexpectedToken(ResponseItem[].class, recordNode.asToken(), p, "Record #%d node is null", recordNumber);
+					else
+						ctxt.handleUnexpectedToken(ResponseItem[].class, recordNode.asToken(), p, "Record #%d node value '%s' is not an array", recordNumber, recordNode.toString());
+					recordNumber++;
 				}
-			} // todo else fail
-			// todo convert data to double-sized array and construct response object
-			System.out.println("data list = " + dataList);
+			} else if (dataNode.isMissingNode())
+				throw MismatchedInputException.from(p, ResponseItem[][].class, "Data element is missing");
+			else if (!dataNode.isNull())
+				ctxt.handleUnexpectedToken(ResponseItem[][].class, dataNode.asToken(), p, "Data node value '%s' is not an array", dataNode.toString());
 
-			final CompositeElement[][] data = dataList.stream()
-			                                          .map(l -> l.toArray(new CompositeElement[0]))
-			                                          .toArray(CompositeElement[][]::new);
-			System.out.println("data = " + Arrays.deepToString(data));
-
-			return new CompositeResponse(structure, data);
+			return response;
 		}
 	}
 }

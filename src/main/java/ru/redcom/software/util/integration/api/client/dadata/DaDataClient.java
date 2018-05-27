@@ -61,5 +61,6 @@ public interface DaDataClient {
 	@Nonnull
 	Vehicle[] cleanVehicles(@Nonnull String... sources) throws DaDataException;
 
-	// TODO implement other API bindings
+	@Nonnull
+	CompositeResponse cleanComposite(@Nonnull CompositeRequest source) throws DaDataException;
 }

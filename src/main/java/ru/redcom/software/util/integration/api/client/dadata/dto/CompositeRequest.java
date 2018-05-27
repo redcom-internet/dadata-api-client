@@ -53,9 +53,10 @@ public class CompositeRequest {
 	// Structure of request (element types)
 	@JsonProperty
 	@Nonnull
-	private final EnumSet<CompositeElementType> structure;
+	private final Set<CompositeElementType> structure;
 	@Nonnull
 	private final Set<CompositeElementType> unmodifiableStructure;
+	private final boolean unconstrainedStructure;
 	// Contents of request
 	@JsonProperty
 	@Nonnull
@@ -63,15 +64,38 @@ public class CompositeRequest {
 
 
 	// Instance should be only constructed by builder
+	private CompositeRequest() {
+		this(EnumSet.noneOf(CompositeElementType.class));
+	}
+
 	private CompositeRequest(@Nonnull final EnumSet<CompositeElementType> structure) {
 		this.structure = structure;
 		this.unmodifiableStructure = Collections.unmodifiableSet(this.structure);
+		this.unconstrainedStructure = structure.isEmpty();
 	}
 
 	// Add elements from array to contents
 	private void addElements(@Nonnull final Element[] elements) {
+		// adjust request structure with the new elements
+		if (unconstrainedStructure)
+			adjustStructure(elements);
+		else {
+			// Check that elements conforms with the request structure
+			final String nonConforming = checkConformance(elements);
+			Assert.state(nonConforming.isEmpty(), "Elements not in the structure: " + nonConforming);
+		}
 		// strip empty elements out (can come from array-style building)
-		data.addAll(Arrays.stream(elements).filter(Element::nonEmpty).collect(Collectors.toList()));
+		data.addAll(Arrays.stream(elements)
+		                  .filter(Element::nonEmpty)
+		                  .collect(Collectors.toList()));
+	}
+
+	// adjust request structure with the new elements
+	private void adjustStructure(@Nonnull final Element[] elements) {
+		structure.addAll(Arrays.stream(elements)
+		                       .map(Element::getStructure)
+		                       .flatMap(Collection::stream)
+		                       .collect(Collectors.toSet()));
 	}
 
 	// Check that elements conforms to the request structure
@@ -88,7 +112,12 @@ public class CompositeRequest {
 		data.forEach(element -> element.alignStructure(unmodifiableStructure));
 	}
 
-	// Compose request with specified structure
+	// Compose request with structure defined by payload
+	public static CompositeRequestBuilder compose() {
+		return new CompositeRequestBuilder();
+	}
+
+	// Compose request constrained to the specified structure
 	public static CompositeRequestBuilder compose(@Nonnull final CompositeElementType first, @Nonnull final CompositeElementType... others) {
 		Assert.notNull(first, "Element type(s) must be specified");
 		return new CompositeRequestBuilder(EnumSet.of(first, others));
@@ -179,6 +208,11 @@ public class CompositeRequest {
 			structure.forEach(e -> elementContents.putIfAbsent(e, null));
 		}
 
+		// Get the element structure
+		Set<CompositeElementType> getStructure() {
+			return Collections.unmodifiableSet(elementContents.keySet());
+		}
+
 		@Nonnull
 		private Element addElementContents(@Nonnull final CompositeElementType elementType, final String... sources) {
 			Assert.isTrue(sources != null && sources.length > 0, "Sources must be specified");
@@ -206,6 +240,11 @@ public class CompositeRequest {
 		@Nonnull private CompositeRequest composite;
 
 
+		// Compose request with structure defined by payload
+		private CompositeRequestBuilder() {
+			composite = new CompositeRequest();
+		}
+
 		// Construct builder for specified element types
 		private CompositeRequestBuilder(@Nonnull final EnumSet<CompositeElementType> structure) {
 			composite = new CompositeRequest(structure);
@@ -221,9 +260,6 @@ public class CompositeRequest {
 		@Nonnull
 		public CompositeRequestBuilder elements(@Nonnull final Element... elements) {
 			Assert.notNull(elements, "Elements cannot be null");
-			// Check that elements conforms with the request structure
-			final String nonConforming = composite.checkConformance(elements);
-			Assert.state(nonConforming.isEmpty(), "Elements not in the structure: " + nonConforming);
 			composite.addElements(elements);
 			return this;
 		}

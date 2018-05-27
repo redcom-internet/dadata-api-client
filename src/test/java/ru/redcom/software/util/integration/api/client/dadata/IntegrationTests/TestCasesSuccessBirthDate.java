@@ -34,7 +34,10 @@ public class TestCasesSuccessBirthDate {
 		        TestCasesSuccessBirthDate::matcherPartial),
 		EMPTY("-",
 		      "[{\"source\":\"-\",\"birthdate\":null,\"qc\":2}]",
-		      TestCasesSuccessBirthDate::matcherEmpty);
+		      TestCasesSuccessBirthDate::matcherEmpty),
+		NULL(null,
+		     "{\"source\":null,\"birthdate\":null,\"qc\":2}",
+		     s -> matcherNull());
 
 		private final String sourcePattern;
 		private final String responseBody;
@@ -101,6 +104,14 @@ public class TestCasesSuccessBirthDate {
 	private static Matcher<BirthDate> matcherEmpty(final String s) {
 		return pojo(BirthDate.class)
 				.withProperty("source", is(equalTo(s)))
+				.withProperty("birthdate", is(nullValue(LocalDate.class)))
+				.withProperty("qc", is(QcBirthDate.UNRECOGNIZED));
+	}
+
+	// null
+	private static Matcher<BirthDate> matcherNull() {
+		return pojo(BirthDate.class)
+				.withProperty("source", is(nullValue(LocalDate.class)))
 				.withProperty("birthdate", is(nullValue(LocalDate.class)))
 				.withProperty("qc", is(QcBirthDate.UNRECOGNIZED));
 	}

@@ -12,8 +12,6 @@ import lombok.Getter;
 import lombok.ToString;
 import ru.redcom.software.util.integration.api.client.dadata.types.QcVehicle;
 
-import java.io.Serializable;
-
 /*
 Название	Длина	Описание
 source	100	Исходное значение
@@ -36,13 +34,10 @@ qc	5	Код проверки
 // see https://github.com/FasterXML/jackson-databind/issues/230
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonDeserialize(using = JsonDeserializer.None.class)
-public class Vehicle implements Serializable, CompositeElement {
-	@JsonProperty(required = true)
-	private String source;
+public class Vehicle extends ResponseItem {
 	private String result;
 
 	private String brand;
@@ -50,10 +45,4 @@ public class Vehicle implements Serializable, CompositeElement {
 
 	@JsonProperty(required = true)
 	private QcVehicle qc;
-
-
-	@Override
-	public CompositeElementType getCompositeElementType() {
-		return CompositeElementType.VEHICLE;
-	}
 }
