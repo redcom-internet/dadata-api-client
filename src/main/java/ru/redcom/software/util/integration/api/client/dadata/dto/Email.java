@@ -26,8 +26,10 @@ qc	5	Код проверки
   }
 ]
 */
-// Property annotation with "required" does not currently enforce mandatoriness on fields,
-// see https://github.com/FasterXML/jackson-databind/issues/230
+
+/**
+ * Cleaned E-mail address container.
+ */
 @SuppressWarnings("unused")
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -38,4 +40,8 @@ public class Email extends ResponseItem {
 
 	@JsonProperty(required = true)
 	private QcEmail qc;
+
+	// This class is not instantiable
+	private Email() {
+	}
 }

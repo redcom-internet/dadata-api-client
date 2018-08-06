@@ -6,6 +6,7 @@
 package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests;
 
 import lombok.Getter;
+import lombok.val;
 import org.hamcrest.Matcher;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.dto.AsIs;
@@ -66,7 +67,7 @@ public class TestCasesSuccessComposite {
 		// @formatter:off
 		return CompositeRequest
 				.compose()
-					.element()
+					.record()
 						.asIs("as is sample 1")
 						.address(TestCasesSuccessAddress.SampleAddresses.KHABAROVSK_1.getSourcePattern())
 						.birthDate(TestCasesSuccessBirthDate.SampleBirthDates.VALID_1.getSourcePattern())
@@ -76,7 +77,7 @@ public class TestCasesSuccessComposite {
 						.phone(TestCasesSuccessPhone.SamplePhones.KHABAROVSK_1.getSourcePattern())
 						.vehicle(TestCasesSuccessVehicle.SampleVehicles.VALID_1.getSourcePattern())
 				.and()
-					.element()
+					.record()
 						.asIs("as is sample 2")
 						.address(TestCasesSuccessAddress.SampleAddresses.MOSCOW_1.getSourcePattern())
 						.birthDate(TestCasesSuccessBirthDate.SampleBirthDates.VALID_2.getSourcePattern())
@@ -86,7 +87,7 @@ public class TestCasesSuccessComposite {
 						.phone(TestCasesSuccessPhone.SamplePhones.MOSCOW_1.getSourcePattern())
 						.vehicle(TestCasesSuccessVehicle.SampleVehicles.VALID_2.getSourcePattern())
 				.and()
-					.element()
+					.record()
 						.asIs("as is sample 3")
 						.address(TestCasesSuccessAddress.SampleAddresses.NOVOSIB_1.getSourcePattern())
 						.birthDate(TestCasesSuccessBirthDate.SampleBirthDates.VALID_3.getSourcePattern())
@@ -104,13 +105,13 @@ public class TestCasesSuccessComposite {
 		// @formatter:off
 		return CompositeRequest
 				.compose()
-					.element()
+					.record()
 						.asIs("as", " is", " sample", " 1")
 				.and()
-					.element()
+					.record()
 						.name(TestCasesSuccessName.SampleNames.MALE_1.getSourcePattern())
 				.and()
-					.element()
+					.record()
 						.birthDate(TestCasesSuccessBirthDate.SampleBirthDates.VALID_1.getSourcePattern())
 				.and()
 					.build();
@@ -180,7 +181,7 @@ public class TestCasesSuccessComposite {
 
 	public static void successTest(final DaDataClient dadata, final CompositeRequest request, final Matcher<? super CompositeResponse> matcher) {
 		System.out.println("Composite request: " + request);
-		final CompositeResponse response = dadata.cleanComposite(request);
+		val response = dadata.cleanComposite(request);
 		System.out.println("Composite response: " + response);
 		assertThat(response, matcher);
 	}

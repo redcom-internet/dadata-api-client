@@ -13,13 +13,15 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * Marker interface to specify that element can participate in composite response.
+ * Base class for all response DTO types.
  */
 @SuppressWarnings("unused")
 @Getter
 @EqualsAndHashCode
 @ToString
 public abstract class ResponseItem implements Serializable {
+	// Property annotation with "required" does not currently enforce mandatoriness for fields on deserialization.
+	// see https://github.com/FasterXML/jackson-databind/issues/230
 	@JsonProperty(required = true)
 	private String source;
 }

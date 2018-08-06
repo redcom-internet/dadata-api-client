@@ -5,7 +5,6 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.types;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 
@@ -14,9 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
+/** Address record actuality state in the FIAS directory */
 public enum FiasActuality {
 	/*
 	Признак актуальности адреса в ФИАС
@@ -29,12 +26,13 @@ public enum FiasActuality {
 	RENAMED(IntStream.rangeClosed(1, 50).toArray()),
 	RESUBORDINATED(51),
 	REMOVED(99),
+	/** Catch-all constant for unrecognized response contents */
 	@JsonEnumDefaultValue
 	UNKNOWN();
 
 	@Nonnull private final int[] values;
 
-	FiasActuality(@Nonnull final int... values) {
+	private FiasActuality(@Nonnull final int... values) {
 		Arrays.sort(values);
 		this.values = values;
 	}
@@ -44,8 +42,8 @@ public enum FiasActuality {
 	}
 
 	@SuppressWarnings("unused")
-	@JsonCreator
 	@Nullable
+	@JsonCreator
 	private static FiasActuality jsonCreator(final Integer s) {
 		return s == null ? null : Arrays.stream(values()).filter(v -> v.contains(s)).findAny().orElse(UNKNOWN);
 	}

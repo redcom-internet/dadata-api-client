@@ -228,8 +228,10 @@ Address clean service response object example:
   }
 ]
 */
-// Property annotation with "required" does not currently enforce mandatoriness on fields,
-// see https://github.com/FasterXML/jackson-databind/issues/230
+
+/**
+ * Cleaned Address container.
+ */
 @SuppressWarnings("unused")
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -393,6 +395,9 @@ public class Address extends ResponseItem {
 	private MetroStation[] metro;
 
 
+	/**
+	 * Metro stations nearest to the address.
+	 */
 	@Value
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class MetroStation {
@@ -409,4 +414,7 @@ public class Address extends ResponseItem {
 			this.name = name;
 		}
 	}
+
+	// This class is not instantiable
+	private Address() {	}
 }

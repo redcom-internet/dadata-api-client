@@ -19,6 +19,10 @@ import java.math.BigDecimal;
    "balance" : 0.2
 }
  */
+
+/**
+ * Data Transfer Object for account profile balance response.
+ */
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Balance implements Serializable {

@@ -44,8 +44,10 @@ qc	5	Код проверки
   }
 ]
 */
-// Property annotation with "required" does not currently enforce mandatoriness on fields,
-// see https://github.com/FasterXML/jackson-databind/issues/230
+
+/**
+ * Cleaned Person Name container.
+ */
 @SuppressWarnings("unused")
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -69,4 +71,8 @@ public class Name extends ResponseItem {
 
 	@JsonProperty(required = true)
 	private QcName qc;
+
+	// This class is not instantiable
+	private Name() {
+	}
 }

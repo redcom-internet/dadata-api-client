@@ -5,23 +5,21 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.types;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
+/** Geoposition precision level */
 // JsonProperty/JsonValue does not work on enums when deserializing from json numerical types.
 // Deserialization is done by ordinals instead, which is definitely not what we wants here.
 // see https://github.com/FasterXML/jackson-databind/issues/1850
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QcGeo {
 	/*
 	Код точности координат qc_geo — точность координат адреса для курьерской доставки:
@@ -46,6 +44,7 @@ public enum QcGeo {
 	CITY(4),
 	@JsonProperty("5")
 	UNDEFINED(5),
+	/** Catch-all constant for unrecognized response contents */
 	@JsonEnumDefaultValue
 	UNKNOWN(null);
 
@@ -56,8 +55,8 @@ public enum QcGeo {
 	}
 
 	@SuppressWarnings("unused")
-	@JsonCreator
 	@Nullable
+	@JsonCreator
 	private static QcGeo jsonCreator(final Integer s) {
 		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}

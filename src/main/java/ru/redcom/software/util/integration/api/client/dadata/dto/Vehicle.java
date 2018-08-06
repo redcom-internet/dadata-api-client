@@ -30,8 +30,10 @@ qc	5	Код проверки
   }
 ]
 */
-// Property annotation with "required" does not currently enforce mandatoriness on fields,
-// see https://github.com/FasterXML/jackson-databind/issues/230
+
+/**
+ * Cleaned Vehicle Type container.
+ */
 @SuppressWarnings("unused")
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -45,4 +47,8 @@ public class Vehicle extends ResponseItem {
 
 	@JsonProperty(required = true)
 	private QcVehicle qc;
+
+	// This class is not instantiable
+	private Vehicle() {
+	}
 }

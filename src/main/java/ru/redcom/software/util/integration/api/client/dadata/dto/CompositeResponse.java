@@ -5,6 +5,7 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -94,9 +95,15 @@ import java.util.*;
     ]
 }
  */
+
+/**
+ * Composite response data transfer object.
+ */
 @ToString(of = {"structure", "data"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = CompositeResponse.CompositeResponseDeserializer.class)
 public class CompositeResponse implements Iterable<CompositeResponse.Record> {
+	/** An empty response instance. */
 	public static final CompositeResponse EMPTY_RESPONSE = new CompositeResponse();
 
 	// Structure
@@ -120,20 +127,40 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 		data.add(record);
 	}
 
+	/**
+	 * Get composite response structure.
+	 *
+	 * @return Collection of structure types.
+	 */
 	public Set<CompositeElementType> getStructure() {
 		return Collections.unmodifiableSet(structure);
 	}
 
+	/**
+	 * Get compsoite response payload.
+	 *
+	 * @return Collection of records of the elements
+	 */
 	public List<Record> getData() {
 		return Collections.unmodifiableList(data);
 	}
 
+	/**
+	 * Get the iterator over the records collection.
+	 *
+	 * @return Iterator instance
+	 */
 	@Nonnull
 	@Override
 	public Iterator<Record> iterator() {
 		return getData().iterator();
 	}
 
+	/**
+	 * Get the splittable iterator over the records collection.
+	 *
+	 * @return Spliterator instance
+	 */
 	@Nonnull
 	@Override
 	public Spliterator<Record> spliterator() {
@@ -141,59 +168,119 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 	}
 
 
+	/**
+	 * A record of response elements.
+	 */
 	@ToString
 	public static class Record {
 		@Nonnull private final Map<CompositeElementType, ResponseItem> items = new EnumMap<>(CompositeElementType.class);
+
+		// This class is not instantiable outside its outer class
+		private Record() {
+		}
 
 		private void addItem(@Nonnull final CompositeElementType elementType, @Nullable final ResponseItem item) {
 			items.put(elementType, item);
 		}
 
+		/**
+		 * Check for a empty record.
+		 *
+		 * @return  <code>true</code> if record contains no elements
+		 */
 		public boolean isEmpty() {
 			return items.isEmpty();
 		}
 
+		/**
+		 * Get an element with the specified type.
+		 *
+		 * @param elementType   Element type
+		 * @return Element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public ResponseItem get(@Nonnull final CompositeElementType elementType) {
 			Assert.notNull(elementType, "Element type is null");
 			return items.get(elementType);
 		}
 
+		// Casted getters
+
+		/**
+		 * Get As-Is element.
+		 *
+		 * @return As-Is element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public AsIs getAsIs() {
 			return (AsIs) get(CompositeElementType.AS_IS);
 		}
 
+		/**
+		 * Get Address element.
+		 *
+		 * @return Address element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public Address getAddress() {
 			return (Address) get(CompositeElementType.ADDRESS);
 		}
 
+		/**
+		 * Get Birthdate element.
+		 *
+		 * @return Birthdate element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public BirthDate getBirthDate() {
 			return (BirthDate) get(CompositeElementType.BIRTHDATE);
 		}
 
+		/**
+		 * Get Email element.
+		 *
+		 * @return Email element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public Email getEmail() {
 			return (Email) get(CompositeElementType.EMAIL);
 		}
 
+		/**
+		 * Get Name element.
+		 *
+		 * @return Name element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public Name getName() {
 			return (Name) get(CompositeElementType.NAME);
 		}
 
+		/**
+		 * Get Passport element.
+		 *
+		 * @return Passport element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public Passport getPassport() {
 			return (Passport) get(CompositeElementType.PASSPORT);
 		}
 
+		/**
+		 * Get Phone Number element.
+		 *
+		 * @return Phone Number element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public Phone getPhone() {
 			return (Phone) get(CompositeElementType.PHONE);
 		}
 
+		/**
+		 * Get Vehicle Type element.
+		 *
+		 * @return Vehicle Type element instance, or null if element of this type does not exists.
+		 */
 		@Nullable
 		public Vehicle getVehicle() {
 			return (Vehicle) get(CompositeElementType.VEHICLE);

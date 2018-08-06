@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.Assert;
 
@@ -45,11 +46,14 @@ import java.util.stream.Collectors;
   ]
 }
 */
+
+/**
+ * Composite request data transfer object.
+ */
 @ToString(of = {"structure", "data"})
 @JsonPropertyOrder({"structure", "data"})
 public class CompositeRequest {
-
-	// These collections are iterated in consistent ascending order of their key type ordinal
+	// Both structure and element contents are iterated in consistent ascending order of their key type ordinal
 	// Structure of request (element types)
 	@JsonProperty
 	@Nonnull
@@ -60,7 +64,7 @@ public class CompositeRequest {
 	// Contents of request
 	@JsonProperty
 	@Nonnull
-	private final List<Element> data = new LinkedList<>();
+	private final List<Record> data = new LinkedList<>();
 
 
 	// Instance should be only constructed by builder
@@ -74,63 +78,72 @@ public class CompositeRequest {
 		this.unconstrainedStructure = structure.isEmpty();
 	}
 
-	// Add elements from array to contents
-	private void addElements(@Nonnull final Element[] elements) {
+	// Add element records from array to contents
+	private void addRecords(@Nonnull final Record[] records) {
 		// adjust request structure with the new elements
 		if (unconstrainedStructure)
-			adjustStructure(elements);
+			adjustStructure(records);
 		else {
 			// Check that elements conforms with the request structure
-			final String nonConforming = checkConformance(elements);
+			final String nonConforming = checkConformance(records);
 			Assert.state(nonConforming.isEmpty(), "Elements not in the structure: " + nonConforming);
 		}
-		// strip empty elements out (can come from array-style building)
-		data.addAll(Arrays.stream(elements)
-		                  .filter(Element::nonEmpty)
+		// strip empty records out (can come from array-style building)
+		data.addAll(Arrays.stream(records)
+		                  .filter(Record::nonEmpty)
 		                  .collect(Collectors.toList()));
 	}
 
 	// adjust request structure with the new elements
-	private void adjustStructure(@Nonnull final Element[] elements) {
-		structure.addAll(Arrays.stream(elements)
-		                       .map(Element::getStructure)
+	private void adjustStructure(@Nonnull final Record[] records) {
+		structure.addAll(Arrays.stream(records)
+		                       .map(Record::getStructure)
 		                       .flatMap(Collection::stream)
 		                       .collect(Collectors.toSet()));
 	}
 
-	// Check that elements conforms to the request structure
+	// Check that records conforms to the request structure
 	@Nonnull
-	private String checkConformance(@Nonnull final Element[] elements) {
-		return Arrays.stream(elements)
+	private String checkConformance(@Nonnull final Record[] records) {
+		return Arrays.stream(records)
 		             .filter(elem -> !elem.conformsWithStructure(unmodifiableStructure))
-		             .map(Element::toStringBrief)
+		             .map(Record::toStringBrief)
 		             .collect(Collectors.joining(", "));
 	}
 
-	// Align elements with request structure to fill gaps with nulls
+	// Align records with request structure to fill gaps with nulls
 	private void alignStructure() {
-		data.forEach(element -> element.alignStructure(unmodifiableStructure));
+		data.forEach(record -> record.alignStructure(unmodifiableStructure));
 	}
 
-	// Compose request with structure defined by payload
+	/**
+	 * Compose request with structure defined by payload.
+	 *
+	 * @return Composite request builder instance
+	 */
 	public static CompositeRequestBuilder compose() {
 		return new CompositeRequestBuilder();
 	}
 
-	// Compose request constrained to the specified structure
+	/**
+	 * Compose request constrained to the specified structure.
+	 *
+	 * @param first First type structure element
+	 * @param others    Other type structure elements
+	 * @return Composite request builder instance
+	 */
 	public static CompositeRequestBuilder compose(@Nonnull final CompositeElementType first, @Nonnull final CompositeElementType... others) {
 		Assert.notNull(first, "Element type(s) must be specified");
 		return new CompositeRequestBuilder(EnumSet.of(first, others));
 	}
 
-	// Element value container. Can hold both single instances and arrays, as well as null reference to indicate element absence
+	// Element value container. Can hold both single instances and arrays of Strings.
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	private static final class ElementValue<T> {
-		@Getter(value = AccessLevel.PACKAGE, onMethod = @__({@JsonValue}))
+		@JsonValue
+		@Getter(value = AccessLevel.PACKAGE)
+		@Nonnull
 		private final T value;
-
-		ElementValue(final T value) {
-			this.value = value;
-		}
 
 		@Nonnull
 		static ElementValue of(final String... sources) {
@@ -145,78 +158,131 @@ public class CompositeRequest {
 		}
 	}
 
-	// Element builder
+	/**
+	 * A record composed of request elements.
+	 */
 	@ToString
-	public static class Element {
-		private final Map<CompositeElementType, ElementValue> elementContents = new EnumMap<>(CompositeElementType.class);
+	public static class Record {
+		@Nonnull private final Map<CompositeElementType, ElementValue> recordElements = new EnumMap<>(CompositeElementType.class);
 
+		/**
+		 * Set As-Is request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element asIs(@Nonnull String... sources) {
+		public Record asIs(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.AS_IS, sources);
 		}
 
+		/**
+		 * Set Address request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element address(@Nonnull String... sources) {
+		public Record address(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.ADDRESS, sources);
 		}
 
+		/**
+		 * Set Birthdate request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element birthDate(@Nonnull String... sources) {
+		public Record birthDate(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.BIRTHDATE, sources);
 		}
 
+		/**
+		 * Set Email request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element email(@Nonnull String... sources) {
+		public Record email(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.EMAIL, sources);
 		}
 
+		/**
+		 * Set Name request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element name(@Nonnull String... sources) {
+		public Record name(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.NAME, sources);
 		}
 
+		/**
+		 * Set Passport request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element passport(@Nonnull String... sources) {
+		public Record passport(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.PASSPORT, sources);
 		}
 
+		/**
+		 * Set Phone Number request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element phone(@Nonnull String... sources) {
+		public Record phone(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.PHONE, sources);
 		}
 
+		/**
+		 * Set Vehicle Type request element source values.
+		 *
+		 * @param sources   Source values
+		 * @return Record instance
+		 */
 		@Nonnull
-		public Element vehicle(@Nonnull String... sources) {
+		public Record vehicle(@Nonnull String... sources) {
 			return addElementContents(CompositeElementType.VEHICLE, sources);
 		}
 
+		// This method should only be used with builder-style
 		public CompositeRequestBuilder and() {
 			throw new UnsupportedOperationException("This method should be used only with builder-style composition");
 		}
 
+		// Check if record contents is not empty
 		boolean nonEmpty() {
-			return !elementContents.isEmpty();
+			return !recordElements.isEmpty();
 		}
 
-		// Check if element contents conforms with the request structure
+		// Check if record contents conforms with the request structure
 		boolean conformsWithStructure(@Nonnull final Set<CompositeElementType> structure) {
-			return structure.containsAll(elementContents.keySet());
+			return structure.containsAll(recordElements.keySet());
 		}
 
-		// Align element contents to the request structure by filling gaps with null values
+		// Align record contents to the request structure by filling gaps with null values
 		void alignStructure(@Nonnull final Set<CompositeElementType> structure) {
-			structure.forEach(e -> elementContents.putIfAbsent(e, null));
+			structure.forEach(e -> recordElements.putIfAbsent(e, null));
 		}
 
-		// Get the element structure
+		// Get the record structure
 		Set<CompositeElementType> getStructure() {
-			return Collections.unmodifiableSet(elementContents.keySet());
+			return Collections.unmodifiableSet(recordElements.keySet());
 		}
 
+		// Store a contents
 		@Nonnull
-		private Element addElementContents(@Nonnull final CompositeElementType elementType, final String... sources) {
+		private Record addElementContents(@Nonnull final CompositeElementType elementType, final String... sources) {
 			Assert.isTrue(sources != null && sources.length > 0, "Sources must be specified");
-			elementContents.put(elementType, ElementValue.of(sources));
+			recordElements.put(elementType, ElementValue.of(sources));
 			return this;
 		}
 
@@ -225,17 +291,19 @@ public class CompositeRequest {
 		@Nonnull
 		@JsonValue
 		private Collection<ElementValue> serialize() {
-			return elementContents.values();
+			return recordElements.values();
 		}
 
 		// for non-conformant elements exception message
 		@Nonnull
 		private String toStringBrief() {
-			return elementContents.toString();
+			return recordElements.toString();
 		}
 	}
 
-	// Composite request builder
+	/**
+	 * Composite request builder.
+	 */
 	public static final class CompositeRequestBuilder {
 		@Nonnull private CompositeRequest composite;
 
@@ -250,35 +318,57 @@ public class CompositeRequest {
 			composite = new CompositeRequest(structure);
 		}
 
-		// Construct element builder
+		/**
+		 * Construct a record builder.
+		 *
+		 * @return Record builder instance
+		 */
 		@Nonnull
-		public ElementSpec element() {
-			return new ElementSpec();
+		public RecordSpec record() {
+			return new RecordSpec();
 		}
 
-		// Add elements to the request
+		/**
+		 * <p>Add records to the request.</P>
+		 * Used in array-style composing.
+		 *
+		 * @param records  Records array
+		 * @return Composite Request builder instance
+		 */
 		@Nonnull
-		public CompositeRequestBuilder elements(@Nonnull final Element... elements) {
-			Assert.notNull(elements, "Elements cannot be null");
-			composite.addElements(elements);
+		public CompositeRequestBuilder records(@Nonnull final Record... records) {
+			Assert.notNull(records, "Records cannot be null");
+			composite.addRecords(records);
 			return this;
 		}
 
-		// Build the request
+		/**
+		 * Finally build the request.
+		 *
+		 * @return Composite Request instance
+		 */
 		@Nonnull
 		public CompositeRequest build() {
 			composite.alignStructure();
 			return composite;
 		}
 
-		// Element builder to be used in request builder
-		public final class ElementSpec extends Element {
+		/**
+		 * Record builder class to be used in request builder.
+		 */
+		public final class RecordSpec extends Record {
 
+			/**
+			 * Finalize the record construction and add it to the request contents.
+			 * Prepare to construct a new record or build the entire request.
+			 *
+			 * @return Composite Request builder instance
+			 */
 			@Nonnull
 			@Override
 			public CompositeRequestBuilder and() {
-				Assert.state(nonEmpty(), "Element is empty");
-				return elements(this);
+				Assert.state(nonEmpty(), "Record contains no elements");
+				return records(this);
 			}
 		}
 	}

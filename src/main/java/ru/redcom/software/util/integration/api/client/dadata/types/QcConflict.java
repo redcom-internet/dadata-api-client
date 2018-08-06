@@ -5,23 +5,21 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.types;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
+/** Phone and location correlation status */
 // JsonProperty/JsonValue does not work on enums when deserializing from json numerical types.
 // Deserialization is done by ordinals instead, which is definitely not what we wants here.
 // see https://github.com/FasterXML/jackson-databind/issues/1850
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QcConflict {
 	/*
 	Признак конфликта телефона с адресом (qc_conflict) — указал ли клиент телефон, соответствующий его адресу. Удобно для проверки уровня риска:
@@ -37,6 +35,7 @@ public enum QcConflict {
 	CITY_DIFFERS(2),
 	@JsonProperty("3")
 	REGION_DIFFERS(3),
+	/** Catch-all constant for unrecognized response contents */
 	@JsonEnumDefaultValue
 	UNKNOWN(null);
 
@@ -47,8 +46,8 @@ public enum QcConflict {
 	}
 
 	@SuppressWarnings("unused")
-	@JsonCreator
 	@Nullable
+	@JsonCreator
 	private static QcConflict jsonCreator(final Integer s) {
 		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}

@@ -26,18 +26,18 @@ public class UT01TypesAddress {
 
 	@Test
 	public void qcAddressComplete() {
-		assertThat(QcAddressComplete.ADDRESS_COMPLETE.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.YES));
-		assertThat(QcAddressComplete.HOUSE_NOT_IN_FIAS.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.MAYBE));
-		assertThat(QcAddressComplete.NO_FLAT.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.MAYBE));
-		assertThat(QcAddressComplete.POSTAL_BOX.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.MAYBE));
-		assertThat(QcAddressComplete.VERIFY_PARSING.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.MAYBE));
-		assertThat(QcAddressComplete.NO_REGION.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
-		assertThat(QcAddressComplete.NO_CITY.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
-		assertThat(QcAddressComplete.NO_STREET.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
-		assertThat(QcAddressComplete.NO_HOUSE.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
-		assertThat(QcAddressComplete.ADDRESS_INCOMPLETE.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
-		assertThat(QcAddressComplete.FOREIGN_ADDRESS.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
-		assertThat(QcAddressComplete.UNKNOWN.getPostalApplicability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.ADDRESS_COMPLETE.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.YES));
+		assertThat(QcAddressComplete.HOUSE_NOT_IN_FIAS.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.MAYBE));
+		assertThat(QcAddressComplete.NO_FLAT.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.MAYBE));
+		assertThat(QcAddressComplete.POSTAL_BOX.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.MAYBE));
+		assertThat(QcAddressComplete.VERIFY_PARSING.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.MAYBE));
+		assertThat(QcAddressComplete.NO_REGION.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.NO_CITY.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.NO_STREET.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.NO_HOUSE.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.ADDRESS_INCOMPLETE.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.FOREIGN_ADDRESS.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
+		assertThat(QcAddressComplete.UNKNOWN.getPostalSuitability(), is(QcAddressComplete.PostalSuitability.NO));
 	}
 
 	@Test

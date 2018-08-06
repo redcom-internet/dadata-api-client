@@ -11,7 +11,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClientException;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CommonLive.class)
-@ActiveProfiles("live")
+@IfProfileValue(name = "live-tests", value = "enabled")
 public class UT10Availability {
 
 	@Autowired

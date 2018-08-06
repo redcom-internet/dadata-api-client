@@ -29,8 +29,10 @@ qc	5	Код проверки
   }
 ]
 */
-// Property annotation with "required" does not currently enforce mandatoriness on fields,
-// see https://github.com/FasterXML/jackson-databind/issues/230
+
+/**
+ * Cleaned Birthdate container.
+ */
 @SuppressWarnings("unused")
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -42,4 +44,8 @@ public class BirthDate extends ResponseItem {
 
 	@JsonProperty(required = true)
 	private QcBirthDate qc;
+
+	// This class is not instantiable
+	private BirthDate() {
+	}
 }

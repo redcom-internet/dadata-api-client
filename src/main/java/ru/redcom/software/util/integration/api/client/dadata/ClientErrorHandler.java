@@ -5,6 +5,7 @@
 
 package ru.redcom.software.util.integration.api.client.dadata;
 
+import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -14,31 +15,29 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
 // Error handler to convert HTTP Client Request-related errors into DaDataClientException
 class ClientErrorHandler extends DefaultResponseErrorHandler {
-	private final List<HttpMessageConverter<?>> messageConverters;
+	@Nonnull private final HttpMessageConverterExtractor<? extends APIErrorMessage> messageExtractor;
 
-	ClientErrorHandler(@Nonnull final HttpMessageConverter<?>... messageConverters) {
-		this.messageConverters = Arrays.asList(messageConverters);
+
+	ClientErrorHandler(@Nonnull final HttpMessageConverter<?> messageConverter) {
+		this.messageExtractor = new HttpMessageConverterExtractor<>(APIErrorMessage.class,
+		                                                            Collections.singletonList(messageConverter));
 	}
 
 	@Override
 	public void handleError(ClientHttpResponse response) throws IOException {
-		final int rawStatusCode = response.getRawStatusCode();
-		final HttpStatus statusCode = HttpStatus.resolve(rawStatusCode);
-		final String statusText = response.getStatusText();
+		val rawStatusCode = response.getRawStatusCode();
+		val statusCode = HttpStatus.resolve(rawStatusCode);
+		val statusText = response.getStatusText();
 
 		// Extract error details from request body
 		APIErrorMessage errorDetails = null;
 		Exception resourceException = null;
 		try {
-			// System.out.println("response body: " + new BufferedReader(new InputStreamReader(response.getBody())).lines().collect(Collectors.joining("\n")));
-			final HttpMessageConverterExtractor<? extends APIErrorMessage> extractor =
-					new HttpMessageConverterExtractor<>(APIErrorMessage.class, this.messageConverters);
-			errorDetails = extractor.extractData(response);
+			errorDetails = messageExtractor.extractData(response);
 		} catch (Exception e) {
 			resourceException = e;
 		}
@@ -66,7 +65,7 @@ class ClientErrorHandler extends DefaultResponseErrorHandler {
 			nestedException = e;
 		}
 
-		final DaDataClientException e = new DaDataClientException(message, rawStatusCode, statusText, errorCode, errorDetails, nestedException);
+		val e = new DaDataClientException(message, rawStatusCode, statusText, errorCode, errorDetails, nestedException);
 		if (resourceException != null)
 			e.addSuppressed(resourceException);
 		throw e;

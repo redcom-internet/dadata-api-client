@@ -10,12 +10,16 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage
 
 import javax.annotation.Nullable;
 
+/**
+ * Client-related DaData API errors.
+ */
 @Getter
 public class DaDataClientException extends DaDataException {
 	private final int httpStatusCode;
 	@Nullable private final String httpStatusText;
 	@Nullable private final APIErrorCode apiErrorCode;
 	@Nullable private final APIErrorMessage apiErrorMessage;
+
 
 	DaDataClientException(@Nullable final String message, final int httpStatusCode, @Nullable String httpStatusText,
 	                      @Nullable final APIErrorCode apiErrorCode, @Nullable final APIErrorMessage apiErrorMessage,

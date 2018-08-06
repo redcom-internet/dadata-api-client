@@ -5,23 +5,21 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.types;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
+/** Address completeness level */
 // JsonProperty/JsonValue does not work on enums when deserializing from json numerical types.
 // Deserialization is done by ordinals instead, which is definitely not what we wants here.
 // see https://github.com/FasterXML/jackson-databind/issues/1850
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QcAddressComplete {
 	/*
 	Код пригодности к рассылке (qc_complete) — годится ли адрес для доставки корреспонденции:
@@ -61,12 +59,18 @@ public enum QcAddressComplete {
 	VERIFY_PARSING(9, PostalSuitability.MAYBE),
 	@JsonProperty("10")
 	HOUSE_NOT_IN_FIAS(10, PostalSuitability.MAYBE),
+	/** Catch-all constant for unrecognized response contents */
 	@JsonEnumDefaultValue
 	UNKNOWN(null, PostalSuitability.NO);
 
-
+	/** Address suitability for postal services */
 	public enum PostalSuitability {
-		YES, MAYBE, NO
+		/** Address is likely suitable for postage delivery */
+		YES,
+		/** Address may be used for postage, but delivery cannot be guaranteed */
+		MAYBE,
+		/** Address is not suitable for postage delivery */
+		NO
 	}
 
 	@Nullable private final Integer jsonValue;
@@ -77,13 +81,19 @@ public enum QcAddressComplete {
 	}
 
 	@SuppressWarnings("unused")
-	@JsonCreator
 	@Nullable
+	@JsonCreator
 	private static QcAddressComplete jsonCreator(final Integer s) {
 		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}
 
-	public PostalSuitability getPostalApplicability() {
+	/**
+	 * Get address's postal suitability level.
+	 *
+	 * @return Postal suitability estimation
+	 */
+	@Nonnull
+	public PostalSuitability getPostalSuitability() {
 		return postalSuitability;
 	}
 }

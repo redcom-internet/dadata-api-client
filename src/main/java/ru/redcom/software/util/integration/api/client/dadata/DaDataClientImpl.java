@@ -6,12 +6,15 @@
 package ru.redcom.software.util.integration.api.client.dadata;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import lombok.val;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
@@ -22,9 +25,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
+/**
+ * DaData API implementation using the Spring REST Template.
+ */
 class DaDataClientImpl implements DaDataClient {
 	private static final String DADATA_API_DEFAULT_BASE_URI = "https://dadata.ru/api/v2";
 	private static final String DADADA_API_ENDPOINT_PROFILE_BALANCE = "/profile/balance";
@@ -42,41 +47,22 @@ class DaDataClientImpl implements DaDataClient {
 	@Nonnull private final String apiKey;
 	@Nonnull private final String secretKey;
 
+	@Nonnull private final RestTemplateBuilder restTemplateBuilder;
 	@Nonnull private final RestTemplate restTemplate;
 
 
-	/**
-	 * Конструктор с возможностью задания базового URI сервиса DaData.
-	 * <p>Параметры <code>apiKey, secretKey</code> должны быть непустыми, иначе выдаётся исключение
-	 * {@link IllegalArgumentException}.
-	 * Если параметр <code>baseUri</code> null или пустой, будет использован адрес сервиса по умолчанию.
-	 * </p>
-	 * <p>
-	 * Конструктор позволяет задать объект REST Template Builder, что может оказаться полезным в среде Spring Boot.
-	 * </p>
-	 *
-	 * @param apiKey    Ключ API
-	 * @param secretKey Пароль API
-	 * @param baseUri   Строка базового URI
-	 */
-	DaDataClientImpl(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri,
-	                 @NonNull RestTemplateBuilder restTemplateBuilder) {
+	// Constructor
+	DaDataClientImpl(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable final String baseUri,
+	                 @Nonnull RestTemplateBuilder restTemplateBuilder) {
 		this.baseUri = StringUtils.hasText(baseUri) ? baseUri : DADATA_API_DEFAULT_BASE_URI;
 		this.apiKey = apiKey;
 		this.secretKey = secretKey;
-		this.restTemplate = createRestTemplate(restTemplateBuilder);
+		this.restTemplateBuilder = restTemplateBuilder;
+		this.restTemplate = createRestTemplate();
 	}
 
 
-	/**
-	 * Проверить доступность сервиса стандартизации.
-	 *
-	 * @param silent Если true, то не выдавать исключения, только результат
-	 *
-	 * @return true - доступен, false - нет
-	 *
-	 * @throws DaDataException При ошибках проверки, если silent = false
-	 */
+	// Check DaData API service availability
 	@Override
 	public boolean checkAvailability(final boolean silent) throws DaDataException {
 		try {
@@ -90,6 +76,7 @@ class DaDataClientImpl implements DaDataClient {
 		}
 	}
 
+	// Get account profile balance
 	@Nonnull
 	@Override
 	public BigDecimal getProfileBalance() throws DaDataException {
@@ -230,25 +217,26 @@ class DaDataClientImpl implements DaDataClient {
 			throw new DaDataException("Empty response from DaData API");
 	}
 
+	// =================================================================================================================
 
 	// Generic method for request a resource and verify response
 	// Optional is only to deal with Void response
-	@NonNull
+	@Nonnull
 	private <S, R> Optional<R> doRequest(@Nonnull final String endpoint, @Nonnull final HttpMethod requestMethod,
-	                                     @Nullable final S requestBody, @NonNull final Class<R> responseClazz) {
+	                                     @Nullable final S requestBody, @Nonnull final Class<R> responseClazz) {
 		try {
 			//noinspection ConstantConditions because of missing @Nullable annotation on body single-arg constructor
-			final HttpEntity<S> requestEntity = new HttpEntity<>(requestBody);
-			final ResponseEntity<R> responseEntity = restTemplate.exchange(endpoint, requestMethod, requestEntity, responseClazz);
+			val requestEntity = new HttpEntity<S>(requestBody);
+			val responseEntity = restTemplate.<R>exchange(endpoint, requestMethod, requestEntity, responseClazz);
 
 			if (responseEntity.getStatusCode() != HttpStatus.OK)
 				throw new DaDataException("REST service response code is not success (" + responseEntity.getStatusCode() + ")", responseEntity.getStatusCode().isError());
 
-			// Ignore body on void requests
+			// Ignore response body on void requests
 			if (Void.class.equals(responseClazz))
 				return Optional.empty();
 
-			final R response = responseEntity.getBody();
+			val response = responseEntity.getBody();
 			if (response == null)
 				throw new DaDataException("Empty response from REST service");
 
@@ -270,18 +258,18 @@ class DaDataClientImpl implements DaDataClient {
 
 	// Create and make-up a REST Template
 	@Nonnull
-	private RestTemplate createRestTemplate(@NonNull final RestTemplateBuilder restTemplateBuilder) {
-		// Add authentication headers to each request
-		final List<ClientHttpRequestInterceptor> interceptors = Arrays.asList(
+	private RestTemplate createRestTemplate() {
+		// Set interceptors to add authentication headers to each request
+		val interceptors = Arrays.<ClientHttpRequestInterceptor>asList(
 				new HeaderRequestInterceptor(HttpHeaders.AUTHORIZATION, "Token " + this.apiKey),
 				new HeaderRequestInterceptor("X-Secret", this.secretKey));
 		// Set JSON message converter parameters
-		final Jackson2ObjectMapperBuilder mapperBuilder = new Jackson2ObjectMapperBuilder();
+		val mapperBuilder = new Jackson2ObjectMapperBuilder();
 		mapperBuilder.featuresToEnable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE,
 		                               DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS);
-		final MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter(mapperBuilder.build());
+		val jsonMessageConverter = new MappingJackson2HttpMessageConverter(mapperBuilder.build());
 		// Set custom error handler
-		final ClientErrorHandler errorHandler = new ClientErrorHandler(jsonMessageConverter);
+		val errorHandler = new ClientErrorHandler(jsonMessageConverter);
 		// Build REST template
 		return restTemplateBuilder.detectRequestFactory(true)
 		                          .rootUri(baseUri)

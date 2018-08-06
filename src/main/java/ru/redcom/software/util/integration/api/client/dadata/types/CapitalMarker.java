@@ -5,23 +5,21 @@
 
 package ru.redcom.software.util.integration.api.client.dadata.types;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
+/** Locatino capital/center status */
 // JsonProperty/JsonValue does not work on enums when deserializing from json numerical types.
 // Deserialization is done by ordinals instead, which is definitely not what we wants here.
 // see https://github.com/FasterXML/jackson-databind/issues/1850
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum CapitalMarker {
 	/*
 	Признак центра района или региона
@@ -31,16 +29,22 @@ public enum CapitalMarker {
 	4 — центральный район региона (Тюменская обл, Тюменский р-н);
 	0 — ничего из перечисленного (Московская обл, г Балашиха);
 	 */
+	/** Area center */
 	@JsonProperty("1")
 	AREA_CENTER(1),
+	/** Region center */
 	@JsonProperty("2")
 	REGION_CENTER(2),
+	/** Both Area and Region center simultaneously */
 	@JsonProperty("3")
 	AREA_REGION_CENTER(3),
+	/** Central area of the region */
 	@JsonProperty("4")
 	REGION_CENTRAL_AREA(4),
+	/** Other cases or location is not a center */
 	@JsonProperty("0")
 	OTHER(0),
+	/** Catch-all constant for unrecognized response contents */
 	@JsonEnumDefaultValue
 	UNKNOWN(null);
 
@@ -51,8 +55,8 @@ public enum CapitalMarker {
 	}
 
 	@SuppressWarnings("unused")
-	@JsonCreator
 	@Nullable
+	@JsonCreator
 	private static CapitalMarker jsonCreator(final Integer s) {
 		return s == null ? null : Arrays.stream(values()).filter(v -> v.equalsTo(s)).findAny().orElse(UNKNOWN);
 	}

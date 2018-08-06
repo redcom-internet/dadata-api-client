@@ -9,9 +9,14 @@ import lombok.Getter;
 
 import javax.annotation.Nullable;
 
+/**
+ * DaData API exception base class
+ */
 public class DaDataException extends RuntimeException {
+	// True indicates that error is permanent
 	@Getter
-	protected final boolean fatal;
+	private final boolean fatal;
+
 
 	DaDataException(@Nullable final String message) {
 		super(message);

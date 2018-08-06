@@ -12,18 +12,20 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
+/** Address position relative to beltway (ring road). */
 public enum BeltwayHit {
 	IN_MKAD,
 	OUT_MKAD,
 	IN_KAD,
 	OUT_KAD,
 	NONE,       // empty string deserializes as this member
+	/** Catch-all constant for unrecognized response contents */
 	@JsonEnumDefaultValue
 	UNKNOWN;
 
 	@SuppressWarnings("unused")
-	@JsonCreator
 	@Nullable
+	@JsonCreator
 	private static BeltwayHit jsonCreator(final String s) {
 		return s == null ? null : StringUtils.hasText(s) ? Arrays.stream(values()).filter(v -> v.name().equalsIgnoreCase(s)).findAny().orElse(UNKNOWN) : NONE;
 	}

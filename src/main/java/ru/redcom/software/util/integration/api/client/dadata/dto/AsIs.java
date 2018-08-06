@@ -19,11 +19,16 @@ import lombok.ToString;
   }
 ]
 */
-// Property annotation with "required" does not currently enforce mandatoriness on fields,
-// see https://github.com/FasterXML/jackson-databind/issues/230
+
+/**
+ * Container for the string content passed through without modifications.
+ */
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AsIs extends ResponseItem {
+	// This class is not instantiable
+	private AsIs() {
+	}
 }

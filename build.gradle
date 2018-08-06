@@ -19,9 +19,9 @@ def artifactName = name
 def artifactDescription = description
 
 ext {
-    springBootVersion = '2.0.2.RELEASE'
+    springBootVersion = '2.0.4.RELEASE'
     encoding = 'UTF-8'
-    // Common manifest attributes
+    // Manifest attributes for all archives
     sharedManifest = manifest {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version,
@@ -38,6 +38,28 @@ javadoc {
 }
 
 tasks.withType(JavaCompile).each { it.options.setEncoding("${project.ext.encoding}") }
+
+// Skip live integration tests by default
+test {
+    exclude 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+}
+
+// Live integration tests task
+// usage: gradlew liveTest -Papi-key=your_api_key -Psecret-key=your_secret_key
+task liveTest(type: Test, description: 'Runs live integration tests', group: 'Verification') {
+    doFirst {
+        // check credentials properties are defined
+        def apiKey = findProperty('api-key')
+        def secretKey = findProperty('secret-key')
+        if (apiKey == null || secretKey == null)
+            throw new InvalidUserDataException("'api-key' and 'secret-key' properties must be specified with -P to run live integration tests.")
+        // set system properties for tests
+        systemProperties['dadata.api-key'] = apiKey
+        systemProperties['dadata.secret-key'] = secretKey
+        systemProperties['live-tests'] = 'enabled'
+    }
+    include 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+}
 
 // Binaries archive
 jar {
@@ -81,33 +103,27 @@ publishing {
     }
     repositories {
         maven {
-	    name = 'devel.ws.redcom.ru'
-	    // SFTP publishing. Credentials are taken from the Maven settings
+	        name = 'devel.ws.redcom.ru'
+	        // SFTP publishing. Credentials are taken from the local Maven settings
             url publishRepositoryURL
         }
     }
 }
 
-// In this section you declare where to find the dependencies of your project
+// Repositories and dependencies
 repositories {
+    mavenLocal()
 	mavenCentral()
-	mavenLocal()
-	maven { url = 'https://repo.spring.io/snapshot' }
-	maven { url = 'https://repo.spring.io/milestone' }
-	maven {
-	    name = 'devel.ws.redcom.ru'
-	    url = 'http://devel.ws.redcom.ru/maven2'
-        }
+//	maven { url = 'https://repo.spring.io/snapshot' }
+//	maven { url = 'https://repo.spring.io/milestone' }
+//	maven {
+//	    name = 'devel.ws.redcom.ru'
+//	    url = 'http://devel.ws.redcom.ru/maven2'
+//  }
 }
 
 dependencies {
-    // This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
-    //api group: 'xxx', name: 'yyy', version: 'zzz'
-
-    // This is an exampe of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: "$springBootVersion"
-//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "$springBootVersion"
-//    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: "$springBootVersion"
 
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.16.+'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.+'
