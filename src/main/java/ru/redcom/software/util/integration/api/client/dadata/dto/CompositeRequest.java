@@ -12,9 +12,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,14 +56,14 @@ public class CompositeRequest {
 	// Both structure and element contents are iterated in consistent ascending order of their key type ordinal
 	// Structure of request (element types)
 	@JsonProperty
-	@Nonnull
+	@NonNull
 	private final Set<CompositeElementType> structure;
-	@Nonnull
+	@NonNull
 	private final Set<CompositeElementType> unmodifiableStructure;
 	private final boolean unconstrainedStructure;
 	// Contents of request
 	@JsonProperty
-	@Nonnull
+	@NonNull
 	private final List<Record> data = new LinkedList<>();
 
 
@@ -72,14 +72,14 @@ public class CompositeRequest {
 		this(EnumSet.noneOf(CompositeElementType.class));
 	}
 
-	private CompositeRequest(@Nonnull final EnumSet<CompositeElementType> structure) {
+	private CompositeRequest(@NonNull final EnumSet<CompositeElementType> structure) {
 		this.structure = structure;
 		this.unmodifiableStructure = Collections.unmodifiableSet(this.structure);
 		this.unconstrainedStructure = structure.isEmpty();
 	}
 
 	// Add element records from array to contents
-	private void addRecords(@Nonnull final Record[] records) {
+	private void addRecords(@NonNull final Record[] records) {
 		// adjust request structure with the new elements
 		if (unconstrainedStructure)
 			adjustStructure(records);
@@ -95,7 +95,7 @@ public class CompositeRequest {
 	}
 
 	// adjust request structure with the new elements
-	private void adjustStructure(@Nonnull final Record[] records) {
+	private void adjustStructure(@NonNull final Record[] records) {
 		structure.addAll(Arrays.stream(records)
 		                       .map(Record::getStructure)
 		                       .flatMap(Collection::stream)
@@ -103,8 +103,8 @@ public class CompositeRequest {
 	}
 
 	// Check that records conforms to the request structure
-	@Nonnull
-	private String checkConformance(@Nonnull final Record[] records) {
+	@NonNull
+	private String checkConformance(@NonNull final Record[] records) {
 		return Arrays.stream(records)
 		             .filter(elem -> !elem.conformsWithStructure(unmodifiableStructure))
 		             .map(Record::toStringBrief)
@@ -132,7 +132,7 @@ public class CompositeRequest {
 	 * @param others    Other type structure elements
 	 * @return Composite request builder instance
 	 */
-	public static CompositeRequestBuilder compose(@Nonnull final CompositeElementType first, @Nonnull final CompositeElementType... others) {
+	public static CompositeRequestBuilder compose(@NonNull final CompositeElementType first, @NonNull final CompositeElementType... others) {
 		Assert.notNull(first, "Element type(s) must be specified");
 		return new CompositeRequestBuilder(EnumSet.of(first, others));
 	}
@@ -142,16 +142,16 @@ public class CompositeRequest {
 	private static final class ElementValue<T> {
 		@JsonValue
 		@Getter(value = AccessLevel.PACKAGE)
-		@Nonnull
+		@NonNull
 		private final T value;
 
-		@Nonnull
+		@NonNull
 		static ElementValue of(final String... sources) {
 			return sources.length == 1 ? new ElementValue<>(sources[0]) : new ElementValue<>(sources);
 		}
 
 		// for pretty-printing
-		@Nonnull
+		@NonNull
 		@Override
 		public String toString() {
 			return value instanceof Object[] ? Arrays.toString((Object[]) value) : value.toString();
@@ -163,7 +163,7 @@ public class CompositeRequest {
 	 */
 	@ToString
 	public static class Record {
-		@Nonnull private final Map<CompositeElementType, ElementValue> recordElements = new EnumMap<>(CompositeElementType.class);
+		@NonNull private final Map<CompositeElementType, ElementValue> recordElements = new EnumMap<>(CompositeElementType.class);
 
 		/**
 		 * Set As-Is request element source values.
@@ -171,8 +171,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record asIs(@Nonnull String... sources) {
+		@NonNull
+		public Record asIs(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.AS_IS, sources);
 		}
 
@@ -182,8 +182,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record address(@Nonnull String... sources) {
+		@NonNull
+		public Record address(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.ADDRESS, sources);
 		}
 
@@ -193,8 +193,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record birthDate(@Nonnull String... sources) {
+		@NonNull
+		public Record birthDate(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.BIRTHDATE, sources);
 		}
 
@@ -204,8 +204,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record email(@Nonnull String... sources) {
+		@NonNull
+		public Record email(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.EMAIL, sources);
 		}
 
@@ -215,8 +215,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record name(@Nonnull String... sources) {
+		@NonNull
+		public Record name(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.NAME, sources);
 		}
 
@@ -226,8 +226,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record passport(@Nonnull String... sources) {
+		@NonNull
+		public Record passport(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.PASSPORT, sources);
 		}
 
@@ -237,8 +237,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record phone(@Nonnull String... sources) {
+		@NonNull
+		public Record phone(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.PHONE, sources);
 		}
 
@@ -248,8 +248,8 @@ public class CompositeRequest {
 		 * @param sources   Source values
 		 * @return Record instance
 		 */
-		@Nonnull
-		public Record vehicle(@Nonnull String... sources) {
+		@NonNull
+		public Record vehicle(@NonNull String... sources) {
 			return addElementContents(CompositeElementType.VEHICLE, sources);
 		}
 
@@ -264,12 +264,12 @@ public class CompositeRequest {
 		}
 
 		// Check if record contents conforms with the request structure
-		boolean conformsWithStructure(@Nonnull final Set<CompositeElementType> structure) {
+		boolean conformsWithStructure(@NonNull final Set<CompositeElementType> structure) {
 			return structure.containsAll(recordElements.keySet());
 		}
 
 		// Align record contents to the request structure by filling gaps with null values
-		void alignStructure(@Nonnull final Set<CompositeElementType> structure) {
+		void alignStructure(@NonNull final Set<CompositeElementType> structure) {
 			structure.forEach(e -> recordElements.putIfAbsent(e, null));
 		}
 
@@ -279,8 +279,8 @@ public class CompositeRequest {
 		}
 
 		// Store a contents
-		@Nonnull
-		private Record addElementContents(@Nonnull final CompositeElementType elementType, final String... sources) {
+		@NonNull
+		private Record addElementContents(@NonNull final CompositeElementType elementType, final String... sources) {
 			Assert.isTrue(sources != null && sources.length > 0, "Sources must be specified");
 			recordElements.put(elementType, ElementValue.of(sources));
 			return this;
@@ -288,14 +288,14 @@ public class CompositeRequest {
 
 		// Should serialize without keys
 		@SuppressWarnings("unused")
-		@Nonnull
+		@NonNull
 		@JsonValue
 		private Collection<ElementValue> serialize() {
 			return recordElements.values();
 		}
 
 		// for non-conformant elements exception message
-		@Nonnull
+		@NonNull
 		private String toStringBrief() {
 			return recordElements.toString();
 		}
@@ -305,7 +305,7 @@ public class CompositeRequest {
 	 * Composite request builder.
 	 */
 	public static final class CompositeRequestBuilder {
-		@Nonnull private CompositeRequest composite;
+		@NonNull private final CompositeRequest composite;
 
 
 		// Compose request with structure defined by payload
@@ -314,7 +314,7 @@ public class CompositeRequest {
 		}
 
 		// Construct builder for specified element types
-		private CompositeRequestBuilder(@Nonnull final EnumSet<CompositeElementType> structure) {
+		private CompositeRequestBuilder(@NonNull final EnumSet<CompositeElementType> structure) {
 			composite = new CompositeRequest(structure);
 		}
 
@@ -323,7 +323,7 @@ public class CompositeRequest {
 		 *
 		 * @return Record builder instance
 		 */
-		@Nonnull
+		@NonNull
 		public RecordSpec record() {
 			return new RecordSpec();
 		}
@@ -335,8 +335,8 @@ public class CompositeRequest {
 		 * @param records  Records array
 		 * @return Composite Request builder instance
 		 */
-		@Nonnull
-		public CompositeRequestBuilder records(@Nonnull final Record... records) {
+		@NonNull
+		public CompositeRequestBuilder records(@NonNull final Record... records) {
 			Assert.notNull(records, "Records cannot be null");
 			composite.addRecords(records);
 			return this;
@@ -347,7 +347,7 @@ public class CompositeRequest {
 		 *
 		 * @return Composite Request instance
 		 */
-		@Nonnull
+		@NonNull
 		public CompositeRequest build() {
 			composite.alignStructure();
 			return composite;
@@ -364,7 +364,7 @@ public class CompositeRequest {
 			 *
 			 * @return Composite Request builder instance
 			 */
-			@Nonnull
+			@NonNull
 			@Override
 			public CompositeRequestBuilder and() {
 				Assert.state(nonEmpty(), "Record contains no elements");

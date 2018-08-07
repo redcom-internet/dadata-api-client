@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /** Address completeness level */
-// JsonProperty/JsonValue does not work on enums when deserializing from json numerical types.
+// JsonProperty/JsonValue does not work on enums when deserialize from json numerical types.
 // Deserialization is done by ordinals instead, which is definitely not what we wants here.
 // see https://github.com/FasterXML/jackson-databind/issues/1850
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -74,9 +74,9 @@ public enum QcAddressComplete {
 	}
 
 	@Nullable private final Integer jsonValue;
-	@Nonnull private final PostalSuitability postalSuitability;
+	@NonNull private final PostalSuitability postalSuitability;
 
-	private boolean equalsTo(@Nonnull final Integer value) {
+	private boolean equalsTo(@NonNull final Integer value) {
 		return value.equals(jsonValue);
 	}
 
@@ -92,7 +92,7 @@ public enum QcAddressComplete {
 	 *
 	 * @return Postal suitability estimation
 	 */
-	@Nonnull
+	@NonNull
 	public PostalSuitability getPostalSuitability() {
 		return postalSuitability;
 	}

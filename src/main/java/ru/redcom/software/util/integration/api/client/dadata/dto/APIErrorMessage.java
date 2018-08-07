@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.Value;
 import lombok.val;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ Several samples ever noticed:
  */
 @Value
 public class APIErrorMessage implements Serializable {
-	@Nonnull private final Map<String, Object> contents = new HashMap<>();
+	@NonNull private final Map<String, Object> contents = new HashMap<>();
 
 	/**
 	 * Get response contents as the map.
@@ -55,7 +55,7 @@ public class APIErrorMessage implements Serializable {
 	 * @return Map with response contents tree
 	 */
 	@SuppressWarnings("unused")
-	@Nonnull
+	@NonNull
 	@JsonAnyGetter
 	public Map<String, Object> getContents() {
 		return contents;
@@ -64,13 +64,13 @@ public class APIErrorMessage implements Serializable {
 	// Setter method for deserialization
 	@SuppressWarnings("unused")
 	@JsonAnySetter
-	private void setContents(@Nonnull final String name, @Nullable final Object value) {
+	private void setContents(@NonNull final String name, @Nullable final Object value) {
 		contents.put(name, value);
 	}
 
 	// Helper for flatting contents to string array
 	@Nullable
-	private String[] getContentsKeyForArray(@Nonnull final String key) {
+	private String[] getContentsKeyForArray(@NonNull final String key) {
 		val o = contents.get(key);
 		return o instanceof String[] ? (String[]) o : o instanceof Collection ? ((Collection<?>) o).stream().map(Object::toString).toArray(String[]::new) : null;
 	}

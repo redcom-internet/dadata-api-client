@@ -11,7 +11,7 @@ plugins {
 
 description = 'DaData API client for Java'
 group = 'ru.redcom.software'
-version = '0.0.1-RELEASE'
+version = '0.0.1'
 sourceCompatibility = 1.8
 
 def publishRepositoryURL = 'sftp://devel.ws.redcom.ru:22/var/spool/users/maven2'
@@ -103,8 +103,8 @@ publishing {
     }
     repositories {
         maven {
-	        name = 'devel.ws.redcom.ru'
-	        // SFTP publishing. Credentials are taken from the local Maven settings
+	    name = 'devel.ws.redcom.ru'
+	    // SFTP publishing. Credentials are taken from the local Maven settings
             url publishRepositoryURL
         }
     }
@@ -113,20 +113,12 @@ publishing {
 // Repositories and dependencies
 repositories {
     mavenLocal()
-	mavenCentral()
-//	maven { url = 'https://repo.spring.io/snapshot' }
-//	maven { url = 'https://repo.spring.io/milestone' }
-//	maven {
-//	    name = 'devel.ws.redcom.ru'
-//	    url = 'http://devel.ws.redcom.ru/maven2'
-//  }
+    mavenCentral()
 }
 
 dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: "$springBootVersion"
-
-    implementation group: 'org.projectlombok', name: 'lombok', version: '1.16.+'
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.+'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "$springBootVersion"
     testImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.+'

@@ -38,7 +38,7 @@ public class UT10AvailabilityMock {
 
 	@Test
 	public void availableSilent() {
-		setupTestServer(server, URI, METHOD);
+		setupTestServer(server, URI, METHOD, null);
 		final boolean available = dadata.checkAvailability(true);
 		assertThat(available, is(true));
 		server.verify();

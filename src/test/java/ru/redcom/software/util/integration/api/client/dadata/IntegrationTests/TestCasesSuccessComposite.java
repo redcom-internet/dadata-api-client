@@ -8,13 +8,12 @@ package ru.redcom.software.util.integration.api.client.dadata.IntegrationTests;
 import lombok.Getter;
 import lombok.val;
 import org.hamcrest.Matcher;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.dto.AsIs;
 import ru.redcom.software.util.integration.api.client.dadata.dto.CompositeRequest;
 import ru.redcom.software.util.integration.api.client.dadata.dto.CompositeResponse;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.Matchers.*;
@@ -119,7 +118,7 @@ public class TestCasesSuccessComposite {
 	}
 
 
-	@Nonnull
+	@NonNull
 	private static Matcher<? super CompositeResponse> matcherResposeFullOfSamples() {
 		//noinspection unchecked
 		return allOf(hasProperty("structure", hasItems(AS_IS, NAME, ADDRESS, BIRTHDATE, PASSPORT, PHONE, EMAIL, VEHICLE)),
@@ -154,7 +153,7 @@ public class TestCasesSuccessComposite {
 		            );
 	}
 
-	@Nonnull
+	@NonNull
 	private static Matcher<? super CompositeResponse> matcherResposeGapsOfSamples() {
 		//noinspection unchecked
 		return allOf(hasProperty("structure", hasItems(AS_IS, NAME, BIRTHDATE)),
@@ -174,7 +173,7 @@ public class TestCasesSuccessComposite {
 		            );
 	}
 
-	@Nonnull
+	@NonNull
 	public static Matcher<AsIs> asisMatcher(@Nullable final String pattern) {
 		return pojo(AsIs.class).withProperty("source", equalTo(pattern));
 	}

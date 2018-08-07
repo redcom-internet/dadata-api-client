@@ -98,15 +98,15 @@ public class UT80AddressEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<Address> getMatcher() {
+		Matcher<Address> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Address.class);
 		}
 	}

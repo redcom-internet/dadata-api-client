@@ -6,8 +6,8 @@
 package ru.redcom.software.util.integration.api.client.dadata;
 
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nullable;
 
 /**
  * DaData API exception base class
@@ -20,11 +20,6 @@ public class DaDataException extends RuntimeException {
 
 	DaDataException(@Nullable final String message) {
 		super(message);
-		this.fatal = false;
-	}
-
-	DaDataException(@Nullable final String message, @Nullable final Throwable cause) {
-		super(message, cause);
 		this.fatal = false;
 	}
 

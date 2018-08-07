@@ -7,9 +7,9 @@ package ru.redcom.software.util.integration.api.client.dadata.types;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -30,9 +30,9 @@ public enum FiasActuality {
 	@JsonEnumDefaultValue
 	UNKNOWN();
 
-	@Nonnull private final int[] values;
+	@NonNull private final int[] values;
 
-	private FiasActuality(@Nonnull final int... values) {
+	FiasActuality(@NonNull final int... values) {
 		Arrays.sort(values);
 		this.values = values;
 	}

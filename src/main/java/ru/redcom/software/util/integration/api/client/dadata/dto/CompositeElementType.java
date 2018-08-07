@@ -8,8 +8,8 @@ package ru.redcom.software.util.integration.api.client.dadata.dto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 
 /**
  * Element types of composite request
@@ -34,5 +34,5 @@ public enum CompositeElementType {
 	/** Vehicle type */
 	VEHICLE(Vehicle.class);
 
-	@Nonnull private final Class<? extends ResponseItem> type;
+	@NonNull private final Class<? extends ResponseItem> type;
 }

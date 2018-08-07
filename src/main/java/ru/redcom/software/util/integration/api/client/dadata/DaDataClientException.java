@@ -6,9 +6,9 @@
 package ru.redcom.software.util.integration.api.client.dadata;
 
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage;
 
-import javax.annotation.Nullable;
 
 /**
  * Client-related DaData API errors.

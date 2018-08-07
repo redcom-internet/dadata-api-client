@@ -10,9 +10,9 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /** FIAS directory detalization level for this location */
@@ -66,7 +66,7 @@ public enum FiasLevel {
 
 	@Nullable private final Integer jsonValue;
 
-	private boolean equalsTo(@Nonnull final Integer value) {
+	private boolean equalsTo(@NonNull final Integer value) {
 		return value.equals(jsonValue);
 	}
 

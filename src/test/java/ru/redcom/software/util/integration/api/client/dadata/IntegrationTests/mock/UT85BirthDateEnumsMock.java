@@ -71,15 +71,15 @@ public class UT85BirthDateEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<BirthDate> getMatcher() {
+		Matcher<BirthDate> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(BirthDate.class);
 		}
 	}

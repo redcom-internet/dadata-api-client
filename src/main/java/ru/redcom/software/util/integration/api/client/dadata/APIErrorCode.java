@@ -9,9 +9,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**
@@ -84,13 +84,13 @@ public enum APIErrorCode {
 	// 429	Слишком много запросов в секунду
 	TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "Too many requests per second", false);
 
-	@Nonnull private final HttpStatus statusCode;
-	@Nonnull private final String message;
+	@NonNull private final HttpStatus statusCode;
+	@NonNull private final String message;
 	private final boolean fatal;
 
 
 	@Nullable
-	static APIErrorCode fromHttpStatus(@Nonnull final HttpStatus statusCode) {
+	static APIErrorCode fromHttpStatus(@NonNull final HttpStatus statusCode) {
 		return Arrays.stream(APIErrorCode.values()).filter(v -> v.statusCode == statusCode).findAny().orElse(null);
 	}
 }

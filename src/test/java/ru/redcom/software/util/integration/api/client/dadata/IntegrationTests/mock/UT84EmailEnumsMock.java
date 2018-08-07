@@ -77,15 +77,15 @@ public class UT84EmailEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<Email> getMatcher() {
+		Matcher<Email> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Email.class);
 		}
 	}

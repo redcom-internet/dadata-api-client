@@ -15,10 +15,10 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.ToString;
 import lombok.val;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 
@@ -108,22 +108,22 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 
 	// Structure
 	@JsonProperty(required = true)
-	@Nonnull
+	@NonNull
 	private final Set<CompositeElementType> structure = EnumSet.noneOf(CompositeElementType.class);
 	// Contents
 	@JsonProperty
-	@Nonnull
+	@NonNull
 	private final List<Record> data = new LinkedList<>();
 
 
 	private CompositeResponse() {
 	}
 
-	private CompositeResponse(@Nonnull final CompositeElementType[] structure) {
+	private CompositeResponse(@NonNull final CompositeElementType[] structure) {
 		this.structure.addAll(Arrays.asList(structure));
 	}
 
-	private void addRecord(@Nonnull final Record record) {
+	private void addRecord(@NonNull final Record record) {
 		data.add(record);
 	}
 
@@ -150,7 +150,7 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 	 *
 	 * @return Iterator instance
 	 */
-	@Nonnull
+	@NonNull
 	@Override
 	public Iterator<Record> iterator() {
 		return getData().iterator();
@@ -161,7 +161,7 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 	 *
 	 * @return Spliterator instance
 	 */
-	@Nonnull
+	@NonNull
 	@Override
 	public Spliterator<Record> spliterator() {
 		return getData().spliterator();
@@ -173,13 +173,13 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 	 */
 	@ToString
 	public static class Record {
-		@Nonnull private final Map<CompositeElementType, ResponseItem> items = new EnumMap<>(CompositeElementType.class);
+		@NonNull private final Map<CompositeElementType, ResponseItem> items = new EnumMap<>(CompositeElementType.class);
 
 		// This class is not instantiable outside its outer class
 		private Record() {
 		}
 
-		private void addItem(@Nonnull final CompositeElementType elementType, @Nullable final ResponseItem item) {
+		private void addItem(@NonNull final CompositeElementType elementType, @Nullable final ResponseItem item) {
 			items.put(elementType, item);
 		}
 
@@ -199,7 +199,7 @@ public class CompositeResponse implements Iterable<CompositeResponse.Record> {
 		 * @return Element instance, or null if element of this type does not exists.
 		 */
 		@Nullable
-		public ResponseItem get(@Nonnull final CompositeElementType elementType) {
+		public ResponseItem get(@NonNull final CompositeElementType elementType) {
 			Assert.notNull(elementType, "Element type is null");
 			return items.get(elementType);
 		}

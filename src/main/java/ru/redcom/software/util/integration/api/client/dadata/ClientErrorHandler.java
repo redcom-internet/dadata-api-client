@@ -9,20 +9,20 @@ import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.lang.NonNull;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 
 // Error handler to convert HTTP Client Request-related errors into DaDataClientException
 class ClientErrorHandler extends DefaultResponseErrorHandler {
-	@Nonnull private final HttpMessageConverterExtractor<? extends APIErrorMessage> messageExtractor;
+	@NonNull private final HttpMessageConverterExtractor<? extends APIErrorMessage> messageExtractor;
 
 
-	ClientErrorHandler(@Nonnull final HttpMessageConverter<?> messageConverter) {
+	ClientErrorHandler(@NonNull final HttpMessageConverter<?> messageConverter) {
 		this.messageExtractor = new HttpMessageConverterExtractor<>(APIErrorMessage.class,
 		                                                            Collections.singletonList(messageConverter));
 	}

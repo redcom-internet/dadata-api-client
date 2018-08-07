@@ -5,9 +5,9 @@
 
 package ru.redcom.software.util.integration.api.client.dadata;
 
+import org.springframework.lang.NonNull;
 import ru.redcom.software.util.integration.api.client.dadata.dto.*;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 
 /**
@@ -33,7 +33,7 @@ public interface DaDataClient {
 	 * @return Balance amount (currently in RUR only)
 	 * @throws DaDataException  On API access errors
 	 */
-	@Nonnull
+	@NonNull
 	BigDecimal getProfileBalance() throws DaDataException;
 
 	// ------- Standardization API access methods ----------------------------------------------------------------------
@@ -45,8 +45,8 @@ public interface DaDataClient {
 	 * @return Cleaned address object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Address cleanAddress(@Nonnull String source) throws DaDataException;
+	@NonNull
+	Address cleanAddress(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple addresses at once.
@@ -55,8 +55,8 @@ public interface DaDataClient {
 	 * @return Cleaned address objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Address[] cleanAddresses(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	Address[] cleanAddresses(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a single phone number.
@@ -65,8 +65,8 @@ public interface DaDataClient {
 	 * @return Cleaned phone object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Phone cleanPhone(@Nonnull String source) throws DaDataException;
+	@NonNull
+	Phone cleanPhone(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple phone numbers at once.
@@ -75,8 +75,8 @@ public interface DaDataClient {
 	 * @return Cleaned phone objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Phone[] cleanPhones(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	Phone[] cleanPhones(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a single passport number.
@@ -85,8 +85,8 @@ public interface DaDataClient {
 	 * @return Cleaned passport object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Passport cleanPassport(@Nonnull String source) throws DaDataException;
+	@NonNull
+	Passport cleanPassport(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple passport numbers at once.
@@ -95,8 +95,8 @@ public interface DaDataClient {
 	 * @return Cleaned passport objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Passport[] cleanPassports(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	Passport[] cleanPassports(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a single name.
@@ -105,8 +105,8 @@ public interface DaDataClient {
 	 * @return Cleaned name object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Name cleanName(@Nonnull String source) throws DaDataException;
+	@NonNull
+	Name cleanName(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple names at once.
@@ -115,8 +115,8 @@ public interface DaDataClient {
 	 * @return Cleaned name objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Name[] cleanNames(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	Name[] cleanNames(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a single E-mail address.
@@ -125,8 +125,8 @@ public interface DaDataClient {
 	 * @return Cleaned E-mail address object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Email cleanEmail(@Nonnull String source) throws DaDataException;
+	@NonNull
+	Email cleanEmail(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple E-mail addresses at once.
@@ -135,8 +135,8 @@ public interface DaDataClient {
 	 * @return Cleaned E-mail address objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Email[] cleanEmails(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	Email[] cleanEmails(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a single birth date.
@@ -145,8 +145,8 @@ public interface DaDataClient {
 	 * @return Cleaned birth date object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	BirthDate cleanBirthDate(@Nonnull String source) throws DaDataException;
+	@NonNull
+	BirthDate cleanBirthDate(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple birth dates at once.
@@ -155,8 +155,8 @@ public interface DaDataClient {
 	 * @return Cleaned birth date objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	BirthDate[] cleanBirthDates(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	BirthDate[] cleanBirthDates(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a single vehicle model.
@@ -165,8 +165,8 @@ public interface DaDataClient {
 	 * @return Cleaned vehicle object
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Vehicle cleanVehicle(@Nonnull String source) throws DaDataException;
+	@NonNull
+	Vehicle cleanVehicle(@NonNull String source) throws DaDataException;
 
 	/**
 	 * Clean multiple vehicle models at once.
@@ -175,8 +175,8 @@ public interface DaDataClient {
 	 * @return Cleaned vehicle objects
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	Vehicle[] cleanVehicles(@Nonnull String... sources) throws DaDataException;
+	@NonNull
+	Vehicle[] cleanVehicles(@NonNull String... sources) throws DaDataException;
 
 	/**
 	 * Clean a collection of records consisting by various information types.
@@ -185,6 +185,6 @@ public interface DaDataClient {
 	 * @return Composite response object with cleaned records
 	 * @throws DaDataException  On various API errors
 	 */
-	@Nonnull
-	CompositeResponse cleanComposite(@Nonnull CompositeRequest source) throws DaDataException;
+	@NonNull
+	CompositeResponse cleanComposite(@NonNull CompositeRequest source) throws DaDataException;
 }

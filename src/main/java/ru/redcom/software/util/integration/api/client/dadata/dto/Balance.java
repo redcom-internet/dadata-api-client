@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -26,10 +26,10 @@ import java.math.BigDecimal;
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Balance implements Serializable {
-	@Nonnull private final BigDecimal balance;
+	@NonNull private final BigDecimal balance;
 
 	@JsonCreator
-	private Balance(@JsonProperty(value = "balance", required = true) @Nonnull final BigDecimal balance) {
+	private Balance(@JsonProperty(value = "balance", required = true) @NonNull final BigDecimal balance) {
 		this.balance = balance;
 	}
 }

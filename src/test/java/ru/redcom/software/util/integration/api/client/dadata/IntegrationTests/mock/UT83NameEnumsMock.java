@@ -72,15 +72,15 @@ public class UT83NameEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<Name> getMatcher() {
+		Matcher<Name> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Name.class);
 		}
 	}

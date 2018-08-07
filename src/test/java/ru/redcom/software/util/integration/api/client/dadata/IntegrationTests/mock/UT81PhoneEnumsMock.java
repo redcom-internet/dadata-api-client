@@ -75,15 +75,15 @@ public class UT81PhoneEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<Phone> getMatcher() {
+		Matcher<Phone> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Phone.class);
 		}
 	}

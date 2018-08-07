@@ -71,15 +71,15 @@ public class UT86VehicleEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<Vehicle> getMatcher() {
+		Matcher<Vehicle> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Vehicle.class);
 		}
 	}

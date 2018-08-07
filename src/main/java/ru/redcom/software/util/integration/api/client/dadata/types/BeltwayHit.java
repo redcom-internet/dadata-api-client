@@ -7,9 +7,9 @@ package ru.redcom.software.util.integration.api.client.dadata.types;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /** Address position relative to beltway (ring road). */

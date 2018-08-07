@@ -74,15 +74,15 @@ public class UT82PassportEnumsMock {
 			this.matcher = matcher;
 		}
 
-		public String getSourcePattern() {
+		String getSourcePattern() {
 			return sourcePattern;
 		}
 
-		public String getResponseBody() {
+		String getResponseBody() {
 			return responseBody;
 		}
 
-		public Matcher<Passport> getMatcher() {
+		Matcher<Passport> getMatcher() {
 			return matcher != null ? matcher.apply(sourcePattern) : nullValue(Passport.class);
 		}
 	}

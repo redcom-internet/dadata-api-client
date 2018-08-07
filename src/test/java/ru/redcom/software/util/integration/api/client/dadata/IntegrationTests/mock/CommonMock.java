@@ -14,15 +14,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.ResponseActions;
 import org.springframework.test.web.client.response.DefaultResponseCreator;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
 import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -58,9 +57,9 @@ class CommonMock {
 		             .andExpect(header("X-Secret", equalTo(SECRET_KEY)));
 	}
 
-	static void setupTestServer(@Nonnull final MockRestServiceServer server, @Nonnull final String expectedUri,
-	                            @Nonnull final HttpMethod requestMethod, @Nullable final String requestBody,
-	                            @Nonnull final HttpStatus status, @Nullable final String responseBody) {
+	static void setupTestServer(@NonNull final MockRestServiceServer server, @NonNull final String expectedUri,
+	                            @NonNull final HttpMethod requestMethod, @Nullable final String requestBody,
+	                            @NonNull final HttpStatus status, @Nullable final String responseBody) {
 		ResponseActions responseActions = setupBaseTestServer(server, expectedUri, requestMethod);
 		if (requestBody != null)
 			responseActions = responseActions.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -72,13 +71,7 @@ class CommonMock {
 	}
 
 	static void setupTestServer(final MockRestServiceServer server, final String expectedUri,
-	                            final HttpMethod requestMethod, final String responseBody) {
+	                            final HttpMethod requestMethod, @Nullable final String responseBody) {
 		setupTestServer(server, expectedUri, requestMethod, null, HttpStatus.OK, responseBody);
 	}
-
-	static void setupTestServer(final MockRestServiceServer server, final String expectedUri,
-	                            final HttpMethod requestMethod) {
-		setupTestServer(server, expectedUri, requestMethod, null, HttpStatus.OK, null);
-	}
-
 }

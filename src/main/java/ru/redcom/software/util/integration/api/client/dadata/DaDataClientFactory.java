@@ -5,23 +5,20 @@
 
 package ru.redcom.software.util.integration.api.client.dadata;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Factory class for obtaining DaData client instances.
  * Only one implementation available currently, so no any configuration options for now.
  */
+@UtilityClass
 public class DaDataClientFactory {
-
-	// This class is not instantiable
-	private DaDataClientFactory() {
-	}
-
 
 	/**
 	 * <p>Terse factory method with only credentials required.</p>
@@ -33,7 +30,7 @@ public class DaDataClientFactory {
 	 *
 	 * @return DaData API client instance
 	 */
-	public static DaDataClient getInstance(@Nonnull final String apiKey, @Nonnull final String secretKey) {
+	public DaDataClient getInstance(@NonNull final String apiKey, @NonNull final String secretKey) {
 		return getInstance(apiKey, secretKey, null);
 	}
 
@@ -48,7 +45,7 @@ public class DaDataClientFactory {
 	 *
 	 * @return DaData API client instance
 	 */
-	public static DaDataClient getInstance(@Nonnull final String apiKey, @Nonnull final String secretKey, @Nullable String baseUri) {
+	public DaDataClient getInstance(@NonNull final String apiKey, @NonNull final String secretKey, @Nullable String baseUri) {
 		return getInstance(apiKey, secretKey, baseUri, new RestTemplateBuilder());
 	}
 
@@ -66,8 +63,8 @@ public class DaDataClientFactory {
 	 *
 	 * @return DaData API client instance
 	 */
-	public static DaDataClient getInstance(@Nonnull final String apiKey, @Nonnull final String secretKey,
-	                                       @Nullable String baseUri, @Nonnull RestTemplateBuilder restTemplateBuilder) {
+	public DaDataClient getInstance(@NonNull final String apiKey, @NonNull final String secretKey,
+	                                @Nullable String baseUri, @NonNull RestTemplateBuilder restTemplateBuilder) {
 		Assert.notNull(restTemplateBuilder, "REST Template builder is null");
 		Assert.isTrue(StringUtils.hasText(apiKey), "API Key is not set");
 		Assert.isTrue(StringUtils.hasText(secretKey), "Secret Key is not set");

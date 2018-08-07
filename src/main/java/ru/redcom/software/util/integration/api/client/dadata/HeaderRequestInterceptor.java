@@ -11,21 +11,21 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
 // Request Interceptor to add credentials headers
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class HeaderRequestInterceptor implements ClientHttpRequestInterceptor {
-	@Nonnull private final String headerName;
-	@Nonnull private final String headerValue;
+	@NonNull private final String headerName;
+	@NonNull private final String headerValue;
 
 
-	@Nonnull
+	@NonNull
 	@Override
-	public ClientHttpResponse intercept(@Nonnull final HttpRequest request, @Nonnull final byte[] body,
-	                                    @Nonnull final ClientHttpRequestExecution execution) throws IOException {
+	public ClientHttpResponse intercept(@NonNull final HttpRequest request, @NonNull final byte[] body,
+	                                    @NonNull final ClientHttpRequestExecution execution) throws IOException {
 		request.getHeaders().set(headerName, headerValue);
 		return execution.execute(request, body);
 	}

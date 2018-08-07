@@ -12,9 +12,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.Value;
+import org.springframework.lang.Nullable;
 import ru.redcom.software.util.integration.api.client.dadata.types.*;
 
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
