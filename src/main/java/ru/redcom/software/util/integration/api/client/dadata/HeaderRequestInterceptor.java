@@ -15,7 +15,11 @@ import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 
-// Request Interceptor to add credentials headers
+/**
+ * Request Interceptor to add credentials headers.
+ *
+ * @author boris
+ */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class HeaderRequestInterceptor implements ClientHttpRequestInterceptor {
 	@NonNull private final String headerName;

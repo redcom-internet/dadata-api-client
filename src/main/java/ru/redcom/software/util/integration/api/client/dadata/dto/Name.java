@@ -47,6 +47,8 @@ qc	5	Код проверки
 
 /**
  * Cleaned Person Name container.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter

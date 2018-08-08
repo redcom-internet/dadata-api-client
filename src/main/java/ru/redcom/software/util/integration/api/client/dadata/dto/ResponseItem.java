@@ -14,6 +14,8 @@ import java.io.Serializable;
 
 /**
  * Base class for all response DTO types.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter

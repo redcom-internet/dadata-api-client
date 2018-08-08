@@ -22,6 +22,8 @@ import lombok.ToString;
 
 /**
  * Container for the string content passed through without modifications.
+ *
+ * @author boris
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)

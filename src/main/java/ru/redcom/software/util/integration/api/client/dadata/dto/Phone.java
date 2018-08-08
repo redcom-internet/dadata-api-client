@@ -48,6 +48,8 @@ qc	5	Код проверки
 
 /**
  * Cleaned Phone Number container.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter

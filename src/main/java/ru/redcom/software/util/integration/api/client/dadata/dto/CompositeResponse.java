@@ -98,6 +98,8 @@ import java.util.*;
 
 /**
  * Composite response data transfer object.
+ *
+ * @author boris
  */
 @ToString(of = {"structure", "data"})
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -31,6 +31,8 @@ qc	5	Код проверки
 
 /**
  * Cleaned Passport Number container.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter

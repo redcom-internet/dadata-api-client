@@ -44,6 +44,8 @@ Several samples ever noticed:
 
 /**
  * Data Transfer Object for API error response body.
+ *
+ * @author boris
  */
 @Value
 public class APIErrorMessage implements Serializable {

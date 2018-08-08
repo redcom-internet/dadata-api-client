@@ -15,7 +15,11 @@ import org.springframework.lang.Nullable;
 
 import java.util.Arrays;
 
-/** FIAS directory detalization level for this location */
+/**
+ * FIAS directory detalization level for this location.
+ *
+ * @author boris
+ */
 // JsonProperty/JsonValue does not work on enums when deserializing from json numerical types.
 // Deserialization is done by ordinals instead, which is definitely not what we wants here.
 // see https://github.com/FasterXML/jackson-databind/issues/1850

@@ -231,6 +231,8 @@ Address clean service response object example:
 
 /**
  * Cleaned Address container.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter

@@ -13,7 +13,11 @@ import org.springframework.lang.Nullable;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-/** Address record actuality state in the FIAS directory */
+/**
+ * Address record actuality state in the FIAS directory.
+ *
+ * @author boris
+ */
 public enum FiasActuality {
 	/*
 	Признак актуальности адреса в ФИАС

@@ -17,7 +17,11 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage
 import java.io.IOException;
 import java.util.Collections;
 
-// Error handler to convert HTTP Client Request-related errors into DaDataClientException
+/**
+ * Error handler to convert HTTP Client Request-related errors into DaDataClientException.
+ *
+ * @author boris
+ */
 class ClientErrorHandler extends DefaultResponseErrorHandler {
 	@NonNull private final HttpMessageConverterExtractor<? extends APIErrorMessage> messageExtractor;
 

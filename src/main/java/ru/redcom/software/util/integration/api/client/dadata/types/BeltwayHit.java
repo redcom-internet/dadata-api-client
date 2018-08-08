@@ -12,7 +12,11 @@ import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
-/** Address position relative to beltway (ring road). */
+/**
+ * Address position relative to beltway (ring road).
+ *
+ * @author boris
+ */
 public enum BeltwayHit {
 	IN_MKAD,
 	OUT_MKAD,

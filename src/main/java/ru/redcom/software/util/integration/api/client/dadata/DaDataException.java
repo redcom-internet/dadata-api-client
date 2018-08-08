@@ -10,7 +10,9 @@ import org.springframework.lang.Nullable;
 
 
 /**
- * DaData API exception base class
+ * DaData API exception base class.
+ *
+ * @author boris
  */
 public class DaDataException extends RuntimeException {
 	// True indicates that error is permanent

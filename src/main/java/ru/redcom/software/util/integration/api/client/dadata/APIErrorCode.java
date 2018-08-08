@@ -15,7 +15,9 @@ import org.springframework.lang.Nullable;
 import java.util.Arrays;
 
 /**
- * Several documented errors from DaData API.
+ * Several documented errors from DaData API specification.
+ *
+ * @author boris
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

@@ -29,6 +29,8 @@ import java.util.Optional;
 
 /**
  * DaData API implementation using the Spring REST Template.
+ *
+ * @author boris
  */
 class DaDataClientImpl implements DaDataClient {
 	private static final String DADATA_API_DEFAULT_BASE_URI = "https://dadata.ru/api/v2";

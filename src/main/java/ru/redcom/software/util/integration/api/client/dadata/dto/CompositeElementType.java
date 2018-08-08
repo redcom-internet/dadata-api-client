@@ -12,7 +12,9 @@ import org.springframework.lang.NonNull;
 
 
 /**
- * Element types of composite request
+ * Element types of composite request.
+ *
+ * @author boris
  */
 @Getter(AccessLevel.PACKAGE)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

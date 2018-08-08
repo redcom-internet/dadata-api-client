@@ -49,6 +49,8 @@ import java.util.stream.Collectors;
 
 /**
  * Composite request data transfer object.
+ *
+ * @author boris
  */
 @ToString(of = {"structure", "data"})
 @JsonPropertyOrder({"structure", "data"})

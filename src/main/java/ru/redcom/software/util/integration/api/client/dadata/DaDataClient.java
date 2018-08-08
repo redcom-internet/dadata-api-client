@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 
 /**
  * DaData API Client interface.
+ *
+ * @author boris
  */
 public interface DaDataClient {
 	/**

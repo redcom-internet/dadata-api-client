@@ -8,7 +8,11 @@ package ru.redcom.software.util.integration.api.client.dadata.types;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/** Person gender */
+/**
+ * Person gender.
+ *
+ * @author boris
+ */
 public enum Gender {
 	@JsonProperty("М")
 	MALE,

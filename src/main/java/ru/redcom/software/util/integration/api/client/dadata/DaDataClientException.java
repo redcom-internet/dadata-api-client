@@ -12,6 +12,8 @@ import ru.redcom.software.util.integration.api.client.dadata.dto.APIErrorMessage
 
 /**
  * Client-related DaData API errors.
+ *
+ * @author boris
  */
 @Getter
 public class DaDataClientException extends DaDataException {

@@ -16,6 +16,8 @@ import org.springframework.util.StringUtils;
 /**
  * Factory class for obtaining DaData client instances.
  * Only one implementation available currently, so no any configuration options for now.
+ *
+ * @author boris
  */
 @UtilityClass
 public class DaDataClientFactory {

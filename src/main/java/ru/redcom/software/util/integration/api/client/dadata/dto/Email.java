@@ -29,6 +29,8 @@ qc	5	Код проверки
 
 /**
  * Cleaned E-mail address container.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter

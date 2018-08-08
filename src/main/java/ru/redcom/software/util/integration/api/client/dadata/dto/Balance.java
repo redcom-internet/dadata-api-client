@@ -22,6 +22,8 @@ import java.math.BigDecimal;
 
 /**
  * Data Transfer Object for account profile balance response.
+ *
+ * @author boris
  */
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)

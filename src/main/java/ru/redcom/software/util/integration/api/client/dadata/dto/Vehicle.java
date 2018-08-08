@@ -33,6 +33,8 @@ qc	5	Код проверки
 
 /**
  * Cleaned Vehicle Type container.
+ *
+ * @author boris
  */
 @SuppressWarnings("unused")
 @Getter
