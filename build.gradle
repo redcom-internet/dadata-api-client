@@ -25,7 +25,7 @@ ext {
 	organizationName = 'REDCOM-Internet'
 	organizationURLpath = 'github.com/redcom-internet'
 	organizationURL = 'https://' + organizationURLpath
-	projectRootURLpath = '/software/java/libs/dadata-api-client'
+	projectRootURLpath = '/software-java-libs-dadata-api-client'
 	projectRootURL = organizationURL + projectRootURLpath
 	projectIssueURL = projectRootURL + '/issues'
 	projectSCM = 'GitHub'
