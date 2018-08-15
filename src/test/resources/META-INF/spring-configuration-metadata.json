@@ -2,37 +2,37 @@
   "hints": [],
   "groups": [
     {
-      "sourceType": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.live.CommonLive",
+      "sourceType": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.live.CommonLive",
       "name": "dadata",
-      "type": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.live.CommonLive"
+      "type": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.live.CommonLive"
     },
     {
-      "sourceType": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock",
+      "sourceType": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.mock.CommonMock",
       "name": "dadata",
-      "type": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock"
+      "type": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.mock.CommonMock"
     }
   ],
   "properties": [
     {
-      "sourceType": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.live.CommonLive",
+      "sourceType": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.live.CommonLive",
       "name": "dadata.api-key",
       "type": "java.lang.String",
       "description": "DaData API Key"
     },
     {
-      "sourceType": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.live.CommonLive",
+      "sourceType": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.live.CommonLive",
       "name": "dadata.secret-key",
       "type": "java.lang.String",
       "description": "DaData Secret Key"
     },
     {
-      "sourceType": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock",
+      "sourceType": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.mock.CommonMock",
       "name": "dadata.api-key",
       "type": "java.lang.String",
       "description": "DaData API Key"
     },
     {
-      "sourceType": "ru.redcom.software.util.integration.api.client.dadata.IntegrationTests.mock.CommonMock",
+      "sourceType": "ru.redcom.lib.integration.api.client.dadata.IntegrationTests.mock.CommonMock",
       "name": "dadata.secret-key",
       "type": "java.lang.String",
       "description": "DaData Secret Key"

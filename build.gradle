@@ -11,7 +11,7 @@ plugins {
 }
 
 description = 'DaData API client for Java'
-group = 'ru.redcom.software.libs'
+group = 'ru.redcom.lib'
 version = '0.0.1'
 sourceCompatibility = 1.8
 
@@ -22,10 +22,11 @@ ext {
 	artifactName = name
 	artifactDescription = description
 	mavenCentralPublishingURL = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+	corporatePublishingURL = 'sftp://devel.ws.redcom.ru:22/var/spool/users/maven2'
 	organizationName = 'REDCOM-Internet'
 	organizationURLpath = 'github.com/redcom-internet'
 	organizationURL = 'https://' + organizationURLpath
-	projectRootURLpath = '/software-java-libs-dadata-api-client'
+	projectRootURLpath = '/dadata-api-client'
 	projectRootURL = organizationURL + projectRootURLpath
 	projectIssueURL = projectRootURL + '/issues'
 	projectSCM = 'GitHub'
@@ -104,6 +105,9 @@ model {
 	tasks.publishMavenJavaPublicationToMavenCentralRepository {
         dependsOn project.tasks.signArchives
 	}
+	tasks.publishMavenJavaPublicationToRedcomDevelRepository {
+        dependsOn project.tasks.signArchives
+	}
 }
 
 
@@ -121,12 +125,12 @@ task liveTest(type: Test, description: 'Runs live integration tests', group: 'Ve
         systemProperties['dadata.secret-key'] = secretKey
         systemProperties['live-tests'] = 'enabled'
     }
-    include 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+    include 'ru/redcom/lib/integration/api/client/dadata/IntegrationTests/live/**'
 }
 
 // Skip live integration tests by default
 test {
-    exclude 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+    exclude 'ru/redcom/lib/integration/api/client/dadata/IntegrationTests/live/**'
 }
 
 javadoc {
@@ -204,10 +208,15 @@ publishing {
         }
     }
     repositories {
+        maven {
+	        name = 'RedcomDevel'
+	        // SFTP publishing. Credentials are taken from the local Maven settings
+            url corporatePublishingURL
+        }
 		maven {
 	        name = 'MavenCentral'
             url mavenCentralPublishingURL
-	        // must be defined in gradle.properties or taken from maven settings plugin
+	        // must be defined in gradle.properties or taken from the local Maven settings
 	        //credentials {
 			//	username sonatypeUsername
 			//	password sonatypePassword

@@ -13,7 +13,7 @@ Required dependencies are `spring-boot-starter-json` and `lombok`.
 ```xml
 <dependencies>
     <dependency>
-        <groupId>ru.redcom.software</groupId>
+        <groupId>ru.redcom.lib</groupId>
         <artifactId>dadata-api-client</artifactId>
         <version>0.0.1</version>
     </dependency>
@@ -27,7 +27,7 @@ Required dependencies are `spring-boot-starter-json` and `lombok`.
 **Gradle:**
 ```groovy
 dependencies {
-    compile group: 'ru.redcom.software', name: 'dadata-api-client', version: '0.0.1'
+    compile group: 'ru.redcom.lib', name: 'dadata-api-client', version: '0.0.1'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: '2.0.4.RELEASE'
 }
 ```
@@ -42,10 +42,10 @@ Array requests and Composite records are supported as well.
 
 ### Clean an address:
 ```java
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
-import ru.redcom.software.util.integration.api.client.dadata.dto.Address;
+import ru.redcom.lib.integration.api.client.dadata.DaDataClient;
+import ru.redcom.lib.integration.api.client.dadata.DaDataClientFactory;
+import ru.redcom.lib.integration.api.client.dadata.DaDataException;
+import ru.redcom.lib.integration.api.client.dadata.dto.Address;
 
 public class Standardization {
 	private static final String API_KEY = "<dadata_api_key>";
@@ -62,9 +62,9 @@ public class Standardization {
 
 ### Get the account balance
 ```java
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
+import ru.redcom.lib.integration.api.client.dadata.DaDataClient;
+import ru.redcom.lib.integration.api.client.dadata.DaDataClientFactory;
+import ru.redcom.lib.integration.api.client.dadata.DaDataException;
 
 import java.math.BigDecimal;
 
@@ -85,9 +85,9 @@ public class Info {
 ```java
 import org.springframework.stereotype.Component;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClient;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataClientFactory;
-import ru.redcom.software.util.integration.api.client.dadata.DaDataException;
+import ru.redcom.lib.integration.api.client.dadata.DaDataClient;
+import ru.redcom.lib.integration.api.client.dadata.DaDataClientFactory;
+import ru.redcom.lib.integration.api.client.dadata.DaDataException;
 
 import java.math.BigDecimal;
 
