@@ -5,44 +5,107 @@
 plugins {
     id 'idea'
     id 'java-library'
+	id 'signing'
     id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
 }
 
 description = 'DaData API client for Java'
-group = 'ru.redcom.software'
+group = 'ru.redcom.software.libs'
 version = '0.0.1'
 sourceCompatibility = 1.8
-
-def publishRepositoryURL = 'sftp://devel.ws.redcom.ru:22/var/spool/users/maven2'
-def artifactName = name
-def artifactDescription = description
 
 ext {
     springBootVersion = '2.0.4.RELEASE'
     encoding = 'UTF-8'
-    // Manifest attributes for all archives
-    sharedManifest = manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version,
-                'Built-By': System.getProperty("user.name"),
-                'Build-Jdk': System.getProperty("java.version"))
+	// pom attributes
+	artifactName = name
+	artifactDescription = description
+	mavenCentralPublishingURL = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+	organizationName = 'REDCOM-Internet'
+	organizationURLpath = 'github.com/redcom-internet'
+	organizationURL = 'https://' + organizationURLpath
+	projectRootURLpath = '/software/java/libs/dadata-api-client'
+	projectRootURL = organizationURL + projectRootURLpath
+	projectIssueURL = projectRootURL + '/issues'
+	projectSCM = 'GitHub'
+	projectLicense = 'MIT License'
+	projectLicenseURL = projectRootURL + '/blob/master/LICENSE.txt'
+	projectSCMConnection = 'scm:git:git://' + organizationURLpath + projectRootURLpath + '.git'
+	projectDeveloper = 'Boris Fox'
+}
+
+// Manifest attributes for all archives
+def sharedManifest = manifest {
+    attributes('Implementation-Title': project.name,
+               'Implementation-Version': project.version,
+               'Built-By': System.getProperty("user.name"),
+               'Build-Jdk': System.getProperty("java.version"))
+}
+
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        root.children().last() + {
+//	        resolveStrategy = Closure.DELEGATE_FIRST
+            resolveStrategy = DELEGATE_FIRST
+
+            description artifactDescription
+            name artifactName
+            url projectRootURL
+            organization {
+                name organizationName
+                url organizationURL
+            }
+            issueManagement {
+                system projectSCM
+                url projectIssueURL
+            }
+            licenses {
+                license {
+                    name projectLicense
+                    url projectLicenseURL
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url projectRootURL
+                connection projectSCMConnection
+                developerConnection projectSCMConnection
+            }
+            developers {
+                developer {
+                    name projectDeveloper
+                }
+            }
+        }
     }
 }
 
 defaultTasks 'build'
 
-javadoc {
-    options.encoding = project.ext.encoding
-    options.charSet = project.ext.encoding
-}
-
 tasks.withType(JavaCompile).each { it.options.setEncoding("${project.ext.encoding}") }
 
-// Skip live integration tests by default
-test {
-    exclude 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+model {
+	tasks.generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
+	}
+
+	tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+	}
+	tasks.publishMavenJavaPublicationToMavenCentralRepository {
+        dependsOn project.tasks.signArchives
+	}
 }
+
 
 // Live integration tests task
 // usage: gradlew liveTest -Papi-key=your_api_key -Psecret-key=your_secret_key
@@ -59,6 +122,16 @@ task liveTest(type: Test, description: 'Runs live integration tests', group: 'Ve
         systemProperties['live-tests'] = 'enabled'
     }
     include 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+}
+
+// Skip live integration tests by default
+test {
+    exclude 'ru/redcom/software/util/integration/api/client/dadata/IntegrationTests/live/**'
+}
+
+javadoc {
+    options.encoding = project.ext.encoding
+    options.charSet = project.ext.encoding
 }
 
 // Binaries archive
@@ -81,31 +154,64 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
+    archives jar
     archives sourcesJar
     archives javadocJar
+}
+
+signing {
+    // signing key id and password must be defined in gradle.properties
+    sign configurations.archives
 }
 
 // Publications
 publishing {
     publications {
         mavenJava(MavenPublication) {
+	        customizePom(pom)
             from components.java
-            //noinspection GroovyAssignabilityCheck
-            artifact sourcesJar
-            //noinspection GroovyAssignabilityCheck
-            artifact javadocJar
-	        // Add custom attributes to POM
+
+	        // create the sign pom artifact
 	        pom.withXml {
-		        asNode().appendNode('name', artifactName)
-		        asNode().appendNode('description', artifactDescription)
+	            def pomFile = file("${project.buildDir}/generated-pom.xml")
+	            writeTo(pomFile)
+	            def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+	            artifact(pomAscFile) {
+	                classifier = null
+	                extension = 'pom.asc'
+	            }
+	        }
+
+            artifact sourcesJar {
+				classifier = 'sources'
+	        }
+            artifact javadocJar {
+				classifier = 'javadoc'
+	        }
+
+	        // create the signed artifacts
+	        project.tasks.signArchives.signatureFiles.each {
+	            artifact(it) {
+	                def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+	                if (matcher.find()) {
+	                    classifier = matcher.group(1)
+	                } else {
+	                    classifier = null
+	                }
+	                extension = 'jar.asc'
+	            }
 	        }
         }
     }
     repositories {
-        maven {
-	    name = 'devel.ws.redcom.ru'
-	    // SFTP publishing. Credentials are taken from the local Maven settings
-            url publishRepositoryURL
+		maven {
+	        name = 'MavenCentral'
+            url mavenCentralPublishingURL
+	        // must be defined in gradle.properties or taken from maven settings plugin
+	        //credentials {
+			//	username sonatypeUsername
+			//	password sonatypePassword
+			//}
         }
     }
 }

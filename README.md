@@ -1,4 +1,4 @@
-# [DaData](http://dadata.ru) API Java Bindings
+# [DaData](http://dadata.ru) API Java library
 
 This is a simple library for using the DaData Standardization API with Java language.  
 It was written for a Spring application and uses Spring Framework to implement REST API client.
