@@ -11,9 +11,9 @@ Required dependencies are `spring-boot-starter-json` and `lombok`.
 
 [Standardization API Reference](https://dadata.ru/api/clean/)
 
-## Installation
-
-#### 1. Add a dependencies to the project:  
+Installation
+------------
+#### 1. Add dependencies to the project:  
 **Maven:**
 ```xml
 <dependencies>
@@ -43,8 +43,8 @@ API for Location addresses, Phone and Passport numbers, E-mail addresses,
 Person names and surnames, Person birthdates, and Vehicle numbers is implemented.  
 Array requests and Composite records are supported as well.    
  
-## Usage examples
-
+Usage examples
+--------------
 ### Clean an address:
 ```java
 import ru.redcom.lib.integration.api.client.dadata.DaDataClient;
