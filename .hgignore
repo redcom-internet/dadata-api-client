@@ -10,10 +10,12 @@ log/
 
 ### IntelliJ IDEA ###
 .idea/workspace.xml
+#.idea/vcs.xml
 #.idea/tasks.xml
 #.idea/dataSources.xml
 #.idea/dataSources.local.xml
 .idea/libraries/
+.idea/dictionaries/
 #.idea/modules/
 #.idea/httpRequests/
 #.idea/dataSources/

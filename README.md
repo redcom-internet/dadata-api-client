@@ -1,4 +1,9 @@
-# [DaData](http://dadata.ru) API Java library
+[DaData](http://dadata.ru) API Java library
+===========================================
+
+[![GitHub license](https://img.shields.io/github/license/redcom-internet/dadata-api-client.svg)](https://github.com/redcom-internet/dadata-api-client/blob/master/LICENSE.txt)
+[![GitHub release](https://img.shields.io/github/release/redcom-internet/dadata-api-client.svg)](https://github.com/redcom-internet/dadata-api-client/releases)
+[![Maven Central](https://img.shields.io/maven-central/v/ru.redcom.lib/dadata-api-client.svg)](https://search.maven.org/search?q=a:dadata-api-client)
 
 This is a simple library for using the DaData Standardization API with Java language.  
 It was written for a Spring application and uses Spring Framework to implement REST API client.
