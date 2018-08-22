@@ -7,7 +7,7 @@
 
 This is a simple library for using the DaData Standardization API with Java language.  
 It was written for a Spring application and uses Spring Framework to implement REST API client.
-Required dependencies are `spring-boot-starter-json` and `lombok`.
+Required dependency is `spring-boot-starter-json`.
 
 [Standardization API Reference](https://dadata.ru/api/clean/)
 
@@ -65,7 +65,7 @@ public class Standardization {
 }
 ```
 
-### Get the account balance
+### Get the account balance:
 ```java
 import ru.redcom.lib.integration.api.client.dadata.DaDataClient;
 import ru.redcom.lib.integration.api.client.dadata.DaDataClientFactory;
